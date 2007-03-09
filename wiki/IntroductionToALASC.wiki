@@ -1,0 +1,14 @@
+#summary Introduction to the ALASC project
+#labels Featured
+
+= Introduction =
+
+ALASC acronym stay for _A Logo (to) ActionScript Compiler_. It's the product of an academic course about formal languages and compilers.
+
+
+= Details =
+
+ALASC project pourposes are_:
+  * Create a compiler that reads a program written in a subset of Logo istructions and converts it in an ActionScript flash script, that draws the same figure.
+  * Experiment the usage of JavaCC library
+
