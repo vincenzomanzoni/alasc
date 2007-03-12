@@ -1,0 +1,68 @@
+options
+{
+STATIC = false; // default TRUE
+LOOKAHEAD = 1; // default 1
+IGNORE_CASE = true; // default false
+}
+
+PARSER_BEGIN(expr1)
+package it.unibg.alasc.examples;
+import java.io.*;
+
+public class expr1 {
+	public static void main(String args[]) throws ParseException, FileNotFoundException {
+		expr1 parser = new expr1(new FileReader("test-scontrino.txt"));
+		System.out.println(parser.start());
+	}
+}
+PARSER_END(expr1)
+
+SKIP : { " " | "\t" | "\n" | "\r" }
+
+TOKEN :
+{
+	<PRODOTTO: (["a"-"z"])+>
+	| <QTA: (["0"-"9"])+>
+	| <PREZZO: "E"(["0"-"9"])+>
+}
+
+Attributi start() : {Attributi s;}
+{ 
+	s = lista(new Attributi("pomodori"))
+	{
+		return s;
+	}  
+}
+
+Attributi lista(Attributi e) : {Attributi s, s1;}
+{ 
+	s = riga(e) s1 = lista(s)
+	{
+		return s1;
+	} 
+	| 
+	{
+		return e;
+	}
+}
+
+Attributi riga(Attributi e) : {Token q, p, prd;}
+{ 
+	prd = <PRODOTTO> q=<QTA> p=<PREZZO>
+	{
+		Attributi s = new Attributi(e.getProdotto());
+
+		// Calcolo parziale
+		s.setParziale( e.getParziale() + 
+			Integer.parseInt(p.image.substring(1)) * Integer.parseInt(q.image));
+
+		// Aumento eventuale di occorrenze		
+		if (e.getProdotto().equals(prd.image)) {
+			s.setOccorrenze( e.getOccorrenze() + Integer.parseInt(q.image) );
+		} else {
+			s.setOccorrenze( e.getOccorrenze());
+		}	
+		
+		return s;
+	} 
+}
