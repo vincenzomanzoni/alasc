@@ -1,0 +1,5 @@
+pomodori 3 E1
+patate 10 E2
+pomodori 11 E1
+carote 3 E2
+patate 6 E2
