@@ -2,6 +2,12 @@ package it.unibg.alasc.examples;
 
 import java.util.HashMap;
 
+/**
+ * Classe necessaria per il passaggio di attributi.
+ * @author andrea
+ *
+ */
+
 public class Attributi {
 	private int parziale;
 	private HashMap<String, Integer> prodotti;
