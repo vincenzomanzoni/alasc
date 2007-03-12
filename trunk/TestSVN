@@ -1,7 +1,3 @@
-Semplice e simpatica grammatica per gestire gli scontrini della spesa, 
-contare le ricorrenze di prodotti e fare i conti sul totale. Molto
-utile per mantenere un simpatico e ordinato bilancio famigliare.
-
 Una breve descrizione della grammatica.
 
 Token
@@ -10,6 +6,8 @@ Token
 <PRZ>	=	"E"(["0"-"9"])+
 
 Produzioni semantiche
+
+HO AGGIUNTO QUESTA RIGA! (by Andrea)
 
 START	-> 	LISTA
 	LISTA.parziale_e	:=	0
@@ -25,5 +23,3 @@ LISTA 	-> 	e
 
 RIGA	->	<PROD> <QTA> <PRZ>
 	RIGA.parziale_s		:=	RIGA.parziale_e + QTA.image * PRZ.image
-
-	
