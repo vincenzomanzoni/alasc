@@ -1,9 +1,9 @@
 Una breve descrizione della grammatica.
 
 Token
-<PROD>	=	("a"-"z")+
-<QTA>	=	("0"-"9")+
-<PRZ>	=	"E"("0"-"9")+
+<PROD>	=	(["a"-"z"])+
+<QTA>	=	(["0"-"9"])+
+<PRZ>	=	"E"(["0"-"9"])+
 
 Produzioni semantiche
 
