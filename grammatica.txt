@@ -1,0 +1,23 @@
+Una breve descrizione della grammatica.
+
+Token
+<PROD>	=	("a"-"z")+
+<QTA>	=	("0"-"9")+
+<PRZ>	=	"E"("0"-"9")+
+
+Produzioni semantiche
+
+START	-> 	LISTA
+	LISTA.parziale_e	:=	0
+	START.parziale_s	:=	LISTA.parziale_s
+	
+LISTA 	-> 	RIGA LISTA
+	RIGA.parziale_e		:=	L[0].parziale_e
+	L[2].parziale_e		:=	RIGA.parziale_s
+	L[0].parziale_s		:=	L[2].parziale_s
+
+LISTA 	-> 	e
+	L.parziale_s		:=	L.parziale_e
+
+RIGA	->	<PROD> <QTA> <PRZ>
+	RIGA.parziale_s		:=	RIGA.parziale_e + QTA.image * PRZ.image
