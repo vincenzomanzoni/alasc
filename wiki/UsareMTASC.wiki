@@ -7,9 +7,18 @@ MTASC http://www.mtasc.org è il primo compilatore ActionScript 2 opensource. Es
 MTASC è disponibilile sia per le piattaforme Windows, Linux e Mac Os e si compone di un file eseguibile da linea di comando.
 
 
-= Details =
+= Utilizzo =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+MTASC sarà il consumatore del codice ActionScript generato dal compilatore ALASC. L'invocazione di MTASC da linea di comando (comprensiva di parametri) per una tipica sessione di compilazione di un sorgente ActionScript generato da ALASC sarà:
+
+`./mtasc -out output.swf -main -header 800:600:0 input.as`
+
+dove il parametro:
+
+* `-out output.swf` serve per specificare che l'output debba essere scritto sul file passato come argomento. Alternativamente si può optare per un aggiornamento del file di output utilizzando `-swf output.swf`
+* `-main` serve per indicare che nel file di input è presente l'entry point del programma ActionScript
+* `-header larghezza:altezza:fps` permette di specificare la dimensione del frame e il numero di fotogrammi al secondo. Nel nostro caso, trattandosi di immagini statiche, abbiamo scelto fps = 0
+* `input.as` indica il nome del file che contiene il listato ActionScript da compilare in SWF.
+
+= Esempio =
+
