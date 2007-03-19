@@ -15,10 +15,10 @@ MTASC sarà il consumatore del codice ActionScript generato dal compilatore ALAS
 
 dove il parametro:
 
-* `-out output.swf` serve per specificare che l'output debba essere scritto sul file passato come argomento. Alternativamente si può optare per un aggiornamento del file di output utilizzando `-swf output.swf`
-* `-main` serve per indicare che nel file di input è presente l'entry point del programma ActionScript
-* `-header larghezza:altezza:fps` permette di specificare la dimensione del frame e il numero di fotogrammi al secondo. Nel nostro caso, trattandosi di immagini statiche, abbiamo scelto fps = 0
-* `input.as` indica il nome del file che contiene il listato ActionScript da compilare in SWF.
+  * `-out output.swf` serve per specificare che l'output debba essere scritto sul file passato come argomento. Alternativamente si può optare per un aggiornamento del file di output utilizzando `-swf output.swf`
+  * `-main` serve per indicare che nel file di input è presente l'entry point del programma ActionScript
+  * `-header larghezza:altezza:fps` permette di specificare la dimensione del frame e il numero di fotogrammi al secondo. Nel nostro caso, trattandosi di immagini statiche, abbiamo scelto fps = 0
+  * `input.as` indica il nome del file che contiene il listato ActionScript da compilare in SWF.
 
 = Esempio =
 
