@@ -1,5 +1,5 @@
 #summary Breve guida all'uso di MTASC.
-#labels Phase-Implementation
+#labels Phase-Implementation,Featured
 
 = Introduzione =
 MTASC http://www.mtasc.org è il primo compilatore ActionScript 2 opensource. Esso compila un sorgente in ActionScript creando un filmato SWF.
