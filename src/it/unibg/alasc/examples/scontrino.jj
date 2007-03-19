@@ -10,9 +10,15 @@ package it.unibg.alasc.examples;
 import java.io.*;
 
 public class expr1 {
-	public static void main(String args[]) throws ParseException, FileNotFoundException {
+	public static void main(String args[]) throws FileNotFoundException {
 		expr1 parser = new expr1(new FileReader("test-scontrino.txt"));
-		System.out.println(parser.start());
+		try {
+			System.out.println(parser.start());
+		} catch(ParseException pe) {
+			System.out.println(pe.toString());
+		} catch(SemanticException se) {
+			System.out.println(se.toString());
+		}
 	}
 }
 PARSER_END(expr1)
@@ -26,7 +32,7 @@ TOKEN :
 	| <PREZZO: "E"(["0"-"9"])+>
 }
 
-Attributi start() : {Attributi s;}
+Attributi start() throws SemanticException : {Attributi s;}
 { 
 	s = lista(new Attributi())
 	{
@@ -34,7 +40,7 @@ Attributi start() : {Attributi s;}
 	}  
 }
 
-Attributi lista(Attributi e) : {Attributi s, s1;}
+Attributi lista(Attributi e) throws SemanticException : {Attributi s, s1;}
 { 
 	s = riga(e) s1 = lista(s)
 	{
@@ -46,12 +52,17 @@ Attributi lista(Attributi e) : {Attributi s, s1;}
 	}
 }
 
-Attributi riga(Attributi e) : {Token q, p, prd;}
+Attributi riga(Attributi e) throws SemanticException : {Token q, p, prd;}
 { 
 	prd = <PRODOTTO> q=<QTA> p=<PREZZO>
 	{
 		Attributi s = new Attributi(e.getProdotti());
-
+		
+		// Verifica che il numero prodotti sia maggiore di 0
+		if(Integer.parseInt(q.image) <= 0) {
+			throw new SemanticException("Qta must be positive");
+		}
+		
 		// Calcolo parziale
 		s.setParziale( e.getParziale() + 
 			Integer.parseInt(p.image.substring(1)) * Integer.parseInt(q.image));
