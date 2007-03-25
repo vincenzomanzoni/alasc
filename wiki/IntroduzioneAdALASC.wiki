@@ -1,0 +1,17 @@
+#summary Introduzione al progetto ALASC
+#labels Featured
+
+= Introduzione =
+
+L'acronimo ALASC significa _A Logo (to) !ActionScript Compiler_. Esso è il risultato di un corso universitario di *Progetto di linguaggi formali e compilatori*.
+
+= Dettagli =
+
+Gli obiettivi del progetto sono:
+  * Creare un compilatore che traduca un programma scritto con un sottoinsieme del linguaggio Logo in uno script in !ActionScript, che una volta compilato in SWF disegni la stessa figura;
+  * Sperimentare l'uso del compilatore di compilatori JavaCC.
+
+== The test application ==
+Below a diagram of our test application, which uses ALASC to compile a Logo program in a !ActionScript language, then uses [http://code.google.com/p/alasc/wiki/UsareMTASC MTASC] compiler to generate a SWF file, that we can see inside a web browser with Flash plugin.
+
+http://alasc.googlecode.com/files/diagramm.png
