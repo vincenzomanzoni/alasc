@@ -1,5 +1,5 @@
 #summary Introduzione al progetto ALASC
-#labels Featured
+#labels Featured,Lang-IT
 
 = Introduzione =
 
