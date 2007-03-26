@@ -6,15 +6,15 @@
 All'interno del compilatore esisterà un componente che si occuperà di tradurre il codice Logo in codice !ActionScript. Si esaminerà la traduzione in !ActionScript di esempi di ognuna delle strutture definite nel sottoinsieme scelto.
 
 = Strutture da tradurre =
-Il primo problema da risolvere durante è la traduzione è la diversità fra il modello della grafica usato da Logo e quello usato da ActionScript.
+Il primo problema da risolvere durante è la traduzione è la diversità fra il modello della grafica usato da Logo e quello usato da !ActionScript.
 
-Quello di Logo si basa sul concetto di penna, cioè di un cursore mobile che è dotato di un orientamento, di un colore e di uno stato che indica se la penna è abbassata o alzata. Muovendo una penna con la punta abbassata da un punto A a un punto B, essa lascerà un tratto rettilineo. *In Logo, un tratto viene disegnato attraverso il punto d'origine, la lunghezza e l'orientamento*. Il sitema di riferimento prevede che l'origine degli assi sia al centro dello schermo. Le coordinate x crescono verso nord, quelle y verso est.
+Quello di Logo si basa sul concetto di penna, cioè di un cursore mobile che è dotato di un orientamento, di un colore e di uno stato che indica se la penna è abbassata o alzata. Muovendo una penna con la punta abbassata da un punto A a un punto B, essa lascerà un tratto rettilineo. *In Logo, un tratto viene disegnato attraverso il punto d'origine, la lunghezza e l'orientamento*. Il sistema di riferimento prevede che l'origine degli assi sia al centro dello schermo. Le coordinate x crescono verso nord, quelle y verso est.
 
-Il modello di disegno offerto da ActionScript è diverso: *scelto uno stile del tratto (colore e spessore), si disegna un tratto a partire dal suo punto d'origine e dal suo punto finale*. Il modello di ActionScript pone l'origine nel primo pixel in alto e a sinistra: le coordinate x aumentano verso est, quelle y verso in sud.
+Il modello di disegno offerto da !ActionScript è diverso: *scelto uno stile del tratto (colore e spessore), si disegna un tratto a partire dal suo punto d'origine e dal suo punto finale*. Il modello di ActionScript pone l'origine nel primo pixel in alto e a sinistra: le coordinate x aumentano verso est, quelle y verso in sud.
 
-Sarà quindi necesserio tenere conto di queste differenze durante il processo di traduzione.
+Sarà quindi necessario tenere conto di queste differenze durante il processo di traduzione.
 
-Al fine di rendere più agevole la trasformazione dal modello di Logo a quello di ActionScript, si è creata una classe ActionScript che simula lo stato della penna.
+Al fine di rendere più agevole la trasformazione dal modello di Logo a quello di !ActionScript, si è creata una classe !ActionScript che simula lo stato della penna.
 
 {{{
 class Pen {
@@ -65,5 +65,4 @@ Qui due comportamenti
 == Strutture di controllo di flusso ==
 === Struttura condizionale IF ===
 === Struttura iterativa REPEAT ===
-
 
