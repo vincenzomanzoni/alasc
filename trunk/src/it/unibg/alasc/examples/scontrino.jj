@@ -8,12 +8,35 @@ IGNORE_CASE = true; // default false
 PARSER_BEGIN(expr1)
 package it.unibg.alasc.examples;
 import java.io.*;
+import java.util.*;
 
 public class expr1 {
+	
+	private int subtotale;
+	private HashMap<String, Integer> carrello = new HashMap<String, Integer>();
+	
+	private void aggiornaSubtotale(int qta, int prezzoUnitario) {
+		this.subtotale += qta * prezzoUnitario;
+	}
+	
+	public String toString() {
+		return "Parziale = " + subtotale + ", " +
+			carrello.toString();
+	}
+	
+	private void aggiornaCarrello(String nomeProdotto, int qta) {
+		if (carrello.containsKey(nomeProdotto)) {
+			carrello.put(nomeProdotto, carrello.get(nomeProdotto) + qta); 
+		} else {
+			carrello.put(nomeProdotto, qta);
+		}
+	}
+	
 	public static void main(String args[]) throws FileNotFoundException {
 		expr1 parser = new expr1(new FileReader("test-scontrino.txt"));
 		try {
-			System.out.println(parser.start());
+			parser.start();
+			System.out.println(parser);
 		} catch(ParseException pe) {
 			System.out.println(pe.toString());
 		} catch(SemanticException se) {
@@ -32,43 +55,35 @@ TOKEN :
 	| <PREZZO: "E"(["0"-"9"])+>
 }
 
-Attributi start() throws SemanticException : {Attributi s;}
+void start() throws SemanticException : {}
 { 
-	s = lista(new Attributi())
+	lista() 
 	{
-		return s;
-	}  
-}
-
-Attributi lista(Attributi e) throws SemanticException : {Attributi s, s1;}
-{ 
-	s = riga(e) s1 = lista(s)
-	{
-		return s1;
-	} 
-	| 
-	{
-		return e;
 	}
 }
 
-Attributi riga(Attributi e) throws SemanticException : {Token q, p, prd;}
+void lista() throws SemanticException : {}
 { 
-	prd = <PRODOTTO> q=<QTA> p=<PREZZO>
-	{
-		Attributi s = new Attributi(e.getProdotti());
-		
+	riga() lista()
+	{} 
+	| 
+	{}
+}
+
+void riga() throws SemanticException : {Token q, p, prd;}
+{ 
+	prd=<PRODOTTO> q=<QTA> p=<PREZZO>
+	{	
 		// Verifica che il numero prodotti sia maggiore di 0
 		if(Integer.parseInt(q.image) <= 0) {
 			throw new SemanticException("Qta must be positive");
 		}
 		
-		// Calcolo parziale
-		s.setParziale( e.getParziale() + 
-			Integer.parseInt(p.image.substring(1)) * Integer.parseInt(q.image));
-
-		s.aggiornaProdotti(prd.image, Integer.parseInt(q.image));
+		// Aggiorna subtotale
+		aggiornaSubtotale(Integer.parseInt(q.image), 
+			Integer.parseInt(p.image.substring(1)));
 		
-		return s;
+		// Aggiorna carrello
+		aggiornaCarrello(prd.image, Integer.parseInt(q.image));
 	} 
 }
