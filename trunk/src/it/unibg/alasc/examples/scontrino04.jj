@@ -1,0 +1,74 @@
+options
+{
+STATIC = false; // default TRUE
+LOOKAHEAD = 1; // default 1
+IGNORE_CASE = true; // default false
+}
+
+PARSER_BEGIN(expr1)
+package it.unibg.alasc.examples;
+import java.io.*;
+
+public class expr1 {
+	public static void main(String args[]) throws FileNotFoundException {
+		expr1 parser = new expr1(new FileReader("test-scontrino.txt"));
+		try {
+			System.out.println(parser.start());
+		} catch(ParseException pe) {
+			System.out.println(pe.toString());
+		} catch(SemanticException se) {
+			System.out.println(se.toString());
+		}
+	}
+}
+PARSER_END(expr1)
+
+SKIP : { " " | "\t" | "\n" | "\r" }
+
+TOKEN :
+{
+	<PRODOTTO: (["a"-"z"])+>
+	| <QTA: (["0"-"9"])+>
+	| <PREZZO: "E"(["0"-"9"])+>
+}
+
+Attributi start() throws SemanticException : {Attributi s;}
+{ 
+	s = lista(new Attributi())
+	{
+		return s;
+	}  
+}
+
+Attributi lista(Attributi e) throws SemanticException : {Attributi s, s1;}
+{ 
+	s = riga(e) s1 = lista(s)
+	{
+		return s1;
+	} 
+	| 
+	{
+		return e;
+	}
+}
+
+Attributi riga(Attributi e) throws SemanticException : {Token q, p, prd;}
+{ 
+	prd = <PRODOTTO> q=<QTA> p=<PREZZO>
+	{
+		Attributi s = new Attributi(e.getProdotti());
+		
+		// Verifica che il numero prodotti sia maggiore di 0
+		if(Integer.parseInt(q.image) <= 0) {
+			throw new SemanticException("Qta must be positive");
+		}
+		
+		// Calcolo parziale
+		s.setParziale( e.getParziale() + 
+			Integer.parseInt(p.image.substring(1)) * Integer.parseInt(q.image));
+
+		s.aggiornaProdotti(prd.image, Integer.parseInt(q.image));
+		
+		return s;
+	} 
+}
