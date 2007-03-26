@@ -10,7 +10,7 @@ Il primo problema da risolvere durante è la traduzione è la diversità fra il 
 
 Quello di Logo si basa sul concetto di penna, cioè di un cursore mobile che è dotato di un orientamento, di un colore e di uno stato che indica se la penna è abbassata o alzata. Muovendo una penna con la punta abbassata da un punto A a un punto B, essa lascerà un tratto rettilineo. *In Logo, un tratto viene disegnato attraverso il punto d'origine, la lunghezza e l'orientamento*. Il sistema di riferimento prevede che l'origine degli assi sia al centro dello schermo. Le coordinate x crescono verso nord, quelle y verso est.
 
-Il modello di disegno offerto da !ActionScript è diverso: *scelto uno stile del tratto (colore e spessore), si disegna un tratto a partire dal suo punto d'origine e dal suo punto finale*. Il modello di ActionScript pone l'origine nel primo pixel in alto e a sinistra: le coordinate x aumentano verso est, quelle y verso in sud.
+Il modello di disegno offerto da !ActionScript è diverso: *scelto uno stile del tratto (colore e spessore), si disegna un tratto a partire dal suo punto d'origine e dal suo punto finale*. Il modello di !ActionScript pone l'origine nel primo pixel in alto e a sinistra: le coordinate x aumentano verso est, quelle y verso in sud.
 
 Sarà quindi necessario tenere conto di queste differenze durante il processo di traduzione.
 
@@ -65,4 +65,3 @@ Qui due comportamenti
 == Strutture di controllo di flusso ==
 === Struttura condizionale IF ===
 === Struttura iterativa REPEAT ===
-
