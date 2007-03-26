@@ -1,12 +1,12 @@
 #summary Una serie di linee guida per la traduzione di codice Logo in codice ActionScript compilabile con MTASC.
-#labels Phase-Implementation
+#labels Phase-Implementation,Lang-IT
 
 = Sommario =
 
-All'interno del compilatore esisterà un componente che si occuperà di tradurre il codice Logo in codice ActionScript. Si esaminerà la traduzione in ActionScript di esempi di ognuna delle strutture definite nel sottoinsieme scelto.
+All'interno del compilatore esisterà un componente che si occuperà di tradurre il codice Logo in codice !ActionScript. Si esaminerà la traduzione in !ActionScript di esempi di ognuna delle strutture definite nel sottoinsieme scelto.
 
 = Strutture da tradurre =
-Precodice: ad esempio io gestirei il pennino su/giù con l'uso di una variabile ActionScript e un if su FD e BK.
+Precodice: ad esempio io gestirei il pennino su/giù con l'uso di una variabile !ActionScript e un if su FD e BK.
 
 
 == Primitive di disegno ==
@@ -31,5 +31,4 @@ Qui due comportamenti
 == Strutture di controllo di flusso ==
 === Struttura condizionale IF ===
 === Struttura iterativa REPEAT ===
-
 
