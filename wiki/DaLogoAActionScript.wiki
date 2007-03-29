@@ -91,10 +91,13 @@ function goForward(lunghezza : Number){
 }
 
 }}}
-Viene innanzitutto impostato il pennello con il colore corrente. Se lo stato del pennello è _abbassato_, viene tracciata una linea dal punto attuale (`penna.x`, `penna.y`) al punto di coordinate finale (`penna.x + lunghezza * cos(penna.tetha)`, `penna.x - lunghezza * sen(penna.tetha)`). Da notare che la il valore delle ordinate viene decrementato, in quanto l'asse y nell'ActionScript è crescente verso il basso, mentre nel Logo è positivo verso l'alto.
+Viene innanzitutto impostato il pennello con il colore corrente. Se lo stato del pennello è _abbassato_, viene tracciata una linea dal punto attuale (`penna.x`, `penna.y`) al punto di coordinate finale (`penna.x + lunghezza * cos(penna.tetha)`, `penna.x - lunghezza * sen(penna.tetha)`). Da notare che la il valore delle ordinate viene decrementato, in quanto l'asse y nell'!ActionScript è crescente verso il basso, mentre nel Logo è positivo verso l'alto.
 
 
 == Istruzione BK ==
+
+La traduzione in ActionScript dell'istruzione BK consiste nell'invocazione del template `goForward` passando un parametro lunghezza invertito di segno.
+
 {{{
 
 function goBackward(lunghezza : Number){
@@ -104,6 +107,9 @@ function goBackward(lunghezza : Number){
 }}}
 
 == Istruzione LT ==
+L'istruzione LT non produce output, ma altera unicamente l'angolo del pennello, che verrà utilizzato dalla primitiva FD e dalla primitiva BK per orientare la linea.
+Si segue la classica convenzione trigonometrica per cui rotazioni antiorarie (LT) corrispondono ad un incremento dell'angolo. Le funzioni trigonometriche di !ActionScript accettano angoli in radianti, per cui l'angolo in gradi della rotazione viene convertito in radianti. La somma avviene in aritmetica modulare, in modo che l'angolo risultante rimanga fra 0 e 360 gradi.
+
 {{{
 
 function rotateLeft(delta_angolo : Number){	
