@@ -145,14 +145,7 @@ function penUp() {
 
 }}}
 
-== Istruzione COLOR == 
-{{{
 
-function setColor(color : Number) {
-	penna.color = color % 16777216;
-}
-
-}}}
 
 == Operazioni numeriche e booleane ==
 
