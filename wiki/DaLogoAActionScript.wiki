@@ -73,6 +73,7 @@ class Disegno {
 == Primitive di disegno ==
 
 == Istruzione FD ==
+La traduzione dell'istruzione FD in ActionScript segue il seguente template:
 {{{
 
 function goForward(lunghezza : Number){
@@ -90,6 +91,8 @@ function goForward(lunghezza : Number){
 }
 
 }}}
+Viene innanzitutto impostato il pennello con il colore corrente. Se lo stato del pennello è _abbassato_, viene tracciata una linea dal punto attuale (`penna.x`, `penna.y`) al punto di coordinate finale (`penna.x + lunghezza * cos(penna.tetha)`, `penna.x - lunghezza * sen(penna.tetha)`). Da notare che la il valore delle ordinate viene decrementato, in quanto l'asse y nell'ActionScript è crescente verso il basso, mentre nel Logo è positivo verso l'alto.
+
 
 == Istruzione BK ==
 {{{
