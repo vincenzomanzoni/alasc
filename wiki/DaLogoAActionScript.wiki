@@ -1,4 +1,4 @@
-#summary Una serie di linee guida per la traduzione di codice Logo in codice !ActionScript compilabile con MTASC.
+#summary Una serie di linee guida per la traduzione di codice Logo in codice ActionScript compilabile con MTASC.
 #labels Phase-Implementation,Lang-IT
 
 = Sommario =
@@ -147,6 +147,11 @@ function penUp() {
 
 == Istruzione COLOR ==
 {{{
+
+function setColor(color : Number) {
+	penna.color = color % 16777216;
+}
+
 }}}
 
 == Operazioni numeriche e booleane ==
