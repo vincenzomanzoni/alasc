@@ -71,14 +71,88 @@ class Disegno {
 
 }}}
 == Primitive di disegno ==
+
 == Istruzione FD ==
+{{{
+
+function goForward(lunghezza : Number){
+			
+		_root.lineStyle(1,penna.color, 100);
+			
+		if (penna.isDown) {
+			_root.moveTo(penna.x, penna.y);
+			_root.lineTo(penna.x + lunghezza * Math.cos(penna.theta),
+			penna.y - lunghezza * Math.sin(penna.theta));
+		}
+			
+		penna.x = penna.x + lunghezza * Math.cos(penna.theta);
+		penna.y = penna.y - lunghezza * Math.sin(penna.theta);
+}
+
+}}}
+
 == Istruzione BK ==
+{{{
+
+function goBackward(lunghezza : Number){
+		goForward(-lunghezza);
+}
+
+}}}
+
 == Istruzione LT ==
+{{{
+
+function rotateLeft(delta_angolo : Number){	
+		penna.theta = (penna.theta + delta_angolo * Math.PI/180) % (2 * Math.PI);
+}
+
+}}}
+
 == Istruzione RT ==
+{{{
+
+function rotateRight(delta_angolo : Number){	
+		rotateLeft(-delta_angolo);
+}
+
+}}}
+
 == Istruzione CLEAN ==
+{{{
+
+function clearScreen() {
+	_root.clear();
+}
+
+}}}
+
 == Istruzione PENDOWN ==
+{{{
+
+function penUp() {
+	penna.isDown = false;
+}
+
+}}}
+
 == Istruzione PENUP ==
+{{{
+
+function penUp() {
+	penna.isDown = false;
+}
+
+}}}
+
 == Istruzione COLOR == 
+{{{
+
+function setColor(color : Number) {
+	penna.color = color % 16777216;
+}
+
+}}}
 
 == Operazioni numeriche e booleane ==
 
@@ -92,4 +166,3 @@ Qui due comportamenti
 == Strutture di controllo di flusso ==
 === Struttura condizionale IF ===
 === Struttura iterativa REPEAT ===
-
