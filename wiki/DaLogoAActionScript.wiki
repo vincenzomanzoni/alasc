@@ -73,7 +73,7 @@ class Disegno {
 == Primitive di disegno ==
 
 == Istruzione FD ==
-La traduzione dell'istruzione FD in ActionScript segue il seguente template:
+La traduzione dell'istruzione FD in !ActionScript segue il seguente template:
 {{{
 
 function goForward(lunghezza : Number){
@@ -91,11 +91,14 @@ function goForward(lunghezza : Number){
 }
 
 }}}
-Viene innanzitutto impostato il pennello con il colore corrente. Se lo stato del pennello è _abbassato_, viene tracciata una linea dal punto attuale (`penna.x`, `penna.y`) al punto di coordinate finale (`penna.x + lunghezza * cos(penna.tetha)`, `penna.x - lunghezza * sen(penna.tetha)`). Da notare che la il valore delle ordinate viene decrementato, in quanto l'asse y nell'!ActionScript è crescente verso il basso, mentre nel Logo è positivo verso l'alto.
+Viene innanzitutto impostato il pennello con il colore corrente. Se lo stato del pennello è _abbassato_, viene tracciata una linea dal punto attuale (`penna.x`, `penna.y`) al punto di coordinate finale (`penna.x + lunghezza * cos(penna.tetha)`, `penna.x - lunghezza * sen(penna.tetha)`).
+
+Se il pennello è _sollevato_ il punto attuale viene impostato con le coordinate del punto finale, senza disegnare alcuna linea.
+
+Da notare che la il valore delle ordinate viene decrementato, in quanto l'asse y nell'!ActionScript è crescente verso il basso, mentre nel Logo è positivo verso l'alto.
 
 
 == Istruzione BK ==
-
 La traduzione in ActionScript dell'istruzione BK consiste nell'invocazione del template `goForward` passando un parametro lunghezza invertito di segno.
 
 {{{
@@ -119,6 +122,7 @@ function rotateLeft(delta_angolo : Number){
 }}}
 
 == Istruzione RT ==
+Esattamente come per BK, l'istruzione RT viene tradotta semplicemente come LT ma invertendo l'angolo.
 {{{
 
 function rotateRight(delta_angolo : Number){	
@@ -128,6 +132,8 @@ function rotateRight(delta_angolo : Number){
 }}}
 
 == Istruzione CLEAN ==
+La pulizia dello spazio di lavoro avviene invocando il comando root del frame `_root`
+
 {{{
 
 function clearScreen() {
@@ -137,6 +143,7 @@ function clearScreen() {
 }}}
 
 == Istruzione PENDOWN ==
+L'istruzione PENDOWN non si riflette sul disegno, ma va ad alterare lo stato del modello del pennello, settando lo stato come _sollevato_.
 {{{
 
 function penUp() {
@@ -146,6 +153,7 @@ function penUp() {
 }}}
 
 == Istruzione PENUP ==
+L'istruzione PENUP non si riflette sul disegno, ma va ad alterare lo stato del modello del pennello, settando lo stato come _abbassato_.
 {{{
 
 function penUp() {
@@ -155,6 +163,7 @@ function penUp() {
 }}}
 
 == Istruzione COLOR ==
+L'istruzione COLOR va a modificare il parametro `color` del modello del pennello. Da notare che il colore viene fatto variare fra i valori 0x000000 e 0xFFFFFF (16777215).
 {{{
 
 function setColor(color : Number) {
