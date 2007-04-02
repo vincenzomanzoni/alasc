@@ -176,11 +176,28 @@ function setColor(color : Number) {
 
 == Operazioni sulle variabili ==
 === Istruzione di creazione MAKE ===
-Qui due comportamenti
+L'istruzione logo make foo: viene tradotta in
+{{{
+var foo : Number;
+}}}
+
+L'istruzione logo make foo:7 viene tradotta in
+{{{
+var foo : Number = 7;
+}}}
+
 
 === Istruzione d'assegnamento LET ===
-
+L'istruzione di assegnamento LET foo: 1 viene tradotta in 
+{{{
+foo = 1;
+}}}
+in particolare, l'operando di destra può essere il risultato di una funzione. Ad esempio LET foo: sum foo: 1 viene tradotto in 
+{{{
+foo = foo + 1;
+}}}
 
 == Strutture di controllo di flusso ==
+
 === Struttura condizionale IF ===
 === Struttura iterativa REPEAT ===
