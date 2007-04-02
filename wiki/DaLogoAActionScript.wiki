@@ -181,17 +181,18 @@ L'istruzione Logo MAKE crea una variabile. In !ActionScript, l'istruzione `MAKE 
 var foo : Number;
 }}}
 
-Esiste una versione dell'istruzione MAKE che imposta una valore iniziale della variabile. In !ActionScript, l'istruzione `MAKE :foo 7`  viene tradotta in
+Esiste una versione dell'istruzione MAKE che imposta una valore iniziale della variabile. In !ActionScript, l'istruzione `MAKE :foo 7` viene tradotta in
 {{{
 var foo : Number = 7;
 }}}
 
 === Istruzione d'assegnamento LET ===
-L'istruzione di assegnamento LET foo: 1 viene tradotta in 
+L'istruzione Logo che assegna un valore ad una variabile è l'istruzione LET. In !ActionScript, l'istruzione `LET :foo 1` viene tradotta in 
 {{{
 foo = 1;
 }}}
-in particolare, l'operando di destra può essere il risultato di una funzione. Ad esempio LET foo: sum foo: 1 viene tradotto in 
+
+In particolare, l'operando di destra può essere il risultato di una funzione. Ad esempio, l'istruzione Logo `LET :foo SUM :foo 1` viene tradotto in 
 {{{
 foo = foo + 1;
 }}}
