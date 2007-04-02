@@ -60,36 +60,36 @@ TOKEN :
 	| <LET: "LET">
 }
 
-String start() throws SemanticException : {}
+String start() throws SemanticException : {String list;}
 { 
-	lista()
+	list = lista()
 	{
-		return null;
+		return list;
 	}
 }
 
-String lista() throws SemanticException : {}
-{ 
-	istr() lista()
+String lista() throws SemanticException : {String corr, succ;}
+{
+	corr = istr() succ = lista()
 	{
-		return null;
-	} 
-	| 
+		return corr + succ;
+	}
+	|
 	{
-		return null;
+		return "";
 	}
 }
 
-String istr() throws SemanticException : {}
+String istr() throws SemanticException : {String op;}
 { 
-	dr_op()
+	op = dr_op()
 	{
-		return null;
+		return op;
 	} 
 	|
-	var_op()
+	op = var_op()
 	{
-		return null;
+		return op;
 	}
 }
 
@@ -97,42 +97,42 @@ String dr_op() throws SemanticException : {String expr;}
 {
 	<FD> expr=n_value()
 	{
-		return null;
+		return "goForward(" + expr + ");";
 	}
 	|
 	<BK> expr=n_value()
 	{
-		return null;
+		return "goBackward(" + expr + ");";
 	}
 	|
 	<LT> expr=n_value()
 	{
-		return null;
+		return "rotateLeft(" + expr + ");";
 	}
 	|
 	<RT> expr=n_value()
 	{
-		return null;
+		return "rotateRight(" + expr + ");";
 	}
 	|
 	<COLOR> expr=n_value()
 	{
-		return null;
+		return "setColor(" + expr + ");";
 	}
 	|
 	<CLEAN>
 	{
-		return null;
+		return "clearScreen();";
 	}
 	|
 	<PENDOWN>
 	{
-		return null;
+		return "penDown();";
 	}
 	|
 	<PENUP>
 	{
-		return null;
+		return "penUp();";
 	}
 }
 
@@ -192,11 +192,11 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		// TODO: Controllo tabella dei simboli
 		varname = v.image.substring(1);
 		if (n != null) {
-			System.out.println("var " + varname + " : Number = " + n.image + ";");
+			// System.out.println("var " + varname + " : Number = " + n.image + ";");
 			return "var " + varname + " : Number = " + n.image + ";";
 		}
 		else {
-			System.out.println("var " + varname + " : Number;");
+			//System.out.println("var " + varname + " : Number;");
 			return "var " + varname + " : Number;";
 		}
 	}
@@ -205,7 +205,7 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 	{
 		// TODO: Controllo tabella dei simboli
 		varname = v.image.substring(1);
-		System.out.println(varname + " = " + expr + ";");
+		//System.out.println(varname + " = " + expr + ";");
 		return varname + " = " + expr + ";";
 	}
 }
