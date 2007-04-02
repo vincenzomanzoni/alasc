@@ -132,7 +132,7 @@ function rotateRight(delta_angolo : Number){
 }}}
 
 == Istruzione CLEAN ==
-La pulizia dello spazio di lavoro avviene invocando il comando root del frame `_root`
+La pulizia dello spazio di lavoro avviene invocando il comando `clear` del frame `_root`
 
 {{{
 
@@ -143,7 +143,7 @@ function clearScreen() {
 }}}
 
 == Istruzione PENDOWN ==
-L'istruzione PENDOWN non si riflette sul disegno, ma va ad alterare lo stato del modello del pennello, settando lo stato come _sollevato_.
+L'istruzione PENDOWN non si riflette sul disegno, ma va ad alterare lo stato del modello del pennello, settando lo stato come _abbassato_.
 {{{
 
 function penUp() {
@@ -153,7 +153,7 @@ function penUp() {
 }}}
 
 == Istruzione PENUP ==
-L'istruzione PENUP non si riflette sul disegno, ma va ad alterare lo stato del modello del pennello, settando lo stato come _abbassato_.
+L'istruzione PENUP non si riflette sul disegno, ma va ad alterare lo stato del modello del pennello, settando lo stato come _sollevato_.
 {{{
 
 function penUp() {
@@ -176,16 +176,15 @@ function setColor(color : Number) {
 
 == Operazioni sulle variabili ==
 === Istruzione di creazione MAKE ===
-L'istruzione logo make foo: viene tradotta in
+L'istruzione Logo MAKE crea una variabile. In !ActionScript, l'istruzione `MAKE :foo` viene tradotta in
 {{{
 var foo : Number;
 }}}
 
-L'istruzione logo make foo:7 viene tradotta in
+Esiste una versione dell'istruzione MAKE che imposta una valore iniziale della variabile. In !ActionScript, l'istruzione `MAKE :foo 7`  viene tradotta in
 {{{
 var foo : Number = 7;
 }}}
-
 
 === Istruzione d'assegnamento LET ===
 L'istruzione di assegnamento LET foo: 1 viene tradotta in 
