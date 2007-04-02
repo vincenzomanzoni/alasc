@@ -1,0 +1,211 @@
+options
+{
+STATIC = false; // default TRUE
+LOOKAHEAD = 1; // default 1
+IGNORE_CASE = true; // default false
+}
+
+PARSER_BEGIN(Parser)
+package com.google.code.alasc;
+
+import java.io.*;
+import java.util.*;
+
+public class Parser {
+	
+	private StringBuffer flashListing;
+	private TreeSet<Symbol> symbolsTable;
+	private ArrayList<Error> errors;
+	
+	public Parser() {
+		symbolsTable = new TreeSet<Symbol>();
+		errors = new ArrayList<Error>();
+		flashListing = new StringBuffer();
+		
+		// Lettura da file del template del file AS.
+	}
+		
+	public static void main(String args[]) throws FileNotFoundException {
+		Parser parser = new Parser(new FileReader("test-logo.txt"));
+		try {
+			System.out.println(parser.start());
+		} catch(ParseException pe) {
+			System.out.println(pe.toString());
+		} catch(SemanticException se) {
+			System.out.println(se.toString());
+		}
+	}
+}
+PARSER_END(Parser)
+
+SKIP : { " " | "\t" | "\n" | "\r" }
+
+TOKEN :
+{
+	<NUM: (["0"-"9"])+>
+	| <VARNAME: ":"("_"|["A"-"Z"])("_"|["A"-"Z"]|["0"-"9"])*>
+	| <FD: "FD">
+	| <BK: "BK">
+	| <LT: "LT">
+	| <RT: "RT">
+	| <CLEAN: "CLEAN">
+	| <PENDOWN: "PENDOWN">
+	| <PENUP: "PENUP">
+	| <COLOR: "COLOR">
+	| <SUM: "SUM">
+	| <DIFFERENCE: "DIFFERENCE">
+	| <PRODUCT: "PRODUCT">
+	| <QUOTIENT: "QUOTIENT">
+	| <MAKE: "MAKE">
+	| <LET: "LET">
+}
+
+String start() throws SemanticException : {}
+{ 
+	lista()
+	{
+		return null;
+	}
+}
+
+String lista() throws SemanticException : {}
+{ 
+	istr() lista()
+	{
+		return null;
+	} 
+	| 
+	{
+		return null;
+	}
+}
+
+String istr() throws SemanticException : {}
+{ 
+	dr_op()
+	{
+		return null;
+	} 
+	|
+	var_op()
+	{
+		return null;
+	}
+}
+
+String dr_op() throws SemanticException : {String expr;}
+{
+	<FD> expr=n_value()
+	{
+		return null;
+	}
+	|
+	<BK> expr=n_value()
+	{
+		return null;
+	}
+	|
+	<LT> expr=n_value()
+	{
+		return null;
+	}
+	|
+	<RT> expr=n_value()
+	{
+		return null;
+	}
+	|
+	<COLOR> expr=n_value()
+	{
+		return null;
+	}
+	|
+	<CLEAN>
+	{
+		return null;
+	}
+	|
+	<PENDOWN>
+	{
+		return null;
+	}
+	|
+	<PENUP>
+	{
+		return null;
+	}
+}
+
+String n_value() throws SemanticException : {String expr;}
+{
+	expr=n_oper()
+	{
+		return expr;
+	}
+	|
+	expr=n_s_value()
+	{
+		return expr;
+	}
+}
+
+String n_s_value() throws SemanticException : {Token t;}
+{
+	t=<VARNAME>
+	{
+		return t.image.substring(1);
+	}
+	|
+	t=<NUM>
+	{
+		return t.image;
+	}
+}
+
+String n_oper() throws SemanticException : {String expr1,expr2;}
+{
+	<SUM> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " + " + expr2;
+	}
+	|
+	<DIFFERENCE> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " - " + expr2;
+	}
+	|
+	<PRODUCT> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " * " + expr2;
+	}
+	|
+	<QUOTIENT> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " / " + expr2;
+	}
+}
+
+String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
+{
+	<MAKE> v=<VARNAME> (n=<NUM>)?
+	{
+		// TODO: Controllo tabella dei simboli
+		varname = v.image.substring(1);
+		if (n != null) {
+			System.out.println("var " + varname + " : Number = " + n.image + ";");
+			return "var " + varname + " : Number = " + n.image + ";";
+		}
+		else {
+			System.out.println("var " + varname + " : Number;");
+			return "var " + varname + " : Number;";
+		}
+	}
+	|
+	<LET> v=<VARNAME> expr=n_value()
+	{
+		// TODO: Controllo tabella dei simboli
+		varname = v.image.substring(1);
+		System.out.println(varname + " = " + expr + ";");
+		return varname + " = " + expr + ";";
+	}
+}
