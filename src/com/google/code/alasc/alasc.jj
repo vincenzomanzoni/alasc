@@ -26,7 +26,7 @@ public class Parser {
 		try {
 			fis = new FileInputStream(url);
 		} catch (FileNotFoundException e) {
-			System.out.println("Errore. Non è possibile caricare il file " + url);
+			System.out.println("Errore nell'apertura del file " + url);
 		}
     	InputStreamReader isr = new InputStreamReader(fis);
     	BufferedReader myReader = new BufferedReader(isr);
@@ -37,7 +37,7 @@ public class Parser {
     	try {
 			line = myReader.readLine();
 		} catch (IOException e) {
-			System.out.println("Errore. Non è possibile caricare il file " + url);
+			System.out.println("Errore nella lettura del file " + url);
 		}
     	
     	while(line!=null){
@@ -46,7 +46,7 @@ public class Parser {
     		try {
 				line = myReader.readLine();
 			} catch (IOException e) {
-			System.out.println("Errore. Non è possibile caricare il file " + url);
+			System.out.println("Errore nella lettura del file " + url);
     		}
     	}
     	
