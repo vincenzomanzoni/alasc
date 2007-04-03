@@ -18,8 +18,9 @@ public class Parser {
 	private ArrayList<Error> errors;
 	
 	// NOTE: non mettere il costruttore di default, non viene chiamato dall'implementazione di
-	// parser.java. Bloody JavaCC
-		public ArrayList<Error>getErrors()	{	  return errors;	}	public StringBuffer getFlashListing(){	  return flashListing;	}	public TreeSet<Symbol>getSymbolsTable(){	  return symbolsTable;	}
+	// parser.java. Bloody JavaCC!!!
+	
+		public ArrayList<Error>getErrors()	{	  return errors;	}	public StringBuffer getCode(){	  return flashListing;	}	public TreeSet<Symbol>getSymbolsTable(){	  return symbolsTable;	}
     private String loadTemplateSnippet(String url){
     	FileInputStream fis = null;
 		try {
@@ -80,7 +81,7 @@ public class Parser {
 		parser.parse();
 		
 		// TO-DO: Solo per testing
-		System.out.println(parser.getFlashListing());
+		System.out.println(parser.getCode());
 	}
 }
 PARSER_END(Parser)
@@ -239,11 +240,9 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		// TODO: Controllo tabella dei simboli
 		varname = v.image.substring(1);
 		if (n != null) {
-			// System.out.println("var " + varname + " : Number = " + n.image + ";");
 			return "var " + varname + " : Number = " + n.image + ";";
 		}
 		else {
-			//System.out.println("var " + varname + " : Number;");
 			return "var " + varname + " : Number;";
 		}
 	}
@@ -252,7 +251,6 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 	{
 		// TODO: Controllo tabella dei simboli
 		varname = v.image.substring(1);
-		//System.out.println(varname + " = " + expr + ";");
 		return varname + " = " + expr + ";";
 	}
 }
