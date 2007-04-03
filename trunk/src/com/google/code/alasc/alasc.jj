@@ -17,23 +17,70 @@ public class Parser {
 	private TreeSet<Symbol> symbolsTable;
 	private ArrayList<Error> errors;
 	
-	public Parser() {
-		symbolsTable = new TreeSet<Symbol>();
+	// NOTE: non mettere il costruttore di default, non viene chiamato dall'implementazione di
+	// parser.java. Bloody JavaCC
+		public ArrayList<Error>getErrors()	{	  return errors;	}	public StringBuffer getFlashListing(){	  return flashListing;	}	public TreeSet<Symbol>getSymbolsTable(){	  return symbolsTable;	}
+    private String loadTemplateSnippet(String url){
+    	FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(url);
+		} catch (FileNotFoundException e) {
+			System.out.println("Errore. Non è possibile caricare il file " + url);
+		}
+    	InputStreamReader isr = new InputStreamReader(fis);
+    	BufferedReader myReader = new BufferedReader(isr);
+    	
+    	StringBuffer snippet = new StringBuffer();
+    	String line = null;
+    	
+    	try {
+			line = myReader.readLine();
+		} catch (IOException e) {
+			System.out.println("Errore. Non è possibile caricare il file " + url);
+		}
+    	
+    	while(line!=null){
+    		snippet.append(line);
+    		
+    		try {
+				line = myReader.readLine();
+			} catch (IOException e) {
+			System.out.println("Errore. Non è possibile caricare il file " + url);
+    		}
+    	}
+    	
+    	return snippet.toString();
+    }
+    
+    // TO-DO: far ritornare l'esito della compilazione come da UML
+    public void parse(){
+    	
+    	symbolsTable = new TreeSet<Symbol>();
 		errors = new ArrayList<Error>();
 		flashListing = new StringBuffer();
+    	
+    	// Inserisco l'intestazione del template
+		flashListing.append(loadTemplateSnippet("head.inc"));
 		
-		// Lettura da file del template del file AS.
-	}
-		
-	public static void main(String args[]) throws FileNotFoundException {
-		Parser parser = new Parser(new FileReader("test-logo.txt"));
+		// Genero la personalizzazione del template
 		try {
-			System.out.println(parser.start());
+			flashListing.append(start());
 		} catch(ParseException pe) {
 			System.out.println(pe.toString());
 		} catch(SemanticException se) {
 			System.out.println(se.toString());
 		}
+		
+		// Inserisco la chiusura del template
+		flashListing.append(loadTemplateSnippet("tail.inc"));
+    }
+    	
+	public static void main(String args[]) throws FileNotFoundException {
+		Parser parser = new Parser(new FileReader("test-logo.txt"));
+		parser.parse();
+		
+		// TO-DO: Solo per testing
+		System.out.println(parser.getFlashListing());
 	}
 }
 PARSER_END(Parser)
