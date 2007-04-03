@@ -108,6 +108,7 @@ TOKEN :
 	| <LET: "LET">
 }
 
+// TODO SUPERIMPORTANTE!!! USARE EBNF!!!
 String start() throws SemanticException : {String list;}
 { 
 	list = lista()
