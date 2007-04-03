@@ -20,7 +20,8 @@ public class Parser {
 	// NOTE: non mettere il costruttore di default, non viene chiamato dall'implementazione di
 	// parser.java. Bloody JavaCC!!!
 	
-		public ArrayList<Error>getErrors()	{	  return errors;	}	public StringBuffer getCode(){	  return flashListing;	}	public TreeSet<Symbol>getSymbolsTable(){	  return symbolsTable;	}
+		public ArrayList<Error>getErrors()	{	  return errors;	}	public StringBuffer getCode(){	  return flashListing;	}	public TreeSet<Symbol>getSymbolsTable(){	  return symbolsTable;	}	
+	// FIX: lettura più efficiente?
     private String loadTemplateSnippet(String url){
     	FileInputStream fis = null;
 		try {
@@ -53,7 +54,7 @@ public class Parser {
     	return snippet.toString();
     }
     
-    // TO-DO: far ritornare l'esito della compilazione come da UML
+    // TODO: far ritornare l'esito della compilazione come da UML
     public void parse(){
     	
     	symbolsTable = new TreeSet<Symbol>();
@@ -63,7 +64,7 @@ public class Parser {
     	// Inserisco l'intestazione del template
 		flashListing.append(loadTemplateSnippet("head.inc"));
 		
-		// Genero la personalizzazione del template
+		// Genero ed inserisco la personalizzazione del template
 		try {
 			flashListing.append(start());
 		} catch(ParseException pe) {
@@ -75,12 +76,13 @@ public class Parser {
 		// Inserisco la chiusura del template
 		flashListing.append(loadTemplateSnippet("tail.inc"));
     }
-    	
+    
+    // Sto main deve morire presto =)	
 	public static void main(String args[]) throws FileNotFoundException {
 		Parser parser = new Parser(new FileReader("test-logo.txt"));
 		parser.parse();
 		
-		// TO-DO: Solo per testing
+		// TODO: Solo per testing
 		System.out.println(parser.getCode());
 	}
 }
@@ -117,6 +119,7 @@ String start() throws SemanticException : {String list;}
 	}
 }
 
+// TODO COME SOPRA!
 String lista() throws SemanticException : {String corr, succ;}
 {
 	corr = istr() succ = lista()
@@ -239,7 +242,10 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 	<MAKE> v=<VARNAME> (n=<NUM>)?
 	{
 		// TODO: Controllo tabella dei simboli
+		
+		// Toglie i ":" iniziali dal nome della variabile
 		varname = v.image.substring(1);
+		
 		if (n != null) {
 			return "var " + varname + " : Number = " + n.image + ";";
 		}
@@ -251,7 +257,10 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 	<LET> v=<VARNAME> expr=n_value()
 	{
 		// TODO: Controllo tabella dei simboli
+		
+		// Toglie i ":" iniziali dal nome della variabile
 		varname = v.image.substring(1);
+		
 		return varname + " = " + expr + ";";
 	}
 }
