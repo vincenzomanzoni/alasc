@@ -79,10 +79,6 @@ public class Alasc {
 		
         PrintStream ps=new PrintStream(fos);
         ps.println(logoParser.getCode());
-
-        
-        
-        System.out.println(logoParser.getCode());
 		
         System.exit(0);
     }
