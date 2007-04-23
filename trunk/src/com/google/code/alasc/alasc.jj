@@ -40,9 +40,10 @@ public class Parser {
 		} catch (IOException e) {
 			System.out.println("Errore nella lettura del file " + url);
 		}
-    	
+    	String eol = System.getProperty("line.separator");
     	while(line!=null){
     		snippet.append(line);
+    		snippet.append(eol);
     		
     		try {
 				line = myReader.readLine();
@@ -66,7 +67,11 @@ public class Parser {
 		
 		// Genero ed inserisco la personalizzazione del template
 		try {
-			flashListing.append(start());
+			String myCode = start();
+			Beautifier b = new SimpleBeautifier(2);
+			myCode = b.beautify(myCode);
+			
+			flashListing.append(myCode);
 		} catch(ParseException pe) {
 			System.out.println(pe.toString());
 		} catch(SemanticException se) {
@@ -316,6 +321,6 @@ String ctrl_str() throws SemanticException : {String v,l;}
 	|
 	<REPEAT> v = n_value() <LBRACKET> l = lista() <RBRACKET>
 	{
-		return "for (var $i : Number = 0; $i < (" + v + ") ; $i++) { " + l + "}";
+		return "for (var $i : Number = 0; $i < (" + v + ") ; $i++) {" + l + "}";
 	}
 }
