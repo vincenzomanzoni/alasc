@@ -2,14 +2,16 @@ package com.google.code.alasc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.PrintStream;
 
 import jargs.gnu.CmdLineParser;                                                 
 
 public class Alasc {
 
     private static void printUsage() {
-        System.err.println("Usage: Alasc [{-i, --input} i_file] [{-s,--swf}] [-t, -tos]\n");
+        System.err.println("Usage: Alasc {-i, --input} i_file [{-s,--swf}] [-t, -tos]\n");
     }
 
     public static void main( String[] args ) {
@@ -49,16 +51,36 @@ public class Alasc {
 //            System.out.println(otherArgs[i]);
 //        }
         
+        // Una volta recuperati i parametri, passo all'apertura dello stream di input...
+
         Parser logoParser = null;
         
         try {
 			logoParser = new Parser(new FileReader(iFileValue));
 		} catch (FileNotFoundException e) {
-        	System.err.println("The specified file does not exist.");
+        	System.err.println("The specified input file does not exist.");
         	System.exit(2);
 		}
         
+		// Parsing del file LOGO aperto...
+		
         logoParser.parse();
+        
+        // Scrittura su file del risultato...
+        
+        FileOutputStream fos = null;
+        
+		try {
+			fos = new FileOutputStream("Disegno.as");
+		} catch (FileNotFoundException e) {
+			System.err.println("The specified output file cannot be written.");
+        	System.exit(2);
+		}
+		
+        PrintStream ps=new PrintStream(fos);
+        ps.println(logoParser.getCode());
+
+        
         
         System.out.println(logoParser.getCode());
 		
