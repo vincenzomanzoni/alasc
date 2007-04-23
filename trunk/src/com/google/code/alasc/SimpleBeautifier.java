@@ -39,23 +39,30 @@ public class SimpleBeautifier extends Beautifier {
 			// Carattere della stringa da processare
 			readChar = code.charAt(i);
 			
+			/* Verifico se la prossima istruzione è un ciclo for.
+			E' necessario questo controllo per evitare di mandare a capo i ;
+			all'interno delle parentesi tonde.*/
 			if ( (i+3) <= codeLength ) {
 				if (code.substring(i, i+3).equals("for")) {
 					inFor = true;
 				}
 			}
 			
+			// Se il ; è dentro alle parentesi tonde di un for, non vado a capo
 			if (readChar == ';' && inFor == true) {
-				buffer.append(readChar);
+				buffer.append(';');
 			}
 			
+			/* Se è dentro non è dentro alle parentesi tonde di un for, vado a capo 
+			e aggiungo i caratteri di tabulazione.*/
 			if (readChar == ';' && inFor == false) {
-				buffer.append(readChar);
+				buffer.append(';');
 				
 				toWrite.append('\n');
 				toWrite.append(addTabs());
 			}
 			
+			// Tutti gli altri caratteri, li scrivo 
 			if (readChar != ';' && readChar != '{' && readChar != '}') {
 				if(toWrite.length() > 0) {
 					buffer.append(toWrite.toString());
@@ -64,29 +71,31 @@ public class SimpleBeautifier extends Beautifier {
 				buffer.append(readChar);
 			}
 			
+			// Sono fuori dalle parentesi tonde del ciclo for
 			if (inFor == true && readChar == '{') {
 				inFor = false;
 			}
 			
+			// Nuovo blocco -> aumento la tabulazione
 			if(readChar == '{') {
-				buffer.append(readChar);
+				buffer.append('{');
 				
 				toWrite.append('\n');
 				this.tabs++;
 				toWrite.append(addTabs());
 			}
 			
+			// Chiusura blocco -> riduco la tabulazione
 			if (readChar == '}') {
 				buffer.append('\n');
 				this.tabs--;
 				buffer.append(addTabs());
-				buffer.append(readChar);
+				buffer.append('}');
 	
 				toWrite = new StringBuffer();
 				toWrite.append('\n');
 				toWrite.append(addTabs());
 			}
-			
 		}
 		return buffer.toString();
 	}

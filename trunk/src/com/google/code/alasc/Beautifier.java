@@ -12,6 +12,5 @@ public abstract class Beautifier {
 		this.tabs = tabs;
 	}
 	
-	public abstract String beautify(String code);
-	
+	public abstract String beautify(String code);	
 }
