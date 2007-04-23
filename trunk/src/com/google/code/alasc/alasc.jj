@@ -1,6 +1,6 @@
 options
 {
-STATIC = true; // default TRUE
+STATIC = false; // default TRUE
 LOOKAHEAD = 1; // default 1
 IGNORE_CASE = true; // default false
 }
@@ -21,7 +21,7 @@ public class Parser {
 	// parser.java. Bloody JavaCC!!!
 	
 		public ArrayList<Error>getErrors()	{	  return errors;	}	public StringBuffer getCode(){	  return flashListing;	}	public TreeSet<Symbol>getSymbolsTable(){	  return symbolsTable;	}	
-	// FIX: lettura piï¿½ efficiente?
+	// FIX: lettura più efficiente?
     private String loadTemplateSnippet(String url){
     	FileInputStream fis = null;
 		try {
@@ -108,6 +108,14 @@ TOKEN :
 	| <QUOTIENT: "QUOTIENT">
 	| <MAKE: "MAKE">
 	| <LET: "LET">
+	| <LESS: "LESS?"> 
+	| <GREATER: "GREATER?">
+	| <EQUAL: "EQUAL?">
+	| <NOTEQUAL: "NOTEQUAL?">
+	| <IF: "IF">
+	| <REPEAT: "REPEAT">
+	| <LBRACKET: "[">
+	| <RBRACKET: "]">
 }
 
 // TODO SUPERIMPORTANTE!!! USARE EBNF!!!
@@ -140,6 +148,11 @@ String istr() throws SemanticException : {String op;}
 	} 
 	|
 	op = var_op()
+	{
+		return op;
+	}
+	|
+	op = ctrl_str()
 	{
 		return op;
 	}
@@ -205,7 +218,15 @@ String n_s_value() throws SemanticException : {Token t;}
 {
 	t=<VARNAME>
 	{
-		return t.image.substring(1);
+		String varname = t.image.substring(1);
+		
+		// TODO: creare una funzione che esegue il controllo
+		// TODO: controlla l'inizializzazione delle variabili
+		if(!symbolsTable.contains(new Symbol(varname))) {
+			throw new SemanticException("The symbol " + varname + " isn't declared yet.");
+		}
+		
+		return varname;
 	}
 	|
 	t=<NUM>
@@ -245,6 +266,10 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		
 		// Toglie i ":" iniziali dal nome della variabile
 		varname = v.image.substring(1);
+
+		if (!symbolsTable.add(new Symbol(varname))) {
+			throw new SemanticException("The symbol " + varname + " is already declared.");
+		} 
 		
 		if (n != null) {
 			return "var " + varname + " : Number = " + n.image + ";";
@@ -255,12 +280,50 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 	}
 	|
 	<LET> v=<VARNAME> expr=n_value()
-	{
-		// TODO: Controllo tabella dei simboli
-		
+	{	
 		// Toglie i ":" iniziali dal nome della variabile
 		varname = v.image.substring(1);
 		
+		if(!symbolsTable.contains(new Symbol(varname))) {
+			throw new SemanticException("The symbol " + varname + " isn't declared yet.");
+		}
+		
 		return varname + " = " + expr + ";";
+	}
+}
+
+String b_oper() throws SemanticException : {String expr1,expr2;}
+{
+	<LESS> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " < " + expr2;
+	}
+	|
+	<GREATER> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " > " + expr2;
+	}
+	|
+	<EQUAL> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " == " + expr2;
+	}
+	|
+	<NOTEQUAL> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " != " + expr2;
+	}
+}
+	
+String ctrl_str() throws SemanticException : {String v,l;}
+{
+	<IF> v = b_oper() <LBRACKET> l = lista() <RBRACKET>
+	{
+		return "if ( " + v + " ) {" + l + "}";
+	}
+	|
+	<REPEAT> v = n_value() <LBRACKET> l = lista() <RBRACKET>
+	{
+		return "for (var $i : Number = 0; $i < (" + v + ") ; $i++) { " + l + "}";
 	}
 }

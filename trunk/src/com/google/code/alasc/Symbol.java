@@ -1,6 +1,6 @@
 package com.google.code.alasc;
 
-public class Symbol {
+public class Symbol implements Comparable<Symbol>{
 	private String variableName;
 	
 	public Symbol(String variableName) {
@@ -13,5 +13,9 @@ public class Symbol {
 	
 	public String toString() {
 		return getSymbol();
+	}
+	
+	public int compareTo(Symbol s) {
+		return this.variableName.compareTo(s.getSymbol());
 	}
 }
