@@ -1,19 +1,43 @@
 package com.google.code.alasc;
 
+/**
+ * La classe implementa un semplice beautifier del codice.
+ * 
+ * @author Vincenzo Manzoni (vincenzo.manzoni@gmail.com)
+ *
+ */
 public class SimpleBeautifier extends Beautifier {
 
+	/**
+	 * Costruttore che accetta come argomento il numero di tab iniziali.
+	 * @param tabs Il numero di tab iniziali.
+	 */
 	public SimpleBeautifier(int tabs) {
 		super(tabs);
 	}
 
+	/**
+	 * Metodo che esegue il beautify del codice.
+	 * @param code Il codice da "abbellire".
+	 * @return Il codice "abbellito".
+	 */
 	public String beautify(String code) {
-		StringBuffer buffer = new StringBuffer();	
+		StringBuffer buffer = new StringBuffer();
+		
+		/* La variabile booleana serve per gestire i ; all'interno
+		delle parentesi tonde del for */
 		boolean inFor = false;
+		
+		// Stringa da scrivere successivamente
 		StringBuffer toWrite = new StringBuffer();
 		
 		int codeLength = code.length();
+		char readChar;
 		buffer.append(addTabs());
+		
 		for(int i = 0; i < codeLength; i++) {
+			// Carattere della stringa da processare
+			readChar = code.charAt(i);
 			
 			if ( (i+3) <= codeLength ) {
 				if (code.substring(i, i+3).equals("for")) {
@@ -21,61 +45,56 @@ public class SimpleBeautifier extends Beautifier {
 				}
 			}
 			
-			if (code.charAt(i) == ';' && inFor == true) {
-				buffer.append(code.charAt(i));
+			if (readChar == ';' && inFor == true) {
+				buffer.append(readChar);
 			}
 			
-			if (code.charAt(i) == ';' && inFor == false) {
-				buffer.append(code.charAt(i));
+			if (readChar == ';' && inFor == false) {
+				buffer.append(readChar);
 				
 				toWrite.append('\n');
 				toWrite.append(addTabs());
-				
-				/*buffer.append('\n');
-				buffer.append(addTabs());*/
 			}
 			
-			if (code.charAt(i) != ';' && code.charAt(i) != '{' && code.charAt(i) != '}') {
+			if (readChar != ';' && readChar != '{' && readChar != '}') {
 				if(toWrite.length() > 0) {
 					buffer.append(toWrite.toString());
 					toWrite = new StringBuffer();
 				}
-				buffer.append(code.charAt(i));
+				buffer.append(readChar);
 			}
 			
-			if (inFor == true && code.charAt(i) == '{') {
+			if (inFor == true && readChar == '{') {
 				inFor = false;
 			}
 			
-			if(code.charAt(i) == '{') {
-				buffer.append(code.charAt(i));
+			if(readChar == '{') {
+				buffer.append(readChar);
 				
 				toWrite.append('\n');
 				this.tabs++;
 				toWrite.append(addTabs());
-				
-				/*buffer.append('\n');
-				this.tabs++;
-				buffer.append(addTabs());*/
 			}
 			
-			if (code.charAt(i) == '}') {
+			if (readChar == '}') {
 				buffer.append('\n');
 				this.tabs--;
 				buffer.append(addTabs());
-				buffer.append(code.charAt(i));
+				buffer.append(readChar);
 	
 				toWrite = new StringBuffer();
 				toWrite.append('\n');
 				toWrite.append(addTabs());
-				/*buffer.append('\n');
-				buffer.append(addTabs());*/
 			}
 			
 		}
 		return buffer.toString();
 	}
 	
+	/**
+	 * Aggiunge le tabulazioni ad inizio riga.
+	 * @return La stringa composta da caratteri di tabulazione.
+	 */
 	private String addTabs() {
 		String tabs = "";
 		for(int i = 0; i < this.tabs; i++) {
