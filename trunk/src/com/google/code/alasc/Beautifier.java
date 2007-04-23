@@ -1,5 +1,10 @@
 package com.google.code.alasc;
 
+/**
+ * Generica classe Beautifier.
+ * 
+ * @author Vincenzo Manzoni (vincenzo.manzoni@gmail.com)
+ */
 public abstract class Beautifier {
 	protected int tabs;
 	

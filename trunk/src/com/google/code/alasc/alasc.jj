@@ -16,10 +16,12 @@ public class Parser {
 	private StringBuffer flashListing;
 	private TreeSet<Symbol> symbolsTable;
 	private ArrayList<Error> errors;
+	private Random random;
 	
 	// NOTE: non mettere il costruttore di default, non viene chiamato dall'implementazione di
 	// parser.java. Bloody JavaCC!!!
-		public ArrayList<Error>getErrors()	{	  return errors;	}	public String getCode(){	  return flashListing.toString();	}	public TreeSet<Symbol>getSymbolsTable(){	  return symbolsTable;	}	
+		public ArrayList<Error>getErrors()	{	  return errors;	}	public String getCode(){	  return flashListing.toString();	}	public TreeSet<Symbol>getSymbolsTable(){	  return symbolsTable;	}
+	
 	// FIX: lettura più efficiente
     private String loadTemplateSnippet(String url){
     	FileInputStream fis = null;
@@ -60,6 +62,7 @@ public class Parser {
     	symbolsTable = new TreeSet<Symbol>();
 		errors = new ArrayList<Error>();
 		flashListing = new StringBuffer();
+  	    random = new Random();
     	
     	// Inserisco l'intestazione del template
 		flashListing.append(loadTemplateSnippet("head.inc"));
@@ -80,6 +83,11 @@ public class Parser {
 		// Inserisco la chiusura del template
 		flashListing.append(loadTemplateSnippet("tail.inc"));
     }
+
+	private String nextForVariable() {
+		String token = Integer.toString(Math.abs(random.nextInt()), 36);
+		return token;
+	}
 
 }
 PARSER_END(Parser)
@@ -320,6 +328,8 @@ String ctrl_str() throws SemanticException : {String v,l;}
 	|
 	<REPEAT> v = n_value() <LBRACKET> l = lista() <RBRACKET>
 	{
-		return "for (var $i : Number = 0; $i < (" + v + ") ; $i++) {" + l + "}";
+		String forVariable = nextForVariable();
+		return "for (var $" + forVariable + " : Number = 0; $" + forVariable + 
+			" < (" + v + ") ; $" + forVariable + "++) {" + l + "}";
 	}
 }
