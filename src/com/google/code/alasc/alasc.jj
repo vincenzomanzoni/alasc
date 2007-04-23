@@ -19,9 +19,8 @@ public class Parser {
 	
 	// NOTE: non mettere il costruttore di default, non viene chiamato dall'implementazione di
 	// parser.java. Bloody JavaCC!!!
-	
 		public ArrayList<Error>getErrors()	{	  return errors;	}	public String getCode(){	  return flashListing.toString();	}	public TreeSet<Symbol>getSymbolsTable(){	  return symbolsTable;	}	
-	// FIX: lettura pi� efficiente?
+	// FIX: lettura più efficiente
     private String loadTemplateSnippet(String url){
     	FileInputStream fis = null;
 		try {
