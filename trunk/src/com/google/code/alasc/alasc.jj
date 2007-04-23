@@ -20,8 +20,8 @@ public class Parser {
 	// NOTE: non mettere il costruttore di default, non viene chiamato dall'implementazione di
 	// parser.java. Bloody JavaCC!!!
 	
-		public ArrayList<Error>getErrors()	{	  return errors;	}	public StringBuffer getCode(){	  return flashListing;	}	public TreeSet<Symbol>getSymbolsTable(){	  return symbolsTable;	}	
-	// FIX: lettura più efficiente?
+		public ArrayList<Error>getErrors()	{	  return errors;	}	public String getCode(){	  return flashListing.toString();	}	public TreeSet<Symbol>getSymbolsTable(){	  return symbolsTable;	}	
+	// FIX: lettura piï¿½ efficiente?
     private String loadTemplateSnippet(String url){
     	FileInputStream fis = null;
 		try {
@@ -76,15 +76,7 @@ public class Parser {
 		// Inserisco la chiusura del template
 		flashListing.append(loadTemplateSnippet("tail.inc"));
     }
-    
-    // Sto main deve morire presto =)	
-	public static void main(String args[]) throws FileNotFoundException {
-		Parser parser = new Parser(new FileReader("test-logo.txt"));
-		parser.parse();
-		
-		// TODO: Solo per testing
-		System.out.println(parser.getCode());
-	}
+
 }
 PARSER_END(Parser)
 
