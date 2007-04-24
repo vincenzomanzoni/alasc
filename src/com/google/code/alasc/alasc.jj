@@ -85,6 +85,7 @@ public class Parser {
     }
 
 	private String nextForVariable() {
+		// CHE PUUURAA...
 		String token = Integer.toString(Math.abs(random.nextInt()), 36);
 		return token;
 	}
