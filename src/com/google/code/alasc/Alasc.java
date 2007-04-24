@@ -10,16 +10,22 @@ import jargs.gnu.CmdLineParser;
 
 public class Alasc {
 
+	private static String inputFileName, swfFileName;
+	private static final String outputFileName = "Disegno.as";
+	private static boolean tosEnabled, swfEnabled;
+	
+	private static Parser logoParser;
+	
     private static void printUsage() {
-        System.err.println("Usage: Alasc {-i, --input} i_file [{-s,--swf}] [-t, -tos]\n");
+        System.err.println("Usage: Alasc input_logo [-s/--swf] <output_flash> [-t/--tos]\n");
     }
-
-    public static void main( String[] args ) {
-
-        CmdLineParser parser = new CmdLineParser();
-        CmdLineParser.Option swf = parser.addBooleanOption('s', "swf");
-        CmdLineParser.Option tos = parser.addBooleanOption('t', "tos");
-        CmdLineParser.Option iFile = parser.addStringOption('i', "input");
+    
+    private static void parseCommandLine(String[] args) {
+    	CmdLineParser parser = new CmdLineParser();
+        
+        CmdLineParser.Option swfParam = parser.addBooleanOption('s', "swf");
+        CmdLineParser.Option tosParam = parser.addBooleanOption('t', "tos");
+        
 
         try {
             parser.parse(args);
@@ -29,58 +35,109 @@ public class Alasc {
             printUsage();
             System.exit(2);
         }
-
-        String iFileValue = (String)parser.getOptionValue(iFile);
-        
-        if(iFileValue == null){
-        	printUsage();
-        	System.exit(2);
-        }
-        
-        Boolean swfValue = (Boolean)parser.getOptionValue(swf, Boolean.FALSE);
-        Boolean tosValue = (Boolean)parser.getOptionValue(tos, Boolean.FALSE);
+       
+        swfEnabled = (Boolean)parser.getOptionValue(swfParam, Boolean.FALSE);
+        tosEnabled = (Boolean)parser.getOptionValue(tosParam, Boolean.FALSE);
         String[] otherArgs = parser.getRemainingArgs();
         
-        System.out.println("ALASC: A Logo (to) ActionScript Compiler\n");
-        System.out.println("Print table of symbol: " + tosValue);
-        System.out.println("Export to swf: " + swfValue);
-        System.out.println("Input file: " + iFileValue);
-
-//        System.out.println("remaining args: ");
-//        for ( int i = 0; i < otherArgs.length; ++i ) {
-//            System.out.println(otherArgs[i]);
-//        }
-        
-        // Una volta recuperati i parametri, passo all'apertura dello stream di input...
-
-        Parser logoParser = null;
-        
-        try {
-			logoParser = new Parser(new FileReader(iFileValue));
-		} catch (FileNotFoundException e) {
-        	System.err.println("The specified input file does not exist.");
-        	System.exit(2);
-		}
-        
-		// Parsing del file LOGO aperto...
-		
-        logoParser.parse();
-        
-        // Scrittura su file del risultato...
-        
-        FileOutputStream fos = null;
-        
-		try {
-			fos = new FileOutputStream("Disegno.as");
-		} catch (FileNotFoundException e) {
-			System.err.println("The specified output file cannot be written.");
-        	System.exit(2);
-		}
-		
-        PrintStream ps=new PrintStream(fos);
-        ps.println(logoParser.getCode());
-		
-        System.exit(0);
+        switch(otherArgs.length){
+        	case 1: {
+        		inputFileName = otherArgs[0];
+        		break;
+        	}
+        	case 2: {
+        		// Se ho due argomenti 'sfusi' e l'esportazione in swf  abilitata,
+        		// allora il secondo  il target dell'esportazione.
+        		
+        		if(swfEnabled){
+        			inputFileName = otherArgs[0];
+        			swfFileName = otherArgs[1];
+        		} else {
+        			printUsage();                                                       
+            		System.exit(2);
+        		}
+        		break;
+        	}
+        	
+        	// Se non ho argomenti sfusi oppure ne ho pi di due, allora c' un errore.
+        	
+        	default:{
+        		printUsage();                                                       
+        		System.exit(2);
+        	}
+        }
     }
+    
+    // TODO Inserire qui il codice per il bannerino
+    private static void printBanner() {
+        System.out.println("ALASC: A Logo (to) ActionScript Compiler\n");
+        
+    }
+    
+    private static void printSummary() {
+        System.out.println("Input LOGO file: " + inputFileName);
+        System.out.println("Output ActionScript file: " + outputFileName);
+        System.out.println("Export to SWF file: " + swfEnabled);
+        System.out.println("Export to SWF file target: " + swfFileName);
+        System.out.println("Print table of symbol: " + tosEnabled);
+    }
+    
+    private static void compileLogo() {
+         
+    	logoParser = null;
+    	
+         try {
+ 			logoParser = new Parser(new FileReader(inputFileName));
+ 		} catch (FileNotFoundException e) {
+         	System.err.println("The specified input file does not exist.");
+         	System.exit(2);
+ 		}
+         
+ 		// Parsing del file LOGO aperto...
+         logoParser.parse();
+         
+         // Scrittura su file del risultato...
+         FileOutputStream fos = null;
+         
+ 		 try {
+ 			fos = new FileOutputStream(outputFileName);
+ 		 } catch (FileNotFoundException e) {
+ 			System.err.println("The specified output file cannot be written.");
+         	System.exit(2);
+ 		 }
+ 		
+         PrintStream ps=new PrintStream(fos);
+         ps.println(logoParser.getCode());
+    }
+    
+    // TODO come farlo multipiattaforma?
+    private static void exportToSwf() {
+    	
+    }
+    
+	private static void printTableOfSymbol() {
+		System.out.println(logoParser.getSymbolsTable());
+	}
+    
+    public static void main( String[] args ) {
+    	
+        printBanner();
+        parseCommandLine(args);
+        printSummary();
+        compileLogo();
+        
+        if (swfEnabled) {
+        	exportToSwf();
+        }
+        
+        if (tosEnabled) {
+        	printTableOfSymbol();
+        }
+        
+        System.exit(0);
+       
+    }
+
+
 }
                                                                                         
