@@ -43,6 +43,7 @@ public class Alasc {
         switch(otherArgs.length){
         	case 1: {
         		inputFileName = otherArgs[0];
+        		swfFileName = inputFileName + ".swf";
         		break;
         	}
         	case 2: {
@@ -70,8 +71,8 @@ public class Alasc {
     
     // TODO Inserire qui il codice per il bannerino
     private static void printBanner() {
-        System.out.println("ALASC: A Logo (to) ActionScript Compiler\n");
-        System.out.println("http://code.google.com/p/alasc");
+        System.out.println("ALASC: A Logo (to) ActionScript Compiler");
+        System.out.println("http://code.google.com/p/alasc\n");
     }
     
     private static void printSummary() {
