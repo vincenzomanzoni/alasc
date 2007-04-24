@@ -65,7 +65,7 @@ public class Parser {
   	    random = new Random();
     	
     	// Inserisco l'intestazione del template
-		flashListing.append(loadTemplateSnippet("head.inc"));
+		flashListing.append(loadTemplateSnippet("templates/head.inc"));
 		
 		// Genero ed inserisco la personalizzazione del template
 		try {
@@ -81,7 +81,7 @@ public class Parser {
 		}
 		
 		// Inserisco la chiusura del template
-		flashListing.append(loadTemplateSnippet("tail.inc"));
+		flashListing.append(loadTemplateSnippet("templates/tail.inc"));
     }
 
 	private String nextForVariable() {
