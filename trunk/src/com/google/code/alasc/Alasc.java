@@ -71,7 +71,7 @@ public class Alasc {
     // TODO Inserire qui il codice per il bannerino
     private static void printBanner() {
         System.out.println("ALASC: A Logo (to) ActionScript Compiler\n");
-        
+        System.out.println("http://code.google.com/p/alasc");
     }
     
     private static void printSummary() {
@@ -116,6 +116,7 @@ public class Alasc {
     }
     
 	private static void printTableOfSymbol() {
+		System.out.println("\nDeclared variables:");
 		System.out.println(logoParser.getSymbolsTable());
 	}
     
