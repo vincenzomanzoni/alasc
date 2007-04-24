@@ -51,10 +51,10 @@ class Disegno {
 		A = 2;
 		goForward(10);
 		rotateRight(90);
-		for (var $uy0wkp : Number = 0; $uy0wkp < (10) ; $uy0wkp++) {
+		for (var $y98j4y : Number = 0; $y98j4y < (10) ; $y98j4y++) {
 			goForward(5);
 			rotateRight(90);
-			for (var $ovhmoo : Number = 0; $ovhmoo < (10 + 20) ; $ovhmoo++) {
+			for (var $wr1gm7 : Number = 0; $wr1gm7 < (10 + 20) ; $wr1gm7++) {
 				goForward(100);
 			}
 		}
