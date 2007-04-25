@@ -47,19 +47,10 @@ class Disegno {
 	function Disegno() {
 		penna = new Pen();
 		
-		var A : Number;
-		A = 2;
-		goForward(10);
-		rotateRight(90);
-		for (var $mwkpue : Number = 0; $mwkpue < (10) ; $mwkpue++) {
-			goForward(5);
+		for (var $iqfj3s : Number = 0; $iqfj3s < (4) ; $iqfj3s++) {
+			goForward(25);
 			rotateRight(90);
-			for (var $7lhfhq : Number = 0; $7lhfhq < (10 + 20) ; $7lhfhq++) {
-				goForward(100);
-			}
-		}
-		goForward(10);
-		rotateRight(90);	
+		}	
 	}
 
 	static function main(mc) {
