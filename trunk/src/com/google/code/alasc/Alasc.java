@@ -94,6 +94,7 @@ public class Alasc {
          	System.exit(2);
  		}
          
+ 		// TODO Rendere robusta la comunicazione con il parser del Logo!
  		// Parsing del file LOGO aperto...
          logoParser.parse();
          
@@ -111,9 +112,13 @@ public class Alasc {
          ps.println(logoParser.getCode());
     }
     
-    // TODO come farlo multipiattaforma?
+    // TODO Sistemare le chiamate di sistema
     private static void exportToSwf() {
-    	
+    	if(System.getProperty("os.name").toLowerCase().indexOf("windows")!=-1){
+    		System.out.println("FINTO: Compilazione in corso su Windows");
+    	} else {
+    		System.out.println("FINTO: Compilazione in corso su altro S.O.");
+    	}
     }
     
 	private static void printTableOfSymbol() {
