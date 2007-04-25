@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintStream;
 
 import jargs.gnu.CmdLineParser;                                                 
@@ -114,11 +115,24 @@ public class Alasc {
     
     // TODO Sistemare le chiamate di sistema
     private static void exportToSwf() {
+    	
+    	String mtascCall;
+    	
     	if(System.getProperty("os.name").toLowerCase().indexOf("windows")!=-1){
-    		System.out.println("FINTO: Compilazione in corso su Windows");
+    		System.out.println("Compiling with mtasc.exe (win32)...");
+    		mtascCall = "mtasc.exe Pen.as Disegno.as -main -header 800:600:0 -swf " + swfFileName;
+    		mtascCall = "";
     	} else {
-    		System.out.println("FINTO: Compilazione in corso su altro S.O.");
+    		System.out.println("Compiling with mtasc...");
+    		mtascCall = "./mtascosx/mtasc Pen.as Disegno.as -main -header 800:600:0 -swf " + swfFileName;
     	}
+    	
+    	try {
+			Runtime.getRuntime().exec(mtascCall);
+		} catch (IOException e) {
+			System.err.println("There is some trouble with MTASC. Check that executable file is in this directory.");
+			System.exit(2);
+		}
     }
     
 	private static void printTableOfSymbol() {
