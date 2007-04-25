@@ -48,11 +48,6 @@ public class SimpleBeautifier extends Beautifier {
 				}
 			}
 			
-			// Se il ; è dentro alle parentesi tonde di un for, non vado a capo
-			if (readChar == ';' && inFor == true) {
-				buffer.append(';');
-			}
-			
 			/* Se è dentro non è dentro alle parentesi tonde di un for, vado a capo 
 			e aggiungo i caratteri di tabulazione.*/
 			if (readChar == ';' && inFor == false) {
@@ -60,6 +55,11 @@ public class SimpleBeautifier extends Beautifier {
 				
 				toWrite.append('\n');
 				toWrite.append(addTabs());
+			}
+			else
+			// Se il ; è dentro alle parentesi tonde di un for, non vado a capo
+			if (readChar == ';' && inFor == true) {
+				buffer.append(';');
 			}
 			
 			// Tutti gli altri caratteri, li scrivo 
@@ -84,7 +84,7 @@ public class SimpleBeautifier extends Beautifier {
 				this.tabs++;
 				toWrite.append(addTabs());
 			}
-			
+			else 
 			// Chiusura blocco -> riduco la tabulazione
 			if (readChar == '}') {
 				buffer.append('\n');
