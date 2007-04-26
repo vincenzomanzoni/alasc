@@ -11,14 +11,14 @@ import jargs.gnu.CmdLineParser;
 
 public class Alasc {
 
-	private static String inputFileName, swfFileName;
+	private static String inputFileName = "", swfFileName = "", pathMtasc = "";
 	private static final String outputFileName = "Disegno.as";
 	private static boolean tosEnabled, swfEnabled;
 	
 	private static Parser logoParser;
 	
     private static void printUsage() {
-        System.err.println("Usage: Alasc input_logo [-s/--swf] <output_flash> [-t/--tos]\n");
+        System.err.println("Usage: Alasc input_logo [-s/--swf] pathMtasc <output_flash> [-t/--tos]\n");
     }
     
     private static void parseCommandLine(String[] args) {
@@ -43,17 +43,38 @@ public class Alasc {
         
         switch(otherArgs.length){
         	case 1: {
-        		inputFileName = otherArgs[0];
-        		swfFileName = inputFileName + ".swf";
+        		if(!swfEnabled){
+        			inputFileName = otherArgs[0];
+        		} else {
+        			printUsage();                                                       
+            		System.exit(2);
+        		}
         		break;
         	}
+        	
+        	// TODO 'Alasc --swf pippo pluto' passa lo stesso, che fare?
+        	
         	case 2: {
         		// Se ho due argomenti 'sfusi' e l'esportazione in swf è abilitata,
-        		// allora il secondo è il target dell'esportazione.
+        		// allora il secondo è path di Mtasc.
         		
         		if(swfEnabled){
         			inputFileName = otherArgs[0];
-        			swfFileName = otherArgs[1];
+        			pathMtasc = otherArgs[1];
+        			swfFileName = inputFileName + ".swf";
+        		} else {
+        			printUsage();                                                       
+            		System.exit(2);
+        		}
+        		break;
+        	}
+        	case 3: {
+        		// Se ho tre argomenti 'sfusi' e l'esportazione in swf è abilitata,
+        		// allora il secondo è il path del compilatore Mtasc e il terzo il target dell'esportazione.
+        		if(swfEnabled){
+        			inputFileName = otherArgs[0];
+        			pathMtasc = otherArgs[1];
+        			swfFileName = otherArgs[2];
         		} else {
         			printUsage();                                                       
             		System.exit(2);
@@ -80,6 +101,7 @@ public class Alasc {
         System.out.println("Input LOGO file: " + inputFileName);
         System.out.println("Output ActionScript file: " + outputFileName);
         System.out.println("Export to SWF file: " + swfEnabled);
+        System.out.println("Mtasc path: " + pathMtasc);
         System.out.println("Export to SWF file target: " + swfFileName);
         System.out.println("Print table of symbol: " + tosEnabled);
     }
@@ -120,17 +142,16 @@ public class Alasc {
     	
     	if(System.getProperty("os.name").toLowerCase().indexOf("windows")!=-1){
     		System.out.println("Compiling with mtasc.exe (win32)...");
-    		mtascCall = "mtasc.exe Pen.as Disegno.as -main -header 800:600:0 -swf " + swfFileName;
-    		mtascCall = "";
+    		mtascCall = pathMtasc + "mtasc.exe Pen.as Disegno.as -main -header 800:600:0 -swf " + swfFileName;
     	} else {
-    		System.out.println("Compiling with mtasc...");
-    		mtascCall = "./mtascosx/mtasc Pen.as Disegno.as -main -header 800:600:0 -swf " + swfFileName;
+    		System.out.println("Compiling with mtasc (*nix)...");
+    		mtascCall = pathMtasc + "mtasc Pen.as Disegno.as -main -header 800:600:0 -swf " + swfFileName;
     	}
     	
     	try {
 			Runtime.getRuntime().exec(mtascCall);
 		} catch (IOException e) {
-			System.err.println("There is some trouble with MTASC. Check that executable file is in this directory.");
+			System.err.println("There is some trouble with MTASC. Check that MTASC path is correct.");
 			System.exit(2);
 		}
     }

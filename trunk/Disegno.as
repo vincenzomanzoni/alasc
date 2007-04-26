@@ -47,7 +47,7 @@ class Disegno {
 	function Disegno() {
 		penna = new Pen();
 		
-		for (var $iqfj3s : Number = 0; $iqfj3s < (4) ; $iqfj3s++) {
+		for (var $vayqru : Number = 0; $vayqru < (4) ; $vayqru++) {
 			goForward(25);
 			rotateRight(90);
 		}	
