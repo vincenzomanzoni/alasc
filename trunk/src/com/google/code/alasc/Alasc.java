@@ -98,12 +98,18 @@ public class Alasc {
     }
     
     private static void printSummary() {
-        System.out.println("Input LOGO file: " + inputFileName);
-        System.out.println("Output ActionScript file: " + outputFileName);
-        System.out.println("Export to SWF file: " + swfEnabled);
-        System.out.println("Mtasc path: " + pathMtasc);
-        System.out.println("Export to SWF file target: " + swfFileName);
-        System.out.println("Print table of symbol: " + tosEnabled);
+    	System.out.println("Alasc options summary");
+        System.out.println(" Input LOGO file: " + inputFileName);
+        System.out.println(" Output ActionScript file: " + outputFileName);
+        System.out.println(" Print table of symbol: " + tosEnabled);
+        System.out.println(" Export to SWF file via Mtasc: " + swfEnabled);
+        
+        if(swfEnabled){
+        	System.out.println("\nMtasc options summary");
+        	System.out.println(" Mtasc path: " + pathMtasc);
+        	System.out.println(" Export to SWF file target: " + swfFileName + "\n");
+        }
+        
     }
     
     private static void compileLogo() {
