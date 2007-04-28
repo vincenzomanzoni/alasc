@@ -1,13 +1,71 @@
 #summary Come gestire lo scope locale delle variabili
 
-= Introduction =
+= Introduzione =
 
-Add your content here.
+Con questo documento intendo fare una piccola trattazione sul problema dello scope e di come potremmo risolverlo all'interno di alasc.
 
 
-= Details =
+= Problema =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Attualmente Alasc non gestisce lo scope delle variabili, che sono gestite come se fossero globali. Questo aspetto non permette dichiarazioni come:
+
+{{{
+MAKE :A
+REPEAT 10 [
+ MAKE :A
+]
+
+}}}
+
+La precedente dichiarazione solleverebbe un errore durante la compilazione del secondo MAKE :A, in quanto la variabile :A risulta già dichiarata fuori dal blocco.
+Nei linguaggi che gestiscono lo scope la seconda variabile dichiarata *oscurerebbe* la prima e durante l'esecuzione del blocco REPEAT, il programma avrebbe accesso al valore della seconda variabile :A.
+
+Vediamo ora un altro caso:
+{{{
+MAKE :A
+MAKE :B
+REPEAT 10 [
+ MAKE :A
+ LET :B 15
+]
+}}}
+
+In questo caso, all'interno del blocco la variabile :A viene oscurata, mentre la variabile :B, visto che non c'è nessuna dichiarazione di B all'interno del blocco, 
+
+= Soluzione =
+Una possibile soluzione potrebbe essere quella di individuare ogni istanza della variabile con una coppia (nome_variabile; profondità), in cui profondità è un intero che indica il numero di blocchi aperti quando l'istruzione `MAKE` è stata trovata (0 significa che la variabile è stata dichiarata nel blocco principale).
+La coppia (nome, p) viene inserita nell'insieme E delle variabili dichiarate nel momento in cui viene incontrato il `MAKE nome` all'interno del blocco a profondità p e viene eliminata quando il blocco di profondità  p viene chiuso.
+
+== Errori nella dichiarazione ==
+Quando una variabile X viene dichiarata, si deve controllare che nell'insieme E non sia presenti coppie (X, p) tali che p sia uguale alla profondità corrente.
+
+== Errori nell'uso ==
+Quando una variabile X viene utilizzata, ad esempio attraverso una LET, deve esistere una coppia (X, p) nell'insieme E, altrimenti deve essere generato errore perché si sta usando una variabile che non è ancora stata dichiarata.
+
+== Esempio ==
+{{{
+MAKE :A
+
+REPEAT 10 [
+ MAKE :B
+
+  REPEAT 10 [
+   MAKE :A
+  ]
+]
+}}}
+
+Inizialmente l'insieme E è vuoto. La compilazione inizia e viene incontrato il primo MAKE. Nell'insieme viene inserita la coppia (a, 0) che indica che la variabile a è stata dichiarata nel blocco a profondità 0.
+
+profondità corrente = 0
+E = {(A, 0)}
+
+La compilazione continua, viene incontrato il primo REPEAT e viene aperto il primo blocco, al cui interno troviamo un MAKE. Di conseguenza viene inserita una coppia (b, 1), che indica che la variabile b è stata dichiarata nel blocco a profondità 1.
+
+profondità corrente = 1
+E = {(A, 0), (B, 1)}
+
+La compilazione prosegue, viene incontrato il secondo REPEAT e viene aperto anche il secondo blocco, al cui interno troviamo un altro MAKE sulla variabile A.
+
+profondità corrente = 2
+E = {(A, 0), (B, 1), (A, 2)}
