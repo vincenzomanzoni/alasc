@@ -1,4 +1,5 @@
 #summary Come gestire lo scope locale delle variabili
+#labels Lang-IT,Phase-Design,Featured
 
 = Introduzione =
 
@@ -33,6 +34,16 @@ REPEAT 10 [
 In questo caso, all'interno del blocco la variabile :A viene oscurata, mentre la variabile :B, visto che non c'è nessuna dichiarazione di B all'interno del blocco, 
 
 = Soluzione =
+
+Una possibile soluzione potrebbe essere questa:
+ * si tiene un insieme E inizialmente vuoto;
+ * si tiene un contatore profonditaBlocco inizialmente uguale a 0;
+ * ogni qualvolta che durante la compilazione si apre un blocco (cioè si incontra "["), si incrementa il contatore profonditaBlocco.
+ * ogni volta che il compilatore incontra la dichiarazione della variabile X, inserisce nell'insieme la coppia (nome, profonditaBlocco). Per esempio, se la variabile PIPPO viene dichiarata nel blocco principale (il numero 0), nell'insieme si inserirà (PIPPO, 0);
+ * ogni qualvolta che durante la compilazione si chiude un blocco (cioè si incontra "]"), si eliminano da E le coppie aventi il valore di profondità pari a profonditaBlocco e successivamente si decrementa il valore di profonditaBlocco di un'unità;
+ * ogni volta che la variabile X è utilizzata, si deve controllare che esista in E almeno una coppia (X, p) tale che p<=profonditaBlocco, altrimenti si segnala errore, in quanto si sta cercando di usare una variabile non dichiarata nello scope del blocco.
+ * ogni volta che la variabile Y è dichiarata, si deve controllare che non esista in E una coppia (X, p) tale che p = profonditaBlocco, altrimenti si sta cercando di dichiarare due volte la stessa variabile all'interno dello scope.
+
 Una possibile soluzione potrebbe essere quella di individuare ogni istanza della variabile con una coppia (nome_variabile; profondità), in cui profondità è un intero che indica il numero di blocchi aperti quando l'istruzione `MAKE` è stata trovata (0 significa che la variabile è stata dichiarata nel blocco principale).
 La coppia (nome, p) viene inserita nell'insieme E delle variabili dichiarate nel momento in cui viene incontrato il `MAKE nome` all'interno del blocco a profondità p e viene eliminata quando il blocco di profondità  p viene chiuso.
 
