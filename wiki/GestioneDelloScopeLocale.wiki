@@ -19,19 +19,9 @@ REPEAT 10 [
 }}}
 
 La precedente dichiarazione solleverebbe un errore durante la compilazione del secondo MAKE :A, in quanto la variabile :A risulta già dichiarata fuori dal blocco.
-Nei linguaggi che gestiscono lo scope la seconda variabile dichiarata *oscurerebbe* la prima e durante l'esecuzione del blocco REPEAT, il programma avrebbe accesso al valore della seconda variabile :A.
+Nei linguaggi che gestiscono lo scope la seconda variabile dichiarata *oscurerebbe* la prima e durante l'esecuzione del blocco REPEAT, il programma avrebbe accesso al valore della seconda variabile :A, attraverso il processo di oscuramento.
 
-Vediamo ora un altro caso:
-{{{
-MAKE :A
-MAKE :B
-REPEAT 10 [
- MAKE :A
- LET :B 15
-]
-}}}
-
-In questo caso, all'interno del blocco la variabile :A viene oscurata, mentre la variabile :B, visto che non c'è nessuna dichiarazione di B all'interno del blocco, 
+Quello che a noi interessa non è tanto gestire il meccanismo di oscuramento delle variabili, in quanto è gestito dall'interprete Flash, ma progettare un meccanismo che consenta di individuare l'errato utilizzo delle operazioni sulle variabili nel listato LOGO.
 
 = Soluzione =
 
@@ -91,3 +81,12 @@ E = {(A, 0), (B, 1), (A, 2), (C, 2)}
 Utilizzo di A: esiste almeno una coppia in E che ha come primo componente A, quindi la variabile è già stata dichiarata. Idem per l'utilizzo di C.
 
 Viene chiuso il blocco a profondità 2: elimino tutte le coppie (X, p) aventi p = 2 e decremento profonditaBlocco.
+
+{{{
+profonditaBlocco = 1
+E = {(A, 0), (B, 1)}
+}}}
+
+Utilizzo di A: esiste una coppia in E che ha come primo componente A, quindi esiste una variabile A raggiungibile con lo scope del blocco attuale.
+
+Utilizzo di C: non esiste una coppia in E che ha come primo componente C, quindi viene sollevato errore in quanto si sta cercando di utilizzare una variabile non raggiungibile dallo scope attuale.
