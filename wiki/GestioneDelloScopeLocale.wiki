@@ -51,6 +51,7 @@ REPEAT 10 [
  
  LET :A 9
  LET :C 7
+ MAKE :B 7
 
 ]
 }}}
@@ -90,3 +91,5 @@ E = {(A, 0), (B, 1)}
 Utilizzo di A: esiste una coppia in E che ha come primo componente A, quindi esiste una variabile A raggiungibile con lo scope del blocco attuale.
 
 Utilizzo di C: non esiste una coppia in E che ha come primo componente C, quindi viene sollevato errore in quanto si sta cercando di utilizzare una variabile non raggiungibile dallo scope attuale.
+
+Dichiarazione di B: la dichiarazione di B genera un errore, in quanto in E esiste una coppia (B, 1), dove 1 è proprio la profondità del blocco corrente.
