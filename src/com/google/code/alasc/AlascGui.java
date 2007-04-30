@@ -13,7 +13,8 @@ import java.io.*;
  * @author  vittorio
  */
 public class AlascGui extends javax.swing.JFrame {
-    
+    private String url; 
+    private String urld;
     /** Creates new form AlascGui */
     public AlascGui() {
         initComponents();
@@ -49,6 +50,11 @@ public class AlascGui extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextArea1);
 
         jButton1.setText("Compile");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Launch");
 
@@ -137,13 +143,59 @@ public class AlascGui extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+ 	String alascCall = "java Alasc " + url;
+        try {
+			Runtime.getRuntime().exec(alascCall);
+		} catch (IOException e) {
+			System.err.println("There is some trouble with ALASC. Check that ALASC path is correct.");
+			System.exit(2);
+		}
+        String disegno = urld + "/disegno.as";
+        FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(disegno);
+		} catch (FileNotFoundException e) {
+			System.out.println("Errore nell'apertura del file " + disegno);
+		}
+    	InputStreamReader isr = new InputStreamReader(fis);
+    	BufferedReader myReader = new BufferedReader(isr);
+    	
+    	StringBuffer snippet = new StringBuffer();
+    	String line = null;
+    	
+    	try {
+			line = myReader.readLine();
+		} catch (IOException e) {
+			System.out.println("Errore nella lettura del file " + disegno);
+		}
+    	String eol = System.getProperty("line.separator");
+    	while(line!=null){
+    		snippet.append(line);
+    		snippet.append(eol);
+    		
+    		try {
+				line = myReader.readLine();
+			} catch (IOException e) {
+			System.out.println("Errore nella lettura del file " + disegno);
+    		}
+    	}
+    	
+    	String ACcode = snippet.toString();
+    
+   jTextArea2.setText(ACcode);
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
    JFileChooser fc = new JFileChooser();
    int returnVal;
    
    returnVal = fc.showOpenDialog((Component) evt.getSource());
    File file1 = fc.getSelectedFile();
-   String url = file1.toString();
+   File dir = fc.getCurrentDirectory();
+   urld = dir.toString();
+   url = file1.toString();
    String logocode = new String();
   	FileInputStream fis = null;
 		try {
