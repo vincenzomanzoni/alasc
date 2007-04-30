@@ -3,7 +3,11 @@
  *
  * Created on 28 aprile 2007, 12.13
  */
-
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.filechooser.*;
+import java.io.*;
 /**
  *
  * @author  vittorio
@@ -28,6 +32,8 @@ public class AlascGui extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
+        openButton = new javax.swing.JButton();
+        saveButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -37,7 +43,9 @@ public class AlascGui extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         jTextArea1.setColumns(20);
+        jTextArea1.setEditable(false);
         jTextArea1.setRows(5);
+        jTextArea1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jScrollPane1.setViewportView(jTextArea1);
 
         jButton1.setText("Compile");
@@ -45,8 +53,19 @@ public class AlascGui extends javax.swing.JFrame {
         jButton2.setText("Launch");
 
         jTextArea2.setColumns(20);
+        jTextArea2.setEditable(false);
         jTextArea2.setRows(5);
+        jTextArea2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jScrollPane2.setViewportView(jTextArea2);
+
+        openButton.setText("Open");
+        openButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openButtonActionPerformed(evt);
+            }
+        });
+
+        saveButton.setText("Save");
 
         fileMenu.setText("File");
         fileMenu.addActionListener(new java.awt.event.ActionListener() {
@@ -85,31 +104,85 @@ public class AlascGui extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(openButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                         .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 212, Short.MAX_VALUE)
-                        .addComponent(jButton2)))
+                        .addGap(17, 17, 17))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(saveButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                        .addComponent(jButton2))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton2)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addContainerGap(12, Short.MAX_VALUE))
+                    .addComponent(openButton)
+                    .addComponent(saveButton))
+                .addGap(12, 12, 12))
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
+   JFileChooser fc = new JFileChooser();
+   int returnVal;
+   
+   returnVal = fc.showOpenDialog((Component) evt.getSource());
+   File file1 = fc.getSelectedFile();
+   String url = file1.toString();
+   String logocode = new String();
+  	FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(url);
+		} catch (FileNotFoundException e) {
+			System.out.println("Errore nell'apertura del file " + url);
+		}
+    	InputStreamReader isr = new InputStreamReader(fis);
+    	BufferedReader myReader = new BufferedReader(isr);
+    	
+    	StringBuffer snippet = new StringBuffer();
+    	String line = null;
+    	
+    	try {
+			line = myReader.readLine();
+		} catch (IOException e) {
+			System.out.println("Errore nella lettura del file " + url);
+		}
+    	String eol = System.getProperty("line.separator");
+    	while(line!=null){
+    		snippet.append(line);
+    		snippet.append(eol);
+    		
+    		try {
+				line = myReader.readLine();
+			} catch (IOException e) {
+			System.out.println("Errore nella lettura del file " + url);
+    		}
+    	}
+    	
+    	logocode = snippet.toString();
+    
+   jTextArea1.setText(logocode);
+    }//GEN-LAST:event_openButtonActionPerformed
+
+
+   
+   
+   
     private void fileMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileMenuActionPerformed
 // TODO add your handling code here:
     }//GEN-LAST:event_fileMenuActionPerformed
@@ -139,8 +212,10 @@ public class AlascGui extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JButton openButton;
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JMenuItem saveAsMenuItem;
+    private javax.swing.JButton saveButton;
     private javax.swing.JMenuItem saveMenuItem;
     // End of variables declaration//GEN-END:variables
     
