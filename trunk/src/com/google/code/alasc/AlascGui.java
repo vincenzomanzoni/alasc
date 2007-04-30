@@ -1,8 +1,6 @@
-/*
- * AlascGui.java
- *
- * Created on 28 aprile 2007, 12.13
- */
+package com.google.code.alasc;
+
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
