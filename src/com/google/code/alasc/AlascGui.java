@@ -1,21 +1,26 @@
-package com.google.code.alasc;
+//package alasc;
+//package com.google.code.alasc;
 
 
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.filechooser.*;
 import java.io.*;
+
 /**
  *
  * @author  vittorio
  */
 public class AlascGui extends javax.swing.JFrame {
-    private String url; 
+    private String url;
     private String urld;
     /** Creates new form AlascGui */
     public AlascGui() {
         initComponents();
+        /*La riga qui sotto mette i numeri davanti alle righe del pannello a sx
+         * purtroppo computazionalmente è pesantissimo.
+         */
+        //   jTextArea1.setEditorKit(new NumberedEditorKit());
+        
     }
     
     /** This method is called from within the constructor to
@@ -26,9 +31,9 @@ public class AlascGui extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jTextArea1 = new javax.swing.JEditorPane();
+        compileButton = new javax.swing.JButton();
+        launchButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         openButton = new javax.swing.JButton();
@@ -36,25 +41,21 @@ public class AlascGui extends javax.swing.JFrame {
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
-        saveMenuItem = new javax.swing.JMenuItem();
+        saveLogo = new javax.swing.JMenuItem();
         saveAsMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        jTextArea1.setColumns(20);
-        jTextArea1.setEditable(false);
-        jTextArea1.setRows(5);
-        jTextArea1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         jScrollPane1.setViewportView(jTextArea1);
 
-        jButton1.setText("Compile");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        compileButton.setText("Compile");
+        compileButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                compileButtonActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Launch");
+        launchButton.setText("Launch");
 
         jTextArea2.setColumns(20);
         jTextArea2.setEditable(false);
@@ -70,6 +71,11 @@ public class AlascGui extends javax.swing.JFrame {
         });
 
         saveButton.setText("Save");
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonActionPerformed(evt);
+            }
+        });
 
         fileMenu.setText("File");
         fileMenu.addActionListener(new java.awt.event.ActionListener() {
@@ -79,12 +85,30 @@ public class AlascGui extends javax.swing.JFrame {
         });
 
         openMenuItem.setText("Open");
+        openMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openMenuItemActionPerformed(evt);
+            }
+        });
+
         fileMenu.add(openMenuItem);
 
-        saveMenuItem.setText("Save");
-        fileMenu.add(saveMenuItem);
+        saveLogo.setLabel("Save Logo");
+        saveLogo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveLogoActionPerformed(evt);
+            }
+        });
 
-        saveAsMenuItem.setText("Save As ...");
+        fileMenu.add(saveLogo);
+
+        saveAsMenuItem.setText("Save ActionScript");
+        saveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveAsMenuItemActionPerformed(evt);
+            }
+        });
+
         fileMenu.add(saveAsMenuItem);
 
         exitMenuItem.setText("Exit");
@@ -110,7 +134,7 @@ public class AlascGui extends javax.swing.JFrame {
                     .add(layout.createSequentialGroup()
                         .add(openButton)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 27, Short.MAX_VALUE)
-                        .add(jButton1)
+                        .add(compileButton)
                         .add(17, 17, 17))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
@@ -119,7 +143,7 @@ public class AlascGui extends javax.swing.JFrame {
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(saveButton)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 39, Short.MAX_VALUE)
-                        .add(jButton2))
+                        .add(launchButton))
                     .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -132,107 +156,161 @@ public class AlascGui extends javax.swing.JFrame {
                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jButton2)
-                    .add(jButton1)
+                    .add(launchButton)
+                    .add(compileButton)
                     .add(openButton)
                     .add(saveButton))
                 .add(12, 12, 12))
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
- 	String alascCall = "java Alasc " + url;
-        try {
-			Runtime.getRuntime().exec(alascCall);
-		} catch (IOException e) {
-			System.err.println("There is some trouble with ALASC. Check that ALASC path is correct.");
-			System.exit(2);
-		}
-        String disegno = urld + "/disegno.as";
-        FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(disegno);
-		} catch (FileNotFoundException e) {
-			System.out.println("Errore nell'apertura del file " + disegno);
-		}
-    	InputStreamReader isr = new InputStreamReader(fis);
-    	BufferedReader myReader = new BufferedReader(isr);
-    	
-    	StringBuffer snippet = new StringBuffer();
-    	String line = null;
-    	
-    	try {
-			line = myReader.readLine();
-		} catch (IOException e) {
-			System.out.println("Errore nella lettura del file " + disegno);
-		}
-    	String eol = System.getProperty("line.separator");
-    	while(line!=null){
-    		snippet.append(line);
-    		snippet.append(eol);
-    		
-    		try {
-				line = myReader.readLine();
-			} catch (IOException e) {
-			System.out.println("Errore nella lettura del file " + disegno);
-    		}
-    	}
-    	
-    	String ACcode = snippet.toString();
     
-   jTextArea2.setText(ACcode);
+    private void saveLogoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveLogoActionPerformed
+        String outcode = jTextArea1.getText();
+        saveFile(evt, outcode);
+    }//GEN-LAST:event_saveLogoActionPerformed
+    
+    private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
+        String outcode = jTextArea2.getText();
+        saveFile(evt, outcode);
+    }//GEN-LAST:event_saveAsMenuItemActionPerformed
+    
+    private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
+        String outcode = jTextArea2.getText();
+        saveFile(evt, outcode);
         
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
-   JFileChooser fc = new JFileChooser();
-   int returnVal;
-   
-   returnVal = fc.showOpenDialog((Component) evt.getSource());
-   File file1 = fc.getSelectedFile();
-   File dir = fc.getCurrentDirectory();
-   urld = dir.toString();
-   url = file1.toString();
-   String logocode = new String();
-  	FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(url);
-		} catch (FileNotFoundException e) {
-			System.out.println("Errore nell'apertura del file " + url);
-		}
-    	InputStreamReader isr = new InputStreamReader(fis);
-    	BufferedReader myReader = new BufferedReader(isr);
-    	
-    	StringBuffer snippet = new StringBuffer();
-    	String line = null;
-    	
-    	try {
-			line = myReader.readLine();
-		} catch (IOException e) {
-			System.out.println("Errore nella lettura del file " + url);
-		}
-    	String eol = System.getProperty("line.separator");
-    	while(line!=null){
-    		snippet.append(line);
-    		snippet.append(eol);
-    		
-    		try {
-				line = myReader.readLine();
-			} catch (IOException e) {
-			System.out.println("Errore nella lettura del file " + url);
-    		}
-    	}
-    	
-    	logocode = snippet.toString();
+    }//GEN-LAST:event_saveButtonActionPerformed
     
-   jTextArea1.setText(logocode);
+    private void saveFile(java.awt.event.ActionEvent evt, String outcode){
+        JFileChooser fc = new JFileChooser();
+        int returnVal;
+        returnVal = fc.showSaveDialog((Component) evt.getSource());
+        File f = fc.getSelectedFile();
+        Writer out;
+        try {
+            out = new FileWriter(f);
+            out.write(outcode);
+            out.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
+        openFile(evt);
+    }//GEN-LAST:event_openMenuItemActionPerformed
+    
+    private void compileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileButtonActionPerformed
+        //chiamata di sistema per compilare da riga di comando
+        String alascCall = "java Alasc " + url;
+        
+        //stringa da compilare
+        String outcode = jTextArea1.getText();
+        
+     /*Chiamata di sistema per il compilatore.
+      Penso sia mlto meglio trovare il modo di chiamare la classe dall'interno. Perchè:
+      *1) In caso contrario dovrei aspettare la fine di lettura da file
+      *2) Se edito la prima interfaccia è difficile passare la stringa al compilatore
+      *a meno di non salvare il file (poco elegante).
+      */
+        
+        
+      /* try {
+                        Runtime.getRuntime().exec(alascCall);
+                } catch (IOException e) {
+                        System.err.println("There is some trouble with ALASC. Check that ALASC path is correct.");
+                        System.exit(2);
+                }
+       */
+        
+        String disegno = urld + "/Disegno.as";
+        //apertura del file da visuallizzare come risultato della compilazione
+        
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(disegno);
+        } catch (FileNotFoundException e) {
+            System.out.println("Errore nell'apertura del file " + disegno);
+        }
+        InputStreamReader isr = new InputStreamReader(fis);
+        BufferedReader myReader = new BufferedReader(isr);
+        
+        StringBuffer snippet = new StringBuffer();
+        String line = null;
+        
+        try {
+            line = myReader.readLine();
+        } catch (IOException e) {
+            System.out.println("Errore nella lettura del file " + disegno);
+        }
+        String eol = System.getProperty("line.separator");
+        while(line!=null){
+            snippet.append(line);
+            snippet.append(eol);
+            
+            try {
+                line = myReader.readLine();
+            } catch (IOException e) {
+                System.out.println("Errore nella lettura del file " + disegno);
+            }
+        }
+        
+        String ACcode = snippet.toString();
+        
+        jTextArea2.setText(ACcode);
+        
+    }//GEN-LAST:event_compileButtonActionPerformed
+    
+    private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
+        openFile(evt);
     }//GEN-LAST:event_openButtonActionPerformed
-
-
-   
-   
-   
+    
+    
+    private void openFile(java.awt.event.ActionEvent evt){
+        JFileChooser fc = new JFileChooser();
+        int returnVal;
+        
+        returnVal = fc.showOpenDialog((Component) evt.getSource());
+        File file1 = fc.getSelectedFile();
+        File dir = fc.getCurrentDirectory();
+        urld = dir.toString();
+        url = file1.toString();
+        String logocode = new String();
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(url);
+        } catch (FileNotFoundException e) {
+            System.out.println("Errore nell'apertura del file " + url);
+        }
+        InputStreamReader isr = new InputStreamReader(fis);
+        BufferedReader myReader = new BufferedReader(isr);
+        
+        StringBuffer snippet = new StringBuffer();
+        String line = null;
+        
+        try {
+            line = myReader.readLine();
+        } catch (IOException e) {
+            System.out.println("Errore nella lettura del file " + url);
+        }
+        String eol = System.getProperty("line.separator");
+        while(line!=null){
+            snippet.append(line);
+            snippet.append(eol);
+            
+            try {
+                line = myReader.readLine();
+            } catch (IOException e) {
+                System.out.println("Errore nella lettura del file " + url);
+            }
+        }
+        
+        logocode = snippet.toString();
+        
+        jTextArea1.setText(logocode);
+    }
+    
+    
     private void fileMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileMenuActionPerformed
 // TODO add your handling code here:
     }//GEN-LAST:event_fileMenuActionPerformed
@@ -248,25 +326,27 @@ public class AlascGui extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new AlascGui().setVisible(true);
+                
             }
         });
+        
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton compileButton;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JEditorPane jTextArea1;
     private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JButton launchButton;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton openButton;
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JButton saveButton;
-    private javax.swing.JMenuItem saveMenuItem;
+    private javax.swing.JMenuItem saveLogo;
     // End of variables declaration//GEN-END:variables
     
 }
