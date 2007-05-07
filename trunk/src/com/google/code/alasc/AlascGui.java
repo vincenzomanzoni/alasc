@@ -1,4 +1,6 @@
+//package alasc;
 package com.google.code.alasc;
+
 
 import java.awt.*;
 import javax.swing.*;
@@ -119,7 +121,7 @@ public class AlascGui extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTextArea2);
 
         jToolBar1.setFloatable(false);
-        openButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/openALASC.gif")));
+        openButton.setIcon(new javax.swing.ImageIcon("icons/openALASC.gif"));
         openButton.setToolTipText("Open new file..");
         openButton.setBorderPainted(false);
         openButton.setContentAreaFilled(false);
@@ -131,7 +133,7 @@ public class AlascGui extends javax.swing.JFrame {
 
         jToolBar1.add(openButton);
 
-        saveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/saveALASC.gif")));
+        saveButton.setIcon(new javax.swing.ImageIcon("icons/saveALASC.gif"));
         saveButton.setToolTipText("Save");
         saveButton.setBorderPainted(false);
         saveButton.setContentAreaFilled(false);
@@ -143,7 +145,7 @@ public class AlascGui extends javax.swing.JFrame {
 
         jToolBar1.add(saveButton);
 
-        compileButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/comALASC.gif")));
+        compileButton.setIcon(new javax.swing.ImageIcon("icons/comALASC.gif"));
         compileButton.setToolTipText("Compile");
         compileButton.setBorderPainted(false);
         compileButton.setContentAreaFilled(false);
@@ -155,7 +157,7 @@ public class AlascGui extends javax.swing.JFrame {
 
         jToolBar1.add(compileButton);
 
-        compileExportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/celaALASC.gif")));
+        compileExportButton.setIcon(new javax.swing.ImageIcon("icons/celaALASC.gif"));
         compileExportButton.setToolTipText("Compile and export");
         compileExportButton.setBorderPainted(false);
         compileExportButton.setContentAreaFilled(false);
