@@ -1,6 +1,4 @@
-//package alasc;
-//package com.google.code.alasc;
-
+package com.google.code.alasc;
 
 import java.awt.*;
 import javax.swing.*;
