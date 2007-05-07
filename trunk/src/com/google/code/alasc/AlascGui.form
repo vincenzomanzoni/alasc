@@ -161,7 +161,7 @@
         <Component class="javax.swing.JButton" name="openButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="/home/vittorio/workspace/icons/openALASC.gif"/>
+              <Image iconType="3" name="/openALASC.gif"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Open new file.."/>
             <Property name="borderPainted" type="boolean" value="false"/>
@@ -174,7 +174,7 @@
         <Component class="javax.swing.JButton" name="saveButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="/home/vittorio/workspace/icons/saveALASC.gif"/>
+              <Image iconType="3" name="/saveALASC.gif"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Save"/>
             <Property name="borderPainted" type="boolean" value="false"/>
@@ -187,7 +187,7 @@
         <Component class="javax.swing.JButton" name="compileButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="/home/vittorio/workspace/icons/comALASC.gif"/>
+              <Image iconType="3" name="/comALASC.gif"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Compile"/>
             <Property name="borderPainted" type="boolean" value="false"/>
@@ -200,7 +200,7 @@
         <Component class="javax.swing.JButton" name="compileExportButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="2" name="/home/vittorio/workspace/icons/celaALASC.gif"/>
+              <Image iconType="3" name="/celaALASC.gif"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" value="Compile and export"/>
             <Property name="borderPainted" type="boolean" value="false"/>
