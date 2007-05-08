@@ -16,13 +16,13 @@ public class Parser {
 	private StringBuffer flashListing;
 	private HashSet<Symbol> symbolsTable;
 	private ArrayList<Error> errors;
-	private int profonditaRaggiunta;
+	private int profonditaCorrente;
 	
 	private Random random;
 	
 	// NOTE: non mettere il costruttore di default, non viene chiamato dall'implementazione di
 	// parser.java. Bloody JavaCC!!!
-		public ArrayList<Error>getErrors()	{	  return errors;	}	public String getCode(){	  return flashListing.toString();	}	public TreeSet<Symbol>getSymbolsTable(){	  return symbolsTable;	}
+		public ArrayList<Error>getErrors()	{	  return errors;	}	public String getCode(){	  return flashListing.toString();	}	public HashSet<Symbol>getSymbolsTable(){	  return symbolsTable;	}
 	
 	// FIX: lettura più efficiente
     private String loadTemplateSnippet(String url){
@@ -61,10 +61,10 @@ public class Parser {
     // TODO: far ritornare l'esito della compilazione come da UML
     public void parse(){
     	
-    	symbolsTable = new TreeSet<Symbol>();
+    	symbolsTable = new HashSet<Symbol>();
 		errors = new ArrayList<Error>();
 		flashListing = new StringBuffer();
-		profonditaRaggiunta = 0;
+		profonditaCorrente = 0;
   	    random = new Random();
     	
     	// Inserisco l'intestazione del template
@@ -326,7 +326,7 @@ String b_oper() throws SemanticException : {String expr1,expr2;}
 	
 String ctrl_str() throws SemanticException : {String v,l;}
 {
-	<IF> v = b_oper() <LBRACKET> l = lista() <RBRACKET>
+	<IF> v = b_oper() <LBRACKET> {profonditaCorrente++;} l = lista() <RBRACKET> {profonditaCorrente--;}
 	{
 		//profonditaCorrente++;
 		return "if ( " + v + " ) {" + l + "}";
