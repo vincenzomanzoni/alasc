@@ -14,8 +14,10 @@ import java.util.*;
 public class Parser {
 	
 	private StringBuffer flashListing;
-	private TreeSet<Symbol> symbolsTable;
+	private HashSet<Symbol> symbolsTable;
 	private ArrayList<Error> errors;
+	private int profonditaRaggiunta;
+	
 	private Random random;
 	
 	// NOTE: non mettere il costruttore di default, non viene chiamato dall'implementazione di
@@ -62,6 +64,7 @@ public class Parser {
     	symbolsTable = new TreeSet<Symbol>();
 		errors = new ArrayList<Error>();
 		flashListing = new StringBuffer();
+		profonditaRaggiunta = 0;
   	    random = new Random();
     	
     	// Inserisco l'intestazione del template
@@ -159,6 +162,7 @@ String istr() throws SemanticException : {String op;}
 	|
 	op = ctrl_str()
 	{
+		//profonditaCorrente--;
 		return op;
 	}
 }
@@ -227,7 +231,7 @@ String n_s_value() throws SemanticException : {Token t;}
 		
 		// TODO: creare una funzione che esegue il controllo
 		// TODO: controlla l'inizializzazione delle variabili
-		if(!symbolsTable.contains(new Symbol(varname))) {
+		if(!symbolsTable.contains(new Symbol(varname, profonditaCorrente))) {
 			throw new SemanticException("The symbol " + varname + " isn't declared yet.");
 		}
 		
@@ -272,7 +276,7 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		// Toglie i ":" iniziali dal nome della variabile
 		varname = v.image.substring(1);
 
-		if (!symbolsTable.add(new Symbol(varname))) {
+		if (!symbolsTable.add(new Symbol(varname, profonditaCorrente))) {
 			throw new SemanticException("The symbol " + varname + " is already declared.");
 		} 
 		
@@ -289,7 +293,7 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		// Toglie i ":" iniziali dal nome della variabile
 		varname = v.image.substring(1);
 		
-		if(!symbolsTable.contains(new Symbol(varname))) {
+		if(!symbolsTable.contains(new Symbol(varname, profonditaCorrente))) {
 			throw new SemanticException("The symbol " + varname + " isn't declared yet.");
 		}
 		
@@ -324,11 +328,13 @@ String ctrl_str() throws SemanticException : {String v,l;}
 {
 	<IF> v = b_oper() <LBRACKET> l = lista() <RBRACKET>
 	{
+		//profonditaCorrente++;
 		return "if ( " + v + " ) {" + l + "}";
 	}
 	|
 	<REPEAT> v = n_value() <LBRACKET> l = lista() <RBRACKET>
 	{
+		//profonditaCorrente++;
 		String forVariable = nextForVariable();
 		return "for (var $" + forVariable + " : Number = 0; $" + forVariable + 
 			" < (" + v + ") ; $" + forVariable + "++) {" + l + "}";
