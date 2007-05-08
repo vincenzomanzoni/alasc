@@ -328,9 +328,9 @@ public class AlascGui extends javax.swing.JFrame {
         if (returnVal == JFileChooser.APPROVE_OPTION){
             logoFile = fc.getSelectedFile();
             openFile(logoFile, jTextArea1);
+            status = IDEStatus.DOCSALVATO;
+            bloccaBottoni();
         }
-        status = IDEStatus.DOCSALVATO;
-        bloccaBottoni();
     }//GEN-LAST:event_openMenuItemActionPerformed
     
     private void compileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileButtonActionPerformed

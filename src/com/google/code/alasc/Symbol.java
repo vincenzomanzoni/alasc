@@ -1,21 +1,39 @@
 package com.google.code.alasc;
 
-public class Symbol implements Comparable<Symbol>{
+public class Symbol{
 	private String variableName;
+	private int blocco;
 	
-	public Symbol(String variableName) {
+	public Symbol(String variableName, int blocco) {
+		super();
 		this.variableName = variableName;
+		this.blocco = blocco;
 	}
-	
-	public String getSymbol() {
+
+	/**
+	 * @return the blocco
+	 */
+	public int getBlocco() {
+		return blocco;
+	}
+
+	/**
+	 * @return the variableName
+	 */
+	public String getVariableName() {
 		return variableName;
 	}
 	
-	public String toString() {
-		return getSymbol();
+	public boolean equals(Object o){
+		
+		if(o instanceof Object){
+			if(((Symbol) o).getVariableName().equals(variableName) && ((Symbol) o).getBlocco() == blocco){
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
-	public int compareTo(Symbol s) {
-		return this.variableName.compareTo(s.getSymbol());
-	}
+	
 }
