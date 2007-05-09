@@ -14,7 +14,7 @@ import java.util.*;
 public class Parser {
 	
 	private StringBuffer flashListing;
-	private HashSet<Symbol> symbolsTable;
+	private DeclarationSet declarations;
 	private ArrayList<Error> errors;
 	private int profonditaCorrente;
 	
@@ -22,7 +22,7 @@ public class Parser {
 	
 	// NOTE: non mettere il costruttore di default, non viene chiamato dall'implementazione di
 	// parser.java. Bloody JavaCC!!!
-		public ArrayList<Error>getErrors()	{	  return errors;	}	public String getCode(){	  return flashListing.toString();	}	public HashSet<Symbol>getSymbolsTable(){	  return symbolsTable;	}
+		public ArrayList<Error>getErrors()	{	  return errors;	}	public String getCode(){	  return flashListing.toString();	}	public HashSet<Declaration>getSymbolsTable(){	  return declarations.getDeclarations();	}
 	
 	// FIX: lettura più efficiente
     private String loadTemplateSnippet(String url){
@@ -61,7 +61,8 @@ public class Parser {
     // TODO: far ritornare l'esito della compilazione come da UML
     public void parse(){
     	
-    	symbolsTable = new HashSet<Symbol>();
+    	// symbolsTable = new HashSet<Symbol>();
+		declarations = new DeclarationSet();
 		errors = new ArrayList<Error>();
 		flashListing = new StringBuffer();
 		profonditaCorrente = 0;
@@ -162,7 +163,6 @@ String istr() throws SemanticException : {String op;}
 	|
 	op = ctrl_str()
 	{
-		//profonditaCorrente--;
 		return op;
 	}
 }
@@ -229,10 +229,8 @@ String n_s_value() throws SemanticException : {Token t;}
 	{
 		String varname = t.image.substring(1);
 		
-		// TODO: creare una funzione che esegue il controllo
-		// TODO: controlla l'inizializzazione delle variabili
-		if(!symbolsTable.contains(new Symbol(varname, profonditaCorrente))) {
-			throw new SemanticException("The symbol " + varname + " isn't declared yet.");
+		if(!declarations.isReachable(varname, profonditaCorrente)) {
+			throw new SemanticException("[" + t.beginLine + ":" + t.beginColumn + "] Variable " + varname + " isn't declared yet.");
 		}
 		
 		return varname;
@@ -271,14 +269,15 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 {
 	<MAKE> v=<VARNAME> (n=<NUM>)?
 	{
-		// TODO: Controllo tabella dei simboli
-		
 		// Toglie i ":" iniziali dal nome della variabile
 		varname = v.image.substring(1);
-
-		if (!symbolsTable.add(new Symbol(varname, profonditaCorrente))) {
-			throw new SemanticException("The symbol " + varname + " is already declared.");
-		} 
+		
+		// Controllo tabella dei simboli
+		if (!declarations.isDeclarable(varname, profonditaCorrente)) {
+			throw new SemanticException("[" + v.beginLine + ":" + v.beginColumn + "] Variable " + varname + " is already declared.");
+		} else {
+			declarations.addDeclaration(varname, profonditaCorrente);
+		}
 		
 		if (n != null) {
 			return "var " + varname + " : Number = " + n.image + ";";
@@ -293,8 +292,9 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		// Toglie i ":" iniziali dal nome della variabile
 		varname = v.image.substring(1);
 		
-		if(!symbolsTable.contains(new Symbol(varname, profonditaCorrente))) {
-			throw new SemanticException("The symbol " + varname + " isn't declared yet.");
+		// Controllo che l'istruzione sia nello scope della variabile.
+		if(!declarations.isReachable(varname, profonditaCorrente)) {
+			throw new SemanticException("[" + v.beginLine + ":" + v.beginColumn + "] Variable " + varname + " isn't declared yet.");
 		}
 		
 		return varname + " = " + expr + ";";
@@ -326,15 +326,13 @@ String b_oper() throws SemanticException : {String expr1,expr2;}
 	
 String ctrl_str() throws SemanticException : {String v,l;}
 {
-	<IF> v = b_oper() <LBRACKET> {profonditaCorrente++;} l = lista() <RBRACKET> {profonditaCorrente--;}
+	<IF> v = b_oper() <LBRACKET> {profonditaCorrente++;} l = lista() <RBRACKET> {declarations.pruneAllDeclarationsIn(profonditaCorrente); profonditaCorrente--;}
 	{
-		//profonditaCorrente++;
 		return "if ( " + v + " ) {" + l + "}";
 	}
 	|
-	<REPEAT> v = n_value() <LBRACKET> l = lista() <RBRACKET>
+	<REPEAT> v = n_value() <LBRACKET> {profonditaCorrente++;} l = lista() <RBRACKET> {declarations.pruneAllDeclarationsIn(profonditaCorrente); profonditaCorrente--;}
 	{
-		//profonditaCorrente++;
 		String forVariable = nextForVariable();
 		return "for (var $" + forVariable + " : Number = 0; $" + forVariable + 
 			" < (" + v + ") ; $" + forVariable + "++) {" + l + "}";
