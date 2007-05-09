@@ -1,1 +1,14 @@
-REPEAT 4 [ FD 25 RT 90]
+MAKE :A
+REPEAT 4 [
+ MAKE :A
+ MAKE :B
+ IF LESS? :A 1 [
+  MAKE :B
+  MAKE :C
+  LET :B 2
+  LET :A 1
+ ]
+]
+MAKE :B
+LET :A 1
+LET :C 2
