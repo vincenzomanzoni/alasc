@@ -74,10 +74,14 @@ public class Parser {
 		// Genero ed inserisco la personalizzazione del template
 		try {
 			String myCode = start();
-			Beautifier b = new SimpleBeautifier(2);
-			myCode = b.beautify(myCode);
 			
-			flashListing.append(myCode);
+			// Se avviene un errore, restituisco null
+			if(myCode != null) {			
+				Beautifier b = new SimpleBeautifier(2);
+				myCode = b.beautify(myCode);
+			
+				flashListing.append(myCode);
+			}
 		} catch(ParseException pe) {
 			System.out.println(pe.toString());
 		} catch(SemanticException se) {
@@ -130,9 +134,14 @@ TOKEN :
 // TODO SUPERIMPORTANTE!!! USARE EBNF!!!
 String start() throws SemanticException : {String list;}
 { 
+	try{
 	list = lista()
 	{
 		return list;
+	}
+	}catch(TokenMgrError e) {
+		System.out.println("Errore lessicale");
+		return null;
 	}
 }
 
@@ -150,7 +159,7 @@ String lista() throws SemanticException : {String corr, succ;}
 }
 
 String istr() throws SemanticException : {String op;}
-{ 
+{ 	
 	op = dr_op()
 	{
 		return op;
@@ -164,7 +173,21 @@ String istr() throws SemanticException : {String op;}
 	op = ctrl_str()
 	{
 		return op;
-	}
+	}	
+}
+
+JAVACODE
+void error_skipto() {
+  Token t;
+  do {
+    t = getNextToken();
+    System.out.println(t.kind);
+  } while (false);
+    // The above loop consumes tokens all the way up to a token of
+    // "kind".  We use a do-while loop rather than a while because the
+    // current token is the one immediately before the erroneous token
+    // (in our case the token immediately before what should have been
+    // "if"/"while".
 }
 
 String dr_op() throws SemanticException : {String expr;}
