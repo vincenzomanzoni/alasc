@@ -1,13 +1,5 @@
-/*
- * aboutAlasc.java
- *
- * Created on 9 maggio 2007, 14.34
- */
+package com.google.code.alasc;
 
-/**
- *
- * @author  vittorio
- */
 public class aboutAlasc extends javax.swing.JDialog {
     
     /** Creates new form aboutAlasc */
