@@ -96,6 +96,7 @@ public class AlascGui extends javax.swing.JFrame {
         saveMenuItem = new javax.swing.JMenuItem();
         saveAsMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
+        infoButton = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         buildMenu = new javax.swing.JMenu();
         compileMenu = new javax.swing.JMenuItem();
@@ -193,6 +194,15 @@ public class AlascGui extends javax.swing.JFrame {
 
         fileMenu.add(jSeparator1);
 
+        infoButton.setText("info...");
+        infoButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                infoButtonActionPerformed(evt);
+            }
+        });
+
+        fileMenu.add(infoButton);
+
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -251,10 +261,14 @@ public class AlascGui extends javax.swing.JFrame {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed
+        new aboutAlasc(new javax.swing.JFrame(), true).setVisible(true);
+    }//GEN-LAST:event_infoButtonActionPerformed
+    
     private void jTextArea1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextArea1KeyTyped
-    status = IDEStatus.DOCNONSALVATO;
-    bloccaBottoni();
+        status = IDEStatus.DOCNONSALVATO;
+        bloccaBottoni();
     }//GEN-LAST:event_jTextArea1KeyTyped
     
     private void compileExportMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileExportMenuActionPerformed
@@ -391,10 +405,10 @@ public class AlascGui extends javax.swing.JFrame {
     }
     
     private void chiediSalvataggio(){
-    
-    
+        
+        
     }
-     
+    
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
@@ -420,6 +434,7 @@ public class AlascGui extends javax.swing.JFrame {
     private javax.swing.JMenuItem compileMenu;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenuItem infoButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
