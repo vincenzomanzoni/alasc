@@ -37,7 +37,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="infoButton">
               <Properties>
-                <Property name="text" type="java.lang.String" value="info..."/>
+                <Property name="text" type="java.lang.String" value="Info..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="infoButtonActionPerformed"/>
