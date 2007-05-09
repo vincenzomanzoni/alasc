@@ -35,5 +35,7 @@ public class Declaration{
 		return false;
 	}
 	
-	
+	public String toString() {
+		return variableName;
+	}
 }
