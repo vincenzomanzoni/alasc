@@ -1,10 +1,10 @@
 package com.google.code.alasc;
 
-public class Symbol{
+public class Declaration{
 	private String variableName;
 	private int blocco;
 	
-	public Symbol(String variableName, int blocco) {
+	public Declaration(String variableName, int blocco) {
 		super();
 		this.variableName = variableName;
 		this.blocco = blocco;
@@ -26,8 +26,8 @@ public class Symbol{
 	
 	public boolean equals(Object o){
 		
-		if(o instanceof Object){
-			if(((Symbol) o).getVariableName().equals(variableName) && ((Symbol) o).getBlocco() == blocco){
+		if(o instanceof Declaration){
+			if(((Declaration) o).getVariableName().equals(variableName) && ((Declaration) o).getBlocco() == blocco){
 				return true;
 			}
 		}
