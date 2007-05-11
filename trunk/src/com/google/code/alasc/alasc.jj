@@ -3,6 +3,7 @@ options
 STATIC = false; // default TRUE
 LOOKAHEAD = 1; // default 1
 IGNORE_CASE = true; // default false
+ERROR_REPORTING = true;
 }
 
 PARSER_BEGIN(Parser)
@@ -160,6 +161,7 @@ String lista() throws SemanticException : {String corr, succ;}
 
 String istr() throws SemanticException : {String op;}
 { 	
+	try{
 	op = dr_op()
 	{
 		return op;
@@ -174,6 +176,10 @@ String istr() throws SemanticException : {String op;}
 	{
 		return op;
 	}	
+	}catch(ParseException pe) {
+		System.out.println("Parse Exception");
+		return null;
+	}
 }
 
 JAVACODE
