@@ -93,3 +93,44 @@ Utilizzo di A: esiste una coppia in E che ha come primo componente A, quindi esi
 Utilizzo di C: non esiste una coppia in E che ha come primo componente C, quindi viene sollevato errore in quanto si sta cercando di utilizzare una variabile non raggiungibile dallo scope attuale.
 
 Dichiarazione di B: la dichiarazione di B genera un errore, in quanto in E esiste una coppia (B, 1), dove 1 è proprio la profondità del blocco corrente.
+
+= Implementazione =
+Per l'implementazione del precedente meccanismo, ci si affida ad un componente software che modella un insieme di dichiarazioni, che sarà chiamato DeclarationSet e che rappresenta l'insieme E. Una dichiarazione è una coppia formata da nome della variabile dichiarata e profondità della dichiarazione.
+
+Le operazioni ammesse su questo oggetto sono:
+ * inserimento di una nuova dichiarazione
+ * eliminazione dall'insieme (prune) di tutte le dichiarazioni ad un certo livello
+ * test di dichiarabilità di una certa variabile ad un certo livello
+ * test di raggiungibilità di una certa variabile da un certo livello
+
+Ecco un'implementazione molto spartana in pseudocodice:
+
+{{{
+class DeclarationSet{
+	private Set declarations = EMPTY;
+
+	public void addDeclaration(string var, integer lev){
+		declarations = declarations UNION {(var, lev)}
+	}
+
+	public void pruneAllDeclarationsIn(integer lev){
+		for each e in declarations
+			if (e.livello == lev)
+				declarations = declarations \ e;
+	}
+	
+	public boolean isDeclarable(string var, integer lev) {
+		if (exists e: e in declarations AND e.livello == lev AND e.varname == var)
+			return FALSE;
+		
+		return TRUE;
+	}
+	
+	public boolean isReachable(string var, integer lev){
+		if(exists e: e in declarations AND e.varname == var)
+			return TRUE;
+		
+		return FALSE;
+	}
+}
+}}}
