@@ -5,6 +5,7 @@ import java.util.HashMap;
 /**
  * Classe necessaria per il passaggio di attributi.
  * @author andrea
+ * @version $Revision:
  *
  */
 
