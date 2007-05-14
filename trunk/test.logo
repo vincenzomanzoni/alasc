@@ -1,5 +1,6 @@
-MAKE :A
-REPEAT 6 [
-MAKE :A
-LET :A 1
+IF SUM 10 10 [
+	IF LESS? 1 2 [
+	]
 ]
+FD 100
+FD 200
