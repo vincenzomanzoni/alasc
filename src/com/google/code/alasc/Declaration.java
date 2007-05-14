@@ -3,11 +3,16 @@ package com.google.code.alasc;
 public class Declaration{
 	private String variableName;
 	private int blocco;
+	private int beginLine, beginColumn;
+	private boolean isUsed;
 	
-	public Declaration(String variableName, int blocco) {
+	public Declaration(String variableName, int blocco, int beginLine, int beginColumn) {
 		super();
 		this.variableName = variableName;
 		this.blocco = blocco;
+		this.beginLine = beginLine;
+		this.beginColumn = beginColumn;
+		this.isUsed = false;
 	}
 
 	/**
@@ -36,6 +41,12 @@ public class Declaration{
 	}
 	
 	public String toString() {
-		return variableName;
+		return "(" + beginLine + ":" + beginColumn + " " + variableName + " depth: " + blocco +
+		" used: " + isUsed + ")";
 	}
+	
+	public void setAsUsed() {
+		this.isUsed = true;
+	}
+	
 }

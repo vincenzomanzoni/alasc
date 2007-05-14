@@ -1,6 +1,5 @@
 package com.google.code.alasc;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -55,8 +54,8 @@ public class Alasc {
         	// TODO 'Alasc --swf pippo pluto' passa lo stesso, che fare?
         	
         	case 2: {
-        		// Se ho due argomenti 'sfusi' e l'esportazione in swf è abilitata,
-        		// allora il secondo è path di Mtasc.
+        		// Se ho due argomenti 'sfusi' e l'esportazione in swf e' abilitata,
+        		// allora il secondo e' path di Mtasc.
         		
         		if(swfEnabled){
         			inputFileName = otherArgs[0];
@@ -69,8 +68,8 @@ public class Alasc {
         		break;
         	}
         	case 3: {
-        		// Se ho tre argomenti 'sfusi' e l'esportazione in swf è abilitata,
-        		// allora il secondo è il path del compilatore Mtasc e il terzo il target dell'esportazione.
+        		// Se ho tre argomenti 'sfusi' e l'esportazione in swf e' abilitata,
+        		// allora il secondo e' il path del compilatore Mtasc e il terzo il target dell'esportazione.
         		if(swfEnabled){
         			inputFileName = otherArgs[0];
         			pathMtasc = otherArgs[1];
@@ -82,7 +81,7 @@ public class Alasc {
         		break;
         	}
         	
-        	// Se non ho argomenti sfusi oppure ne ho più di due, allora c'è un errore.
+        	// Se non ho argomenti sfusi oppure ne ho piu' di due, allora errore nell'invocazione.
         	
         	default:{
         		printUsage();                                                       
