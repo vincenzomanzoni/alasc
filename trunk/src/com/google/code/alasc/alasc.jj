@@ -23,7 +23,7 @@ public class Parser {
 	
 	// NOTE: non mettere il costruttore di default, non viene chiamato dall'implementazione di
 	// parser.java. Bloody JavaCC!!!
-		public ArrayList<Error>getErrors()	{	  return errors;	}	public String getCode(){	  return flashListing.toString();	}	public HashSet<Declaration>getSymbolsTable(){	  return declarations.getDeclarations();	}
+		public ArrayList<Error>getErrors()	{	  return errors;	}	public String getCode(){	  return flashListing.toString();	}	public ArrayList<Declaration> getSymbolsTable(){	  return declarations.getHistory();	}
 	
 	// FIX: lettura più efficiente
     private String loadTemplateSnippet(String url){
@@ -132,6 +132,8 @@ TOKEN :
 	| <RBRACKET: "]">
 }
 
+	
+
 // TODO SUPERIMPORTANTE!!! USARE EBNF!!!
 String start() throws SemanticException : {String list;}
 { 
@@ -161,7 +163,8 @@ String lista() throws SemanticException : {String corr, succ;}
 
 String istr() throws SemanticException : {String op;}
 { 	
-	try{
+	try {
+	(
 	op = dr_op()
 	{
 		return op;
@@ -176,24 +179,28 @@ String istr() throws SemanticException : {String op;}
 	{
 		return op;
 	}	
-	}catch(ParseException pe) {
-		System.out.println("Parse Exception");
-		return null;
+	) 
+	}catch(ParseException e) {
+		System.out.println(e.toString());
+		//error_skipto();
+		return "";
 	}
 }
 
 JAVACODE
 void error_skipto() {
-  Token t;
-  do {
-    t = getNextToken();
-    System.out.println(t.kind);
-  } while (false);
-    // The above loop consumes tokens all the way up to a token of
-    // "kind".  We use a do-while loop rather than a while because the
-    // current token is the one immediately before the erroneous token
-    // (in our case the token immediately before what should have been
-    // "if"/"while".
+  Token t = getToken(0);
+  
+  // Al fa pura...
+  int i = 1;
+  while(!getToken(i).image.equals("FD") && getToken(i).kind != EOF) {
+  	i++;
+  }
+  
+  for(int j=0; j < i-1; j++) {
+  	getNextToken();
+  }
+  
 }
 
 String dr_op() throws SemanticException : {String expr;}
@@ -261,7 +268,7 @@ String n_s_value() throws SemanticException : {Token t;}
 		if(!declarations.isReachable(varname, profonditaCorrente)) {
 			throw new SemanticException("[" + t.beginLine + ":" + t.beginColumn + "] Variable " + varname + " isn't declared yet.");
 		}
-		
+		declarations.setAsUsed(varname, profonditaCorrente);
 		return varname;
 	}
 	|
@@ -305,7 +312,7 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		if (!declarations.isDeclarable(varname, profonditaCorrente)) {
 			throw new SemanticException("[" + v.beginLine + ":" + v.beginColumn + "] Variable " + varname + " is already declared.");
 		} else {
-			declarations.addDeclaration(varname, profonditaCorrente);
+			declarations.addDeclaration(varname, profonditaCorrente, v.beginLine, v.beginColumn);
 		}
 		
 		if (n != null) {
@@ -325,7 +332,7 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		if(!declarations.isReachable(varname, profonditaCorrente)) {
 			throw new SemanticException("[" + v.beginLine + ":" + v.beginColumn + "] Variable " + varname + " isn't declared yet.");
 		}
-		
+		declarations.setAsUsed(varname, profonditaCorrente);
 		return varname + " = " + expr + ";";
 	}
 }

@@ -6,9 +6,11 @@ import java.util.HashSet;
 public class DeclarationSet {
 	
 	private HashSet<Declaration> declarations;
+	private ArrayList<Declaration> history;
 	
 	public DeclarationSet(){
 		declarations = new HashSet<Declaration>();
+		history = new ArrayList<Declaration>();
 	}
 	
 	/**
@@ -19,8 +21,10 @@ public class DeclarationSet {
 	 * @param level profonditˆ del blocco in cui avviene la dichiarazione
 	 * @return true se la variabile non era giˆ stata dichiarata nel livello corrente
 	 */
-	public boolean addDeclaration(String variableName, int level){
-		return declarations.add(new Declaration(variableName, level));
+	public boolean addDeclaration(String variableName, int level, int beginLine, int beginColumn){
+		Declaration declaration = new Declaration(variableName, level, beginLine, beginColumn);
+		boolean success = history.add(declaration);
+		return success && declarations.add(declaration);
 	}
 	
 	/**
@@ -57,7 +61,7 @@ public class DeclarationSet {
 	 * altrimenti false.
 	 */
 	public boolean isDeclarable(String variableName, int level){
-		Declaration toCompare = new Declaration(variableName, level);
+		Declaration toCompare = new Declaration(variableName, level, 0, 0);
 		
 		// TODO Scriverlo con il contains, purtroppo non ho sotto la javadoc
 		
@@ -89,6 +93,29 @@ public class DeclarationSet {
 		}
 		
 		return false;
+	}
+	
+	public void setAsUsed(String varname, int level) {
+		Declaration declaration = null;
+		
+		for(Declaration s: declarations){
+			if(s.getVariableName().equals(varname)) {
+				if (declaration == null) {
+					declaration = s;
+				} else if (declaration.getBlocco() < s.getBlocco()) {
+					declaration = s;
+				}
+			}	
+		}
+		
+		if (declaration != null) {
+			declaration.setAsUsed();
+		}
+		
+	}
+	
+	public ArrayList<Declaration> getHistory() {
+		return this.history;
 	}
 
 	// TO-DO Sistemarlo: cosa gli facciamo ritornare?
