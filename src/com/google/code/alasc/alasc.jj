@@ -180,27 +180,74 @@ String istr() throws SemanticException : {String op;}
 		return op;
 	}	
 	) 
-	}catch(ParseException e) {
-		System.out.println(e.toString());
-		//error_skipto();
+	} catch(ParseException e) {	
+		error_skipto(e);
 		return "";
 	}
 }
 
 JAVACODE
-void error_skipto() {
-  Token t = getToken(0);
+void error_skipto(ParseException e) {
+	System.err.println(e.toString());
+	
+  	Token t = getToken(0);
   
-  // Al fa pura...
-  int i = 1;
-  while(!getToken(i).image.equals("FD") && getToken(i).kind != EOF) {
-  	i++;
-  }
+  	// Se t e' un var_op o un dr_op, consumo fino alla prossima istr
+  	// Se t e' un ctrl_str, consumo fino alla parentesi chiusa
   
-  for(int j=0; j < i-1; j++) {
-  	getNextToken();
-  }
+  	switch(t.kind) {
+		case MAKE:
+	  	case LET:
+	  	
+	  	case FD:
+		case BK:
+		case LT:
+		case RT:
+		case CLEAN:
+		case PENDOWN:
+		case PENUP:
+		case COLOR:
+			int i = 1;
+	  		while(getToken(i).kind != MAKE &&
+	  			getToken(i).kind != LET && 
+	  			getToken(i).kind != FD &&
+	  			getToken(i).kind != BK &&
+	  			getToken(i).kind != LT &&
+	  			getToken(i).kind != RT &&
+	  			getToken(i).kind != CLEAN &&
+	  			getToken(i).kind != PENDOWN &&
+	  			getToken(i).kind != PENUP &&
+	  			getToken(i).kind != COLOR &&
+	  			getToken(i).kind != IF &&
+	  			getToken(i).kind != REPEAT &&  		
+	  			getToken(i).kind != EOF) {
+	  			i++;
+		  	}
   
+	  		for(int j=0; j < i-1; j++) {
+	  			getNextToken();
+	  		}
+	  		break;
+	  		
+	  	case IF:
+	  	case REPEAT:
+	  		i = 0;	
+	  		int numLBracket = 0;
+	  		do {	  			
+	  			i++;
+	  			if(getToken(i).kind == LBRACKET) {
+	  				numLBracket++;
+	  			} else if (getToken(i).kind == RBRACKET) {
+	  				numLBracket--;
+	  			}	  				  				  				  			
+	  		} while(getToken(i).kind != RBRACKET || numLBracket > 0 );
+	  		
+	  		for(int j = 0; j < i; j++) {
+	  			getNextToken();
+	  		}
+	  		
+	  		break;
+  	}
 }
 
 String dr_op() throws SemanticException : {String expr;}
