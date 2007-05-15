@@ -132,34 +132,28 @@ TOKEN :
 	| <RBRACKET: "]">
 }
 
-	
-
-// TODO SUPERIMPORTANTE!!! USARE EBNF!!!
 String start() throws SemanticException : {String list;}
 { 
-	try{
-	list = lista()
+	list = list()
 	{
 		return list;
 	}
-	}catch(TokenMgrError e) {
-		System.out.println("Errore lessicale");
-		return null;
-	}
 }
 
-// TODO COME SOPRA!
-String lista() throws SemanticException : {String corr, succ;}
-{
-	corr = istr() succ = lista()
+String list() throws SemanticException : {String list="", currIstr;}
+{ 
+	try{
+	(currIstr = istr() {list += currIstr;} )*
 	{
-		return corr + succ;
+		return list;
 	}
-	|
-	{
+	} catch(TokenMgrError e) {
+		System.err.println(e.toString());
 		return "";
 	}
+	
 }
+
 
 String istr() throws SemanticException : {String op;}
 { 	
@@ -409,12 +403,12 @@ String b_oper() throws SemanticException : {String expr1,expr2;}
 	
 String ctrl_str() throws SemanticException : {String v,l;}
 {
-	<IF> v = b_oper() <LBRACKET> {profonditaCorrente++;} l = lista() <RBRACKET> {declarations.pruneAllDeclarationsIn(profonditaCorrente); profonditaCorrente--;}
+	<IF> v = b_oper() <LBRACKET> {profonditaCorrente++;} l = list() <RBRACKET> {declarations.pruneAllDeclarationsIn(profonditaCorrente); profonditaCorrente--;}
 	{
 		return "if ( " + v + " ) {" + l + "}";
 	}
 	|
-	<REPEAT> v = n_value() <LBRACKET> {profonditaCorrente++;} l = lista() <RBRACKET> {declarations.pruneAllDeclarationsIn(profonditaCorrente); profonditaCorrente--;}
+	<REPEAT> v = n_value() <LBRACKET> {profonditaCorrente++;} l = list() <RBRACKET> {declarations.pruneAllDeclarationsIn(profonditaCorrente); profonditaCorrente--;}
 	{
 		String forVariable = nextForVariable();
 		return "for (var $" + forVariable + " : Number = 0; $" + forVariable + 
