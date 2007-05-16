@@ -132,6 +132,7 @@ TOKEN :
 	| <RBRACKET: "]">
 }
 
+
 String start() throws SemanticException : {String list;}
 { 
 	list = list()
@@ -147,10 +148,7 @@ String list() throws SemanticException : {String list="", currIstr;}
 	{
 		return list;
 	}
-	} catch(TokenMgrError e) {
-		System.err.println(e.toString());
-		return "";
-	}
+	} catch(TokenMgrError e) {		System.err.println(e.toString());		return "";	}
 	
 }
 
@@ -172,7 +170,7 @@ String istr() throws SemanticException : {String op;}
 	op = ctrl_str()
 	{
 		return op;
-	}	
+	}
 	) 
 	} catch(ParseException e) {	
 		error_skipto(e);
@@ -234,10 +232,12 @@ void error_skipto(ParseException e) {
 	  			} else if (getToken(i).kind == RBRACKET) {
 	  				numLBracket--;
 	  			}	  				  				  				  			
-	  		} while(getToken(i).kind != RBRACKET || numLBracket > 0 );
+	  		} while((getToken(i).kind != RBRACKET || numLBracket > 0) && getToken(i).kind != EOF);
 	  		
-	  		for(int j = 0; j < i; j++) {
-	  			getNextToken();
+	  		if (getToken(i).kind != EOF) {
+		  		for(int j = 0; j < i; j++) {
+		  			getNextToken();
+		  		}
 	  		}
 	  		
 	  		break;
