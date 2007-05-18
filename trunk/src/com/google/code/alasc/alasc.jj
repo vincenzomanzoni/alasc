@@ -11,19 +11,20 @@ package com.google.code.alasc;
 
 import java.io.*;
 import java.util.*;
+import com.google.code.alasc.errors.*;
 
 public class Parser {
 	
 	private StringBuffer flashListing;
 	private DeclarationSet declarations;
-	private ArrayList<Error> errors;
+	private ErrorManager errorManager;
 	private int profonditaCorrente;
 	
 	private Random random;
 	
 	// NOTE: non mettere il costruttore di default, non viene chiamato dall'implementazione di
 	// parser.java. Bloody JavaCC!!!
-		public ArrayList<Error>getErrors()	{	  return errors;	}	public String getCode(){	  return flashListing.toString();	}	public ArrayList<Declaration> getSymbolsTable(){	  return declarations.getHistory();	}
+		public List<GenericError>getErrors()	{	  return errorManager.getAllErrors();	}	public String getCode(){	  return flashListing.toString();	}	public ArrayList<Declaration> getSymbolsTable(){	  return declarations.getHistory();	}
 	
 	// FIX: lettura più efficiente
     private String loadTemplateSnippet(String url){
@@ -60,11 +61,11 @@ public class Parser {
     }
     
     // TODO: far ritornare l'esito della compilazione come da UML
-    public void parse(){
+    public ParserStatus parse(){
     	
     	// symbolsTable = new HashSet<Symbol>();
 		declarations = new DeclarationSet();
-		errors = new ArrayList<Error>();
+		errorManager = new ErrorManager();
 		flashListing = new StringBuffer();
 		profonditaCorrente = 0;
   	    random = new Random();
@@ -91,6 +92,11 @@ public class Parser {
 		
 		// Inserisco la chiusura del template
 		flashListing.append(loadTemplateSnippet("templates/tail.inc"));
+		
+		if(errorManager.seamlessCompiled())
+			return ParserStatus.COMPILED;
+		else
+			return ParserStatus.ERRORS;
     }
 
 	private String nextForVariable() {

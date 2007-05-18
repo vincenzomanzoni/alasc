@@ -7,14 +7,14 @@ package com.google.code.alasc.errors;
  *
  */
 
-public class Error {
+public class GenericError {
 	protected int beginLine;
 	protected int beginColumn;
 	protected String errorMessage;
 	
 
 	
-	public Error(int beginLine, int beginColumn, String errorMessage) {
+	public GenericError(int beginLine, int beginColumn, String errorMessage) {
 		super();
 		this.beginLine = beginLine;
 		this.beginColumn = beginColumn;

@@ -7,7 +7,7 @@ package com.google.code.alasc.errors;
  *
  */
 
-public class SyntaxError extends Error {
+public class SyntaxError extends GenericError {
 
 	public SyntaxError(int row, int column, String errorMessage) {
 		super(row, column, errorMessage);

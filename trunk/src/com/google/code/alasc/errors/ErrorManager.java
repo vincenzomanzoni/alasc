@@ -25,7 +25,7 @@ public class ErrorManager {
 	 * 
 	 * @param e errore da aggiungere
 	 */
-	public void addError(Error e) {
+	public void addError(GenericError e) {
 		if(e instanceof LexicalError)
 			lexicalErrorList.add((LexicalError)e);
 		
@@ -41,8 +41,8 @@ public class ErrorManager {
 	 * @return una lista di errori registrati. L'ordinamento è errori lessicali
 	 * errori sintattici ed errori semantici, successivamente cronologico.
 	 */
-	public List<Error> getAllErrors(){
-		List<Error> listaErrori = new ArrayList<Error>();
+	public List<GenericError> getAllErrors(){
+		List<GenericError> listaErrori = new ArrayList<GenericError>();
 		
 		listaErrori.addAll(lexicalErrorList);
 		listaErrori.addAll(syntaxErrorList);
@@ -72,4 +72,9 @@ public class ErrorManager {
 		return syntaxErrorList;
 	}
 	
+	public boolean seamlessCompiled(){
+		return 	lexicalErrorList.isEmpty() &&
+				semanticErrorList.isEmpty() &&
+				syntaxErrorList.isEmpty();
+	}
 }
