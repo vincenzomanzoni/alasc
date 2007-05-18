@@ -7,7 +7,7 @@ package com.google.code.alasc.errors;
  *
  */
 
-public class LexicalError extends Error {
+public class LexicalError extends GenericError {
 
 	public LexicalError(int row, int column, String errorMessage) {
 		super(row, column, errorMessage);

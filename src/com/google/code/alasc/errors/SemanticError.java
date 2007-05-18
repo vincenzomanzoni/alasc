@@ -7,7 +7,7 @@ package com.google.code.alasc.errors;
  *
  */
 
-public class SemanticError extends Error {
+public class SemanticError extends GenericError {
 
 	public SemanticError(int row, int column, String errorMessage) {
 		super(row, column, errorMessage);

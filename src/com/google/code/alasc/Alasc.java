@@ -15,6 +15,7 @@ public class Alasc {
 	private static boolean tosEnabled, swfEnabled;
 	
 	private static Parser logoParser;
+	private static ParserStatus parserStatus;
 	
     private static void printUsage() {
         System.err.println("Usage: Alasc input_logo [-s/--swf] pathMtasc <output_flash> [-t/--tos]\n");
@@ -124,7 +125,7 @@ public class Alasc {
          
  		// TODO Rendere robusta la comunicazione con il parser del Logo!
  		// Parsing del file LOGO aperto...
-         logoParser.parse();
+         parserStatus = logoParser.parse();
          
          // Scrittura su file del risultato...
          FileOutputStream fos = null;
@@ -166,6 +167,11 @@ public class Alasc {
 		System.out.println(logoParser.getSymbolsTable());
 	}
     
+	private static void printErrors() {
+		System.out.println("\nErrors:");
+		System.out.println(logoParser.getErrors());
+	}
+	
     public static void main( String[] args ) {
     	
         printBanner();
@@ -173,15 +179,20 @@ public class Alasc {
         printSummary();
         compileLogo();
         
-        if (swfEnabled) {
-        	exportToSwf();
-        }
         
-        if (tosEnabled) {
-        	printTableOfSymbol();
-        }
-        
-        System.exit(0);
+		if (parserStatus == ParserStatus.COMPILED) {
+			System.out.println("\nCompile process has finished succesfully.");
+			if (swfEnabled) {
+				exportToSwf();
+			}
+			if (tosEnabled) {
+				printTableOfSymbol();
+			}
+		} else {
+			System.out.println("\nSome errors occured during compile process.");
+			printErrors();
+		}
+		System.exit(0);
        
     }
 
