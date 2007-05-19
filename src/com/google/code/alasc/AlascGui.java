@@ -88,6 +88,8 @@ public class AlascGui extends javax.swing.JFrame {
         saveButton = new javax.swing.JButton();
         compileButton = new javax.swing.JButton();
         compileExportButton = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        konsole = new javax.swing.JTextArea();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -120,7 +122,7 @@ public class AlascGui extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTextArea2);
 
         jToolBar1.setFloatable(false);
-        openButton.setIcon(new javax.swing.ImageIcon("icons/openALASC.gif"));
+        openButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/openALASC.gif")));
         openButton.setToolTipText("Open new file..");
         openButton.setBorderPainted(false);
         openButton.setContentAreaFilled(false);
@@ -132,7 +134,7 @@ public class AlascGui extends javax.swing.JFrame {
 
         jToolBar1.add(openButton);
 
-        saveButton.setIcon(new javax.swing.ImageIcon("icons/saveALASC.gif"));
+        saveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/saveALASC.gif")));
         saveButton.setToolTipText("Save");
         saveButton.setBorderPainted(false);
         saveButton.setContentAreaFilled(false);
@@ -144,7 +146,7 @@ public class AlascGui extends javax.swing.JFrame {
 
         jToolBar1.add(saveButton);
 
-        compileButton.setIcon(new javax.swing.ImageIcon("icons/comALASC.gif"));
+        compileButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/comALASC.gif")));
         compileButton.setToolTipText("Compile");
         compileButton.setBorderPainted(false);
         compileButton.setContentAreaFilled(false);
@@ -156,11 +158,17 @@ public class AlascGui extends javax.swing.JFrame {
 
         jToolBar1.add(compileButton);
 
-        compileExportButton.setIcon(new javax.swing.ImageIcon("icons/celaALASC.gif"));
+        compileExportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/celaALASC.gif")));
         compileExportButton.setToolTipText("Compile and export");
         compileExportButton.setBorderPainted(false);
         compileExportButton.setContentAreaFilled(false);
         jToolBar1.add(compileExportButton);
+
+        konsole.setColumns(20);
+        konsole.setEditable(false);
+        konsole.setRows(5);
+        konsole.setOpaque(false);
+        jScrollPane3.setViewportView(konsole);
 
         fileMenu.setText("File");
         openMenuItem.setText("Open");
@@ -246,6 +254,10 @@ public class AlascGui extends javax.swing.JFrame {
                 .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
                 .addContainerGap())
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -253,8 +265,10 @@ public class AlascGui extends javax.swing.JFrame {
                 .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 65, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         pack();
@@ -288,6 +302,7 @@ public class AlascGui extends javax.swing.JFrame {
             //TODO <cobtrollare se serve un'attesa'
             //apertura del file da visuallizzare come risultato della compilazione
             openFile(ASFile, jTextArea2);
+            writeKonsole("Compiling... -Please wait- \n");
         }
         
     }//GEN-LAST:event_compileExportMenuActionPerformed
@@ -316,6 +331,7 @@ public class AlascGui extends javax.swing.JFrame {
         }
         status = IDEStatus.DOCSALVATO;
         bloccaBottoni();
+        writeKonsole("Saving file " + logoFile + " \n");
     }//GEN-LAST:event_saveAsMenuItemActionPerformed
     
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
@@ -341,7 +357,9 @@ public class AlascGui extends javax.swing.JFrame {
             logoFile = fc.getSelectedFile();
             openFile(logoFile, jTextArea1);
             status = IDEStatus.DOCSALVATO;
-            bloccaBottoni();
+            bloccaBottoni();           
+            writeKonsole("Opening file" + logoFile + "\n");
+            
         }
     }//GEN-LAST:event_openMenuItemActionPerformed
     
@@ -363,12 +381,20 @@ public class AlascGui extends javax.swing.JFrame {
         openFile(ASFile, jTextArea2);
         status = IDEStatus.DOCCOMPILATO;
         bloccaBottoni();
+        writeKonsole("Compiling... -Please wait- \n");
     }//GEN-LAST:event_compileButtonActionPerformed
     
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
         openMenuItemActionPerformed(evt);
     }//GEN-LAST:event_openButtonActionPerformed
     
+    public void writeKonsole(String cLine){
+    String oldLines = konsole.getText();
+    StringBuffer konsoleCode = new StringBuffer();
+    konsoleCode.append(oldLines);
+    konsoleCode.append(cLine);
+    konsole.setText(konsoleCode.toString());    
+    }
     
     private void openFile(File inputFile, JTextComponent target){
         StringBuffer logoCode = new StringBuffer();
@@ -435,10 +461,12 @@ public class AlascGui extends javax.swing.JFrame {
     private javax.swing.JMenuItem infoButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JEditorPane jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JTextArea konsole;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton openButton;
     private javax.swing.JMenuItem openMenuItem;
