@@ -1,7 +1,9 @@
 package com.google.code.alasc;
 
 public class SemanticException extends Exception {
-
+	
+	public Token currentToken = null;
+	
 	public SemanticException() {
 		// TODO Auto-generated constructor stub
 	}
@@ -20,5 +22,12 @@ public class SemanticException extends Exception {
 		super(arg0, arg1);
 		// TODO Auto-generated constructor stub
 	}
+
+	public SemanticException(Token currentToken, String arg0) {
+		super(arg0);
+		this.currentToken = currentToken;
+	}
+	
+	
 
 }

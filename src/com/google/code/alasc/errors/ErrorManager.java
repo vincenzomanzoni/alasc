@@ -33,7 +33,7 @@ public class ErrorManager {
 			syntaxErrorList.add((SyntaxError)e);
 		
 		if(e instanceof SemanticError)
-			lexicalErrorList.add((LexicalError)e);
+			semanticErrorList.add((SemanticError)e);
 		
 	}
 	
