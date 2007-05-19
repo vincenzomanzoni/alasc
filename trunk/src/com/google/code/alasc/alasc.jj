@@ -110,34 +110,54 @@ PARSER_END(Parser)
 
 SKIP : { " " | "\t" | "\n" | "\r" }
 
-TOKEN :
+TOKEN : /* Variabili e numeri */
 {
-	<NUM: (["0"-"9"])+>
-	| <VARNAME: ":"("_"|["A"-"Z"])("_"|["A"-"Z"]|["0"-"9"])*>
-	| <FD: "FD">
-	| <BK: "BK">
-	| <LT: "LT">
-	| <RT: "RT">
-	| <CLEAN: "CLEAN">
-	| <PENDOWN: "PENDOWN">
-	| <PENUP: "PENUP">
-	| <COLOR: "COLOR">
-	| <SUM: "SUM">
-	| <DIFFERENCE: "DIFFERENCE">
-	| <PRODUCT: "PRODUCT">
-	| <QUOTIENT: "QUOTIENT">
-	| <MAKE: "MAKE">
-	| <LET: "LET">
-	| <LESS: "LESS?"> 
-	| <GREATER: "GREATER?">
-	| <EQUAL: "EQUAL?">
-	| <NOTEQUAL: "NOTEQUAL?">
-	| <IF: "IF">
-	| <REPEAT: "REPEAT">
-	| <LBRACKET: "[">
-	| <RBRACKET: "]">
+	<VARNAME: ":"("_"|["A"-"Z"])("_"|["A"-"Z"]|["0"-"9"])*>
+|   <NUM: (["0"-"9"])+>
+|   <SPACER: (" " | "\t")>
 }
 
+TOKEN : /* Istruzioni di disegno*/
+{
+	<FD:      ("FD")      (<SPACER>)+>
+|	<BK:      ("BK")      (<SPACER>)+>
+|	<LT:      ("LT")      (<SPACER>)+>
+|	<RT:      ("RT")      (<SPACER>)+>
+|	<CLEAN:   ("CLEAN")   (<SPACER>)+>
+|	<PENDOWN: ("PENDOWN") (<SPACER>)+>
+|	<PENUP:   ("PENUP")   (<SPACER>)+>
+|	<COLOR:   ("COLOR")   (<SPACER>)+>
+}
+
+TOKEN : /* Operatori matematici */
+{
+	<SUM:        ("SUM")        (<SPACER>)+>
+|   <DIFFERENCE: ("DIFFERENCE") (<SPACER>)+>
+|   <PRODUCT:    ("PRODUCT")    (<SPACER>)+>
+|   <QUOTIENT:   ("QUOTIENT")   (<SPACER>)+>
+}
+
+TOKEN : /* Gestione delle variabili */
+{
+	<MAKE: ("MAKE") (<SPACER>)+>
+|   <LET:  ("LET")  (<SPACER>)+>
+}
+
+TOKEN: /* Operatori booleani */
+{
+	<LESS:     ("LESS?")     (<SPACER>)+>
+|   <GREATER:  ("GREATER?")  (<SPACER>)+>
+|   <EQUAL:    ("EQUAL?")    (<SPACER>)+>
+|   <NOTEQUAL: ("NOTEQUAL?") (<SPACER>)+>
+}
+
+TOKEN : /* Controllo di flusso */
+{
+	<IF: "IF">
+|   <REPEAT: "REPEAT">
+|   <LBRACKET: "[">
+|   <RBRACKET: "]">
+}
 
 String start(): {String list;}
 { 
@@ -161,22 +181,10 @@ String list(): {String list="", currIstr;}
 String istr(): {String op;}
 { 	
 	try {
-	(
-	op = dr_op()
+	(op = dr_op() | op = var_op() | op = ctrl_str())
 	{
 		return op;
 	} 
-	|
-	op = var_op()
-	{
-		return op;
-	}
-	|
-	op = ctrl_str()
-	{
-		return op;
-	}
-	) 
 	} catch(ParseException e) {	
 		error_skipto(e);
 		errorManager.addError(new SyntaxError(e.currentToken.beginLine,
@@ -192,75 +200,9 @@ String istr(): {String op;}
 	}
 }
 
-JAVACODE
-void error_skipto(ParseException e) {
-	System.err.println(e.toString());
-	
-  	Token t = getToken(0);
-  
-  	// Se t e' un var_op o un dr_op, consumo fino alla prossima istr
-  	// Se t e' un ctrl_str, consumo fino alla parentesi chiusa
-  
-  	switch(t.kind) {
-		case MAKE:
-	  	case LET:
-	  	
-	  	case FD:
-		case BK:
-		case LT:
-		case RT:
-		case CLEAN:
-		case PENDOWN:
-		case PENUP:
-		case COLOR:
-			int i = 1;
-	  		while(getToken(i).kind != MAKE &&
-	  			getToken(i).kind != LET && 
-	  			getToken(i).kind != FD &&
-	  			getToken(i).kind != BK &&
-	  			getToken(i).kind != LT &&
-	  			getToken(i).kind != RT &&
-	  			getToken(i).kind != CLEAN &&
-	  			getToken(i).kind != PENDOWN &&
-	  			getToken(i).kind != PENUP &&
-	  			getToken(i).kind != COLOR &&
-	  			getToken(i).kind != IF &&
-	  			getToken(i).kind != REPEAT &&  		
-	  			getToken(i).kind != EOF) {
-	  			i++;
-		  	}
-  
-	  		for(int j=0; j < i-1; j++) {
-	  			getNextToken();
-	  		}
-	  		break;
-	  		
-	  	case IF:
-	  	case REPEAT:
-	  		i = 0;	
-	  		int numLBracket = 0;
-	  		do {	  			
-	  			i++;
-	  			if(getToken(i).kind == LBRACKET) {
-	  				numLBracket++;
-	  			} else if (getToken(i).kind == RBRACKET) {
-	  				numLBracket--;
-	  			}	  				  				  				  			
-	  		} while((getToken(i).kind != RBRACKET || numLBracket > 0) && getToken(i).kind != EOF);
-	  		
-	  		if (getToken(i).kind != EOF) {
-		  		for(int j = 0; j < i; j++) {
-		  			getNextToken();
-		  		}
-	  		}
-	  		
-	  		break;
-  	}
-}
-
 String dr_op() throws SemanticException : {String expr;}
 {
-	<FD> expr=n_value()
+	(<FD> expr=n_value()
 	{
 		return "goForward(" + expr + ");";
 	}
@@ -298,17 +240,12 @@ String dr_op() throws SemanticException : {String expr;}
 	<PENUP>
 	{
 		return "penUp();";
-	}
+	})
 }
 
 String n_value() throws SemanticException : {String expr;}
 {
-	expr=n_oper()
-	{
-		return expr;
-	}
-	|
-	expr=n_s_value()
+	(expr=n_oper() | expr=n_s_value())
 	{
 		return expr;
 	}
@@ -428,4 +365,70 @@ String ctrl_str() throws SemanticException : {String v,l;}
 		return "for (var $" + forVariable + " : Number = 0; $" + forVariable + 
 			" < (" + v + ") ; $" + forVariable + "++) {" + l + "}";
 	}
+}
+
+JAVACODE
+void error_skipto(ParseException e) {
+	System.err.println(e.toString());
+	
+  	Token t = getToken(0);
+  
+  	// Se t e' un var_op o un dr_op, consumo fino alla prossima istr
+  	// Se t e' un ctrl_str, consumo fino alla parentesi chiusa
+  
+  	switch(t.kind) {
+		case MAKE:
+	  	case LET:
+	  	
+	  	case FD:
+		case BK:
+		case LT:
+		case RT:
+		case CLEAN:
+		case PENDOWN:
+		case PENUP:
+		case COLOR:
+			int i = 1;
+	  		while(getToken(i).kind != MAKE &&
+	  			getToken(i).kind != LET && 
+	  			getToken(i).kind != FD &&
+	  			getToken(i).kind != BK &&
+	  			getToken(i).kind != LT &&
+	  			getToken(i).kind != RT &&
+	  			getToken(i).kind != CLEAN &&
+	  			getToken(i).kind != PENDOWN &&
+	  			getToken(i).kind != PENUP &&
+	  			getToken(i).kind != COLOR &&
+	  			getToken(i).kind != IF &&
+	  			getToken(i).kind != REPEAT &&  		
+	  			getToken(i).kind != EOF) {
+	  			i++;
+		  	}
+  
+	  		for(int j=0; j < i-1; j++) {
+	  			getNextToken();
+	  		}
+	  		break;
+	  		
+	  	case IF:
+	  	case REPEAT:
+	  		i = 0;	
+	  		int numLBracket = 0;
+	  		do {	  			
+	  			i++;
+	  			if(getToken(i).kind == LBRACKET) {
+	  				numLBracket++;
+	  			} else if (getToken(i).kind == RBRACKET) {
+	  				numLBracket--;
+	  			}	  				  				  				  			
+	  		} while((getToken(i).kind != RBRACKET || numLBracket > 0) && getToken(i).kind != EOF);
+	  		
+	  		if (getToken(i).kind != EOF) {
+		  		for(int j = 0; j < i; j++) {
+		  			getNextToken();
+		  		}
+	  		}
+	  		
+	  		break;
+  	}
 }
