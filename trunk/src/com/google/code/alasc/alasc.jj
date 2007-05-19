@@ -74,20 +74,20 @@ public class Parser {
 		flashListing.append(loadTemplateSnippet("templates/head.inc"));
 		
 		// Genero ed inserisco la personalizzazione del template
+		
+		String myCode = null;
 		try {
-			String myCode = start();
-			
-			// Se avviene un errore, restituisco null
-			if(myCode != null) {			
-				Beautifier b = new SimpleBeautifier(2);
-				myCode = b.beautify(myCode);
-			
-				flashListing.append(myCode);
-			}
+			myCode = start();
 		} catch(ParseException pe) {
-			System.out.println(pe.toString());
-		} catch(SemanticException se) {
-			System.out.println(se.toString());
+			// Non dovrebbe verificarsi mai.
+		}
+		
+		// Se avviene un errore, restituisco null
+		if(myCode != null) {			
+			Beautifier b = new SimpleBeautifier(2);
+			myCode = b.beautify(myCode);
+		
+			flashListing.append(myCode);
 		}
 		
 		// Inserisco la chiusura del template
@@ -139,7 +139,7 @@ TOKEN :
 }
 
 
-String start() throws SemanticException : {String list;}
+String start(): {String list;}
 { 
 	list = list()
 	{
@@ -147,7 +147,7 @@ String start() throws SemanticException : {String list;}
 	}
 }
 
-String list() throws SemanticException : {String list="", currIstr;}
+String list(): {String list="", currIstr;}
 { 
 	try{
 	(currIstr = istr() {list += currIstr;} )*
@@ -158,8 +158,7 @@ String list() throws SemanticException : {String list="", currIstr;}
 	
 }
 
-
-String istr() throws SemanticException : {String op;}
+String istr(): {String op;}
 { 	
 	try {
 	(
@@ -181,6 +180,9 @@ String istr() throws SemanticException : {String op;}
 	} catch(ParseException e) {	
 		error_skipto(e);
 		return "";
+	} catch(SemanticException se) {
+			System.out.println(se.toString());
+			return "";
 	}
 }
 
