@@ -179,9 +179,15 @@ String istr(): {String op;}
 	) 
 	} catch(ParseException e) {	
 		error_skipto(e);
+		errorManager.addError(new SyntaxError(e.currentToken.beginLine,
+											  e.currentToken.beginColumn,
+											  e.getMessage()));
 		return "";
 	} catch(SemanticException se) {
-			System.out.println(se.toString());
+			//System.out.println(se.toString());
+			errorManager.addError(new SemanticError(se.currentToken.beginLine,
+											  se.currentToken.beginColumn,
+											  se.getMessage()));
 			return "";
 	}
 }
@@ -315,7 +321,7 @@ String n_s_value() throws SemanticException : {Token t;}
 		String varname = t.image.substring(1);
 		
 		if(!declarations.isReachable(varname, profonditaCorrente)) {
-			throw new SemanticException("[" + t.beginLine + ":" + t.beginColumn + "] Variable " + varname + " isn't declared yet.");
+			throw new SemanticException(t, "Variable " + varname + " isn't declared yet.");
 		}
 		declarations.setAsUsed(varname, profonditaCorrente);
 		return varname;
@@ -359,7 +365,7 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		
 		// Controllo tabella dei simboli
 		if (!declarations.isDeclarable(varname, profonditaCorrente)) {
-			throw new SemanticException("[" + v.beginLine + ":" + v.beginColumn + "] Variable " + varname + " is already declared.");
+			throw new SemanticException(v, "Variable " + varname + " is already declared.");
 		} else {
 			declarations.addDeclaration(varname, profonditaCorrente, v.beginLine, v.beginColumn);
 		}
@@ -379,7 +385,7 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		
 		// Controllo che l'istruzione sia nello scope della variabile.
 		if(!declarations.isReachable(varname, profonditaCorrente)) {
-			throw new SemanticException("[" + v.beginLine + ":" + v.beginColumn + "] Variable " + varname + " isn't declared yet.");
+			throw new SemanticException(v, "Variable " + varname + " isn't declared yet.");
 		}
 		declarations.setAsUsed(varname, profonditaCorrente);
 		return varname + " = " + expr + ";";
