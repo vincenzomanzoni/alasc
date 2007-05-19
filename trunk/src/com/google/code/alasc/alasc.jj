@@ -153,8 +153,8 @@ TOKEN: /* Operatori booleani */
 
 TOKEN : /* Controllo di flusso */
 {
-	<IF: "IF">
-|   <REPEAT: "REPEAT">
+	<IF:     ("IF")     (<SPACER>)+>
+|   <REPEAT: ("REPEAT") (<SPACER>)+>
 |   <LBRACKET: "[">
 |   <RBRACKET: "]">
 }
