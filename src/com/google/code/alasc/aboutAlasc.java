@@ -1,4 +1,4 @@
-//package com.google.code.alasc;
+package com.google.code.alasc;
 
 public class aboutAlasc extends javax.swing.JDialog {
     
@@ -23,7 +23,7 @@ public class aboutAlasc extends javax.swing.JDialog {
         setTitle("ALASC: Info");
         setName("AlascInfo");
         setResizable(false);
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ALASC.jpg")));
+        jLabel1.setIcon(new javax.swing.ImageIcon("icons/ALASC.jpg"));
         jLabel1.setToolTipText("ALASC");
 
         jTextPane1.setBorder(null);
