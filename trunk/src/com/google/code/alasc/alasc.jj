@@ -187,7 +187,10 @@ String istr(): {String op = null;Token t = null;}
 		if(t == null) {			
 			return op;
 		} else {
-			System.out.println("Errore lessicale!");
+			//System.out.println("Errore lessicale!");
+			errorManager.addError(new LexicalError(t.beginLine,
+											  t.beginColumn,
+											  "Lexical error, \""+ t.image + "\" doesn't match with any valid token."));
 			return "";
 		}
 	} 
@@ -375,7 +378,7 @@ String ctrl_str() throws SemanticException : {String v,l;}
 
 JAVACODE
 void error_skipto(ParseException e) {
-	System.err.println(e.toString());
+	// System.err.println(e.toString());
 	
   	Token t = getToken(0);
   
