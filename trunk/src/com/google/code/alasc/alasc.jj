@@ -4,6 +4,8 @@ STATIC = false; // default TRUE
 LOOKAHEAD = 1; // default 1
 IGNORE_CASE = true; // default false
 ERROR_REPORTING = true;
+DEBUG_PARSER= true;
+DEBUG_TOKEN_MANAGER = true;
 }
 
 PARSER_BEGIN(Parser)
@@ -168,7 +170,7 @@ String start(): {String list;}
 	}
 }
 
-String list(): {String list="", currIstr;}
+/*String list(): {String list="", currIstr;}
 { 
 	try{
 	(currIstr = istr() {list += currIstr;} )*
@@ -177,22 +179,26 @@ String list(): {String list="", currIstr;}
 	}
 	} catch(TokenMgrError e) {		System.err.println(e.toString());		return "";	}
 	
+}*/
+
+String list(): {String corr, succ;}
+{
+	corr = istr() succ = list()
+	{
+		return corr + succ;
+	}
+	|
+	{
+		return "";
+	}
 }
 
 String istr(): {String op = null;Token t = null;}
 { 	
 	try {
-	(op = dr_op() | op = var_op() | op = ctrl_str() | t = <OTHER>)
+	(op = dr_op() | op = var_op() | op = ctrl_str())
 	{
-		if(t == null) {			
 			return op;
-		} else {
-			//System.out.println("Errore lessicale!");
-			errorManager.addError(new LexicalError(t.beginLine,
-											  t.beginColumn,
-											  "Lexical error, \""+ t.image + "\" doesn't match with any valid token."));
-			return "";
-		}
 	} 
 	} catch(ParseException e) {	
 		error_skipto(e);
