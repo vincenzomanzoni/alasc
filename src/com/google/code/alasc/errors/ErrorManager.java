@@ -25,28 +25,32 @@ public class ErrorManager {
 	 * 
 	 * @param e errore da aggiungere
 	 */
-	public void addError(GenericError e) {
-		if(e instanceof LexicalError)
-			lexicalErrorList.add((LexicalError)e);
-		
-		if(e instanceof SyntaxError)
-			syntaxErrorList.add((SyntaxError)e);
-		
-		if(e instanceof SemanticError)
-			semanticErrorList.add((SemanticError)e);
-		
-	}
+	//TODO Sistemare sta merda!
+	public void addError(LexicalError e) {
+		lexicalErrorList.add(e);
+	}	
+
+	public void addError(SyntaxError e) {
+		syntaxErrorList.add(e);
+	}	
+	public void addError(SemanticError e) {
+		semanticErrorList.add(e);
+	}	
 	
 	/**
-	 * @return una lista di errori registrati. L'ordinamento è errori lessicali
+	 * @return una lista di errori registrati. L'ordinamento ÔøΩ errori lessicali
 	 * errori sintattici ed errori semantici, successivamente cronologico.
 	 */
 	public List<GenericError> getAllErrors(){
 		List<GenericError> listaErrori = new ArrayList<GenericError>();
 		
-		listaErrori.addAll(lexicalErrorList);
-		listaErrori.addAll(syntaxErrorList);
-		listaErrori.addAll(semanticErrorList);
+		if(!lexicalErrorList.isEmpty()){
+			listaErrori.addAll(lexicalErrorList);
+		} else if(!syntaxErrorList.isEmpty()){
+			listaErrori.addAll(syntaxErrorList);
+		} else if(!semanticErrorList.isEmpty()){
+			listaErrori.addAll(semanticErrorList);
+		}
 		
 		return listaErrori;
 	}
@@ -72,9 +76,21 @@ public class ErrorManager {
 		return syntaxErrorList;
 	}
 	
-	public boolean seamlessCompiled(){
-		return 	lexicalErrorList.isEmpty() &&
-				semanticErrorList.isEmpty() &&
-				syntaxErrorList.isEmpty();
+	public boolean hasErrors(){
+		return 	!lexicalErrorList.isEmpty() ||
+				!semanticErrorList.isEmpty() ||
+				!syntaxErrorList.isEmpty();
+	}
+	
+	public boolean hasLexicalErrors(){
+		return 	!lexicalErrorList.isEmpty();
+	}
+	
+	public boolean hasSyntaxErrors(){
+		return 	!syntaxErrorList.isEmpty();
+	}
+	
+	public boolean hasSemanticErrors(){
+		return 	!semanticErrorList.isEmpty();
 	}
 }

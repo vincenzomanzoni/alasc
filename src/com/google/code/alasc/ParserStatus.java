@@ -1,7 +1,7 @@
 package com.google.code.alasc;
 
 /**
- * Enumerazione per descrivere i possibili stati in cui si pu˜ trovare
+ * Enumerazione per descrivere i possibili stati in cui si puï¿½ trovare
  * il parser alla fine della compilazione.
  * 
  * @author andrea
@@ -9,5 +9,7 @@ package com.google.code.alasc;
  */
 public enum ParserStatus {
 	COMPILED,
-	ERRORS;
+	LEXICALERRORS,
+	SYNTAXERRORS,
+	SEMANTICERRORS;
 }
