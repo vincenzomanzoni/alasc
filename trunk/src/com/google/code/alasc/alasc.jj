@@ -1,11 +1,7 @@
 options
 {
-STATIC = false; // default TRUE
-LOOKAHEAD = 1; // default 1
-IGNORE_CASE = true; // default false
-ERROR_REPORTING = true;
-DEBUG_PARSER= true;
-DEBUG_TOKEN_MANAGER = true;
+STATIC = false;
+IGNORE_CASE = true;
 }
 
 PARSER_BEGIN(Parser)
@@ -62,10 +58,8 @@ public class Parser {
     	return snippet.toString();
     }
     
-    // TODO: far ritornare l'esito della compilazione come da UML
     public ParserStatus parse(){
     	
-    	// symbolsTable = new HashSet<Symbol>();
 		declarations = new DeclarationSet();
 		errorManager = new ErrorManager();
 		flashListing = new StringBuffer();
@@ -96,10 +90,16 @@ public class Parser {
 		// Inserisco la chiusura del template
 		flashListing.append(loadTemplateSnippet("templates/tail.inc"));
 		
-		if(errorManager.seamlessCompiled())
+		if(errorManager.hasLexicalErrors()){
+			return ParserStatus.LEXICALERRORS;
+		} else if (errorManager.hasSyntaxErrors()){
+			return ParserStatus.SYNTAXERRORS;
+		} else if (errorManager.hasSemanticErrors()){
+			return ParserStatus.SEMANTICERRORS;
+		} else {
 			return ParserStatus.COMPILED;
-		else
-			return ParserStatus.ERRORS;
+		}
+		
     }
 
 	private String nextForVariable() {
@@ -121,77 +121,74 @@ TOKEN : /* Variabili e numeri */
 
 TOKEN : /* Istruzioni di disegno*/
 {
-	<FD:      ("FD")>
-|	<BK:      ("BK")>
-|	<LT:      ("LT")>
-|	<RT:      ("RT")>
-|	<CLEAN:   ("CLEAN")>
-|	<PENDOWN: ("PENDOWN")>
-|	<PENUP:   ("PENUP")>
-|	<COLOR:   ("COLOR")>
+	<FD:      ("FD") (<SPACER>)+>
+|	<BK:      ("BK") (<SPACER>)+>
+|	<LT:      ("LT") (<SPACER>)+>
+|	<RT:      ("RT") (<SPACER>)+>
+|	<CLEAN:   ("CLEAN") (<SPACER>)+>
+|	<PENDOWN: ("PENDOWN") (<SPACER>)+>
+|	<PENUP:   ("PENUP") (<SPACER>)+>
+|	<COLOR:   ("COLOR") (<SPACER>)+>
 }
 
 TOKEN : /* Operatori matematici */
 {
-	<SUM:        ("SUM")>
-|   <DIFFERENCE: ("DIFFERENCE")>
-|   <PRODUCT:    ("PRODUCT")>
-|   <QUOTIENT:   ("QUOTIENT")>
+	<SUM:        ("SUM") (<SPACER>)+>
+|   <DIFFERENCE: ("DIFFERENCE") (<SPACER>)+>
+|   <PRODUCT:    ("PRODUCT") (<SPACER>)+>
+|   <QUOTIENT:   ("QUOTIENT") (<SPACER>)+>
 }
 
 TOKEN : /* Gestione delle variabili */
 {
-	<MAKE: ("MAKE")>
-|   <LET:  ("LET")>
+	<MAKE: ("MAKE") (<SPACER>)+>
+|   <LET:  ("LET") (<SPACER>)+>
 }
 
 TOKEN: /* Operatori booleani */
 {
-	<LESS:     ("LESS?")>
-|   <GREATER:  ("GREATER?")>
-|   <EQUAL:    ("EQUAL?")>
-|   <NOTEQUAL: ("NOTEQUAL?")>
+	<LESS:     ("LESS?") (<SPACER>)+>
+|   <GREATER:  ("GREATER?") (<SPACER>)+>
+|   <EQUAL:    ("EQUAL?") (<SPACER>)+>
+|   <NOTEQUAL: ("NOTEQUAL?") (<SPACER>)+>
 }
 
 TOKEN : /* Controllo di flusso */
 {
-	<IF:     ("IF")>
-|   <REPEAT: ("REPEAT")>
+	<IF:     ("IF") (<SPACER>)+>
+|   <REPEAT: ("REPEAT") (<SPACER>)+>
 |   <LBRACKET: "[">
 |   <RBRACKET: "]">
-|   <OTHER: (~[" ","\n","\r","[","]"])+>
+|	<#SPACER: ["\n","\t","\r", " "]>
 }
 
 String start(): {String list;}
 { 
-	list = list()
+	try{
+		list = list() <EOF>
 	{
 		return list;
 	}
+	} catch(TokenMgrError e) {
+		Token t = getToken(0);
+		errorManager.addError(new LexicalError(t.beginLine,
+											  t.beginColumn,
+											  e.getMessage()));
+		return "";
+	}
 }
 
-/*String list(): {String list="", currIstr;}
+String list(): {String list="", currIstr;}
 { 
-	try{
 	(currIstr = istr() {list += currIstr;} )*
 	{
 		return list;
 	}
-	} catch(TokenMgrError e) {		System.err.println(e.toString());		return "";	}
-	
-}*/
 
-String list(): {String corr, succ;}
-{
-	corr = istr() succ = list()
-	{
-		return corr + succ;
-	}
-	|
-	{
-		return "";
-	}
+	
 }
+
+
 
 String istr(): {String op = null;Token t = null;}
 { 	
@@ -201,13 +198,12 @@ String istr(): {String op = null;Token t = null;}
 			return op;
 	} 
 	} catch(ParseException e) {	
-		error_skipto(e);
+		error_skipto();
 		errorManager.addError(new SyntaxError(e.currentToken.beginLine,
 											  e.currentToken.beginColumn,
 											  e.getMessage()));
 		return "";
 	} catch(SemanticException se) {
-			//System.out.println(se.toString());
 			errorManager.addError(new SemanticError(se.currentToken.beginLine,
 											  se.currentToken.beginColumn,
 											  se.getMessage()));
@@ -383,8 +379,7 @@ String ctrl_str() throws SemanticException : {String v,l;}
 }
 
 JAVACODE
-void error_skipto(ParseException e) {
-	// System.err.println(e.toString());
+void error_skipto() {
 	
   	Token t = getToken(0);
   

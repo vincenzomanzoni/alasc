@@ -5,6 +5,9 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
+
+import com.google.code.alasc.errors.GenericError;
 
 import jargs.gnu.CmdLineParser;                                                 
 
@@ -127,18 +130,20 @@ public class Alasc {
  		// Parsing del file LOGO aperto...
          parserStatus = logoParser.parse();
          
-         // Scrittura su file del risultato...
-         FileOutputStream fos = null;
-         
- 		 try {
- 			fos = new FileOutputStream(outputFileName);
- 		 } catch (FileNotFoundException e) {
- 			System.err.println("The specified output file cannot be written.");
-         	System.exit(2);
- 		 }
- 		
-         PrintStream ps=new PrintStream(fos);
-         ps.println(logoParser.getCode());
+		if (parserStatus == ParserStatus.COMPILED) {
+			// Scrittura su file del risultato...
+			FileOutputStream fos = null;
+			try {
+				fos = new FileOutputStream(outputFileName);
+			} catch (FileNotFoundException e) {
+				System.err
+						.println("The specified output file cannot be written.");
+				System.exit(2);
+			}
+			PrintStream ps = new PrintStream(fos);
+			ps.println(logoParser.getCode());
+		}
+		
     }
     
     // TODO Sistemare le chiamate di sistema
@@ -169,7 +174,22 @@ public class Alasc {
     
 	private static void printErrors() {
 		System.out.println("\nErrors:");
-		System.out.println(logoParser.getErrors());
+		
+		switch(parserStatus){
+			case LEXICALERRORS:
+			case SYNTAXERRORS:
+			case SEMANTICERRORS:
+				//System.out.println(logoParser.getErrors());
+				List<GenericError> errorList = logoParser.getErrors();
+				
+				int i = 1;
+				for(GenericError g: errorList){
+					System.out.println(i++ +") " + g);
+				}
+				
+				break;
+		}
+		
 	}
 	
     public static void main( String[] args ) {
