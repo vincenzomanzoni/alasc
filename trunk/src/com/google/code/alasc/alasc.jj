@@ -24,36 +24,25 @@ public class Parser {
 	// parser.java. Bloody JavaCC!!!
 		public List<GenericError>getErrors()	{	  return errorManager.getAllErrors();	}	public String getCode(){	  return flashListing.toString();	}	public ArrayList<Declaration> getSymbolsTable(){	  return declarations.getHistory();	}
 	
-	// FIX: lettura più efficiente
-    private String loadTemplateSnippet(String url){
-    	FileInputStream fis = null;
+    private String loadTemplateSnippet(String templatePath){
+    	
+    	File templateFile = new File(templatePath);
+    	Scanner scanner = null;
 		try {
-			fis = new FileInputStream(url);
+			scanner = new Scanner(templateFile);
 		} catch (FileNotFoundException e) {
-			System.out.println("Errore nell'apertura del file " + url);
+			return "";
 		}
-    	InputStreamReader isr = new InputStreamReader(fis);
-    	BufferedReader myReader = new BufferedReader(isr);
-    	
-    	StringBuffer snippet = new StringBuffer();
-    	String line = null;
-    	
-    	try {
-			line = myReader.readLine();
-		} catch (IOException e) {
-			System.out.println("Errore nella lettura del file " + url);
-		}
-    	String eol = System.getProperty("line.separator");
-    	while(line!=null){
-    		snippet.append(line);
+		
+		StringBuffer snippet = new StringBuffer();
+		String eol = System.getProperty("line.separator");
+		String line;
+        while (scanner.hasNextLine()) {
+        	line = scanner.nextLine();
+        	snippet.append(line);
     		snippet.append(eol);
-    		
-    		try {
-				line = myReader.readLine();
-			} catch (IOException e) {
-			System.out.println("Errore nella lettura del file " + url);
-    		}
-    	}
+        }
+        scanner.close();    		
     	
     	return snippet.toString();
     }
@@ -67,7 +56,12 @@ public class Parser {
   	    random = new Random();
     	
     	// Inserisco l'intestazione del template
-		flashListing.append(loadTemplateSnippet("templates/head.inc"));
+    	String head = loadTemplateSnippet("templates/head.inc");
+    	if (!head.equals("")) {
+			flashListing.append(head);
+		} else {
+			return ParserStatus.TEMPLATEERRORS;
+    	}
 		
 		// Genero ed inserisco la personalizzazione del template
 		
@@ -88,7 +82,12 @@ public class Parser {
 		}
 		
 		// Inserisco la chiusura del template
-		flashListing.append(loadTemplateSnippet("templates/tail.inc"));
+		String tail = loadTemplateSnippet("templates/tail.inc");
+		if (!tail.equals("")) {
+			flashListing.append(tail);
+		} else {
+			return ParserStatus.TEMPLATEERRORS;
+    	}
 		
 		if(errorManager.hasLexicalErrors()){
 			return ParserStatus.LEXICALERRORS;
