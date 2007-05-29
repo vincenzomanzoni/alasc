@@ -15,6 +15,6 @@ public class SemanticError extends GenericError {
 	}
 
 	public String toString() {
-		return "Semantic error on " + beginLine + ":" + beginColumn + " " + errorMessage;
+		return "Semantic error on " + beginLine + ":" + beginColumn + ": " + errorMessage;
 	}
 }
