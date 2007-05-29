@@ -176,6 +176,9 @@ public class Alasc {
 		System.out.println("\nErrors:");
 		
 		switch(parserStatus){
+			case TEMPLATEERRORS:
+				System.err.println("There are errors in template reading!");
+				break;
 			case LEXICALERRORS:
 			case SYNTAXERRORS:
 			case SEMANTICERRORS:
@@ -184,7 +187,7 @@ public class Alasc {
 				
 				int i = 1;
 				for(GenericError g: errorList){
-					System.out.println(i++ +") " + g);
+					System.err.println(i++ +") " + g);
 				}
 				
 				break;

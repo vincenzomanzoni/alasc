@@ -9,6 +9,7 @@ package com.google.code.alasc;
  */
 public enum ParserStatus {
 	COMPILED,
+	TEMPLATEERRORS,
 	LEXICALERRORS,
 	SYNTAXERRORS,
 	SEMANTICERRORS;
