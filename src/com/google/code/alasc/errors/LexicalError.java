@@ -15,7 +15,7 @@ public class LexicalError extends GenericError {
 	}
 	
 	public String toString() {
-		return "Lexical error on " + beginLine + ":" + beginColumn + " " + errorMessage;
+		return errorMessage;
 	}
 
 }

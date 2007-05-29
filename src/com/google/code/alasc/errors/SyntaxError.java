@@ -15,6 +15,6 @@ public class SyntaxError extends GenericError {
 	}
 
 	public String toString() {
-		return "Syntax error on " + beginLine + ":" + beginColumn + " " + errorMessage;
+		return "Syntax error: " + errorMessage;
 	}
 }
