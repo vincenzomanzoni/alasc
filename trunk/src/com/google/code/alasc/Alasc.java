@@ -154,13 +154,24 @@ public class Alasc {
 			FileOutputStream fos = null;
 			try {
 				fos = new FileOutputStream(outputFileName);
+				PrintStream ps = new PrintStream(fos);
+				ps.println(logoParser.getCode());
+				ps.close();
+				fos.close();
+				
+				// TODO: copiare il file Pen.as dalla directory template alla directory di
+				// destinazione
+				
+				
 			} catch (FileNotFoundException e) {
 				System.err
 						.println("The specified output file cannot be written.");
 				System.exit(2);
+			} catch (IOException e) {
+				System.err
+						.println("An error is occours during file closure.");
+				System.exit(2);
 			}
-			PrintStream ps = new PrintStream(fos);
-			ps.println(logoParser.getCode());
 		}
 		
     }
