@@ -1,10 +1,12 @@
 package com.google.code.alasc;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URL;
 import java.util.List;
 
 import com.google.code.alasc.errors.GenericError;
@@ -19,6 +21,23 @@ public class Alasc {
 	
 	private static Parser logoParser;
 	private static ParserStatus parserStatus;
+	
+	private enum OsName{
+		WINDOWS, NIX;
+	}
+	
+	private static OsName osName;
+	
+	private static void initEnv(){
+		
+		
+		
+		if(System.getProperty("os.name").toLowerCase().indexOf("windows")!=-1){
+			osName = OsName.WINDOWS;
+		} else {
+			osName = OsName.NIX;
+		}
+	}
 	
     private static void printUsage() {
         System.err.println("Usage: Alasc input_logo [-s/--swf] pathMtasc <output_flash> [-t/--tos]\n");
@@ -151,7 +170,7 @@ public class Alasc {
     	
     	String mtascCall;
     	
-    	if(System.getProperty("os.name").toLowerCase().indexOf("windows")!=-1){
+    	if(osName == OsName.WINDOWS){
     		System.out.println("Compiling with mtasc.exe (win32)...");
     		mtascCall = pathMtasc + "mtasc.exe Pen.as Disegno.as -main -header 800:600:0 -swf " + swfFileName;
     	} else {
@@ -195,16 +214,58 @@ public class Alasc {
 		
 	}
 	
+	public static void copiaLibrerie(){
+		
+		String 	copyCall;
+		
+		// recupero la directory dove sono memorizzate le risorse
+		String mainClassName = Alasc.class.getName().replaceAll("\\.", "/") + ".class";
+		String completePath = Alasc.class.getClassLoader().getResource(mainClassName).getPath();
+		String daTogliere = "bin/" + mainClassName;
+		String applicationPath = completePath.substring(0, (completePath.length() - daTogliere.length()));
+		//System.out.println(applicationPath);
+			
+		System.out.println("Copying Pen.as in current directory...");  
+		
+		if(osName == OsName.WINDOWS){
+    		copyCall = "copy "+ applicationPath +"templates/Pen.as .";
+    		
+    	} else { 		
+    		copyCall = "cp " + applicationPath +"templates/Pen.as ./";
+    	}
+    	try {
+    		// FIX eliminare
+    		System.out.println(copyCall);
+			Runtime.getRuntime().exec(copyCall);
+		} catch (IOException e) {
+			System.err.println("A problem occured while Pen.as was copying.");
+			System.exit(2);
+		}
+		
+		
+	}
+	
     public static void main( String[] args ) {
     	
+    	initEnv();
         printBanner();
         parseCommandLine(args);
         printSummary();
         compileLogo();
         
         
+        
 		if (parserStatus == ParserStatus.COMPILED) {
+			// In caso di compilazione riuscita, devo:
+			// 1. copiare il file Pen.as nella posione del compilato
+			// 2. se richiesto, avviare la compilazione dell'AS in flash
+			
+			// Copiatura del file ^application path^/templates/Pen.as
+			copiaLibrerie();
+			
 			System.out.println("\nCompile process has finished succesfully.");
+			
+			// Compilazione del file AS in flash
 			if (swfEnabled) {
 				exportToSwf();
 			}
@@ -212,6 +273,7 @@ public class Alasc {
 				printTableOfSymbol();
 			}
 		} else {
+			// Se la compilazione fallisse, devo mostrare gli errori
 			System.out.println("\nSome errors occured during compile process.");
 			printErrors();
 		}
