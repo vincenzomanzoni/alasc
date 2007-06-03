@@ -9,6 +9,7 @@ package com.google.code.alasc;
 
 import java.io.*;
 import java.util.*;
+import java.net.URL;
 import com.google.code.alasc.errors.*;
 
 public class Parser {
@@ -55,8 +56,14 @@ public class Parser {
 		profonditaCorrente = 0;
   	    random = new Random();
     	
+    	// Recupero la directory dell'applicazione
+		String mainClassName = Alasc.class.getName().replaceAll("\\.", "/") + ".class";
+		String completePath = Alasc.class.getClassLoader().getResource(mainClassName).getPath();
+		String daTogliere = "bin/" + mainClassName;
+		String applicationPath = completePath.substring(0, (completePath.length() - daTogliere.length()));
+    	
     	// Inserisco l'intestazione del template
-    	String head = loadTemplateSnippet("templates/head.inc");
+    	String head = loadTemplateSnippet(applicationPath + "templates/head.inc");
     	if (!head.equals("")) {
 			flashListing.append(head);
 		} else {
@@ -82,7 +89,7 @@ public class Parser {
 		}
 		
 		// Inserisco la chiusura del template
-		String tail = loadTemplateSnippet("templates/tail.inc");
+		String tail = loadTemplateSnippet(applicationPath + "templates/tail.inc");
 		if (!tail.equals("")) {
 			flashListing.append(tail);
 		} else {
