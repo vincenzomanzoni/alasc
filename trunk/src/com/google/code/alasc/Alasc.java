@@ -1,12 +1,14 @@
 package com.google.code.alasc;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.util.List;
 
 import com.google.code.alasc.errors.GenericError;
@@ -238,22 +240,30 @@ public class Alasc {
 			
 		System.out.println("Copying Pen.as in current directory...");  
 		
+		// Windows fa le bizze...
 		if(osName == OsName.WINDOWS){
-    		copyCall = "copy "+ applicationPath +"templates/Pen.as .";
-    		
-    	} else { 		
-    		copyCall = "cp " + applicationPath +"templates/Pen.as ./";
-    	}
-    	try {
-    		// FIX eliminare
-    		System.out.println(copyCall);
-			Runtime.getRuntime().exec(copyCall);
-		} catch (IOException e) {
-			System.err.println("A problem occured while Pen.as was copying.");
-			System.exit(2);
-		}
+			applicationPath = applicationPath.substring(1);
+			applicationPath = applicationPath.replace("/", "\\");
+    	} 
 		
-		
+		try {
+	        // Create channel on the source
+	        FileChannel srcChannel = new FileInputStream(applicationPath + "templates/Pen.as").getChannel();
+	    
+	        // Create channel on the destination
+	        FileChannel dstChannel = new FileOutputStream("./Pen.as").getChannel();
+	    
+	        // Copy file contents from source to destination
+	        dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
+	    
+	        // Close the channels
+	        srcChannel.close();
+	        dstChannel.close();
+	    } catch (IOException e) {
+	    	System.err.println("A problem occured while Pen.as was copying.");
+	    	System.exit(2);
+	    }
+
 	}
 	
     public static void main( String[] args ) {
