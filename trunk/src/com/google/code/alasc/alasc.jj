@@ -61,7 +61,7 @@ public class Parser {
 		String completePath = Alasc.class.getClassLoader().getResource(mainClassName).getPath();
 		String daTogliere = "bin/" + mainClassName;
 		String applicationPath = completePath.substring(0, (completePath.length() - daTogliere.length()));
-    	
+
     	// Inserisco l'intestazione del template
     	String head = loadTemplateSnippet(applicationPath + "templates/head.inc");
     	if (!head.equals("")) {
@@ -117,7 +117,11 @@ public class Parser {
 }
 PARSER_END(Parser)
 
-SKIP : {" " | "\t" | "\n" | "\r" }
+SKIP : {" " 
+	| "\t" 
+	| "\n" 
+	| "\r" 
+	| <NUMERAL_COMMENT: ";" (~["\n","\r"])* ("\n" | "\r" | "\r\n")>}
 
 TOKEN : /* Variabili e numeri */
 {
@@ -190,11 +194,7 @@ String list(): {String list="", currIstr;}
 	{
 		return list;
 	}
-
-	
 }
-
-
 
 String istr(): {String op = null;Token t = null;}
 { 	
