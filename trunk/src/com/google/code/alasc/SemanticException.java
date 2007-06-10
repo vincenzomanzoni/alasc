@@ -23,6 +23,13 @@ public class SemanticException extends Exception {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * Genera una nuova SemanticException a partire dal token che l'ha generata
+	 * e dalla stringa da mostrare come errore.
+	 * 
+	 * @param currentToken il token che genera l'errore semantico
+	 * @param arg0 una stringa descrittiva dell'errore
+	 */
 	public SemanticException(Token currentToken, String arg0) {
 		super(arg0);
 		this.currentToken = currentToken;
