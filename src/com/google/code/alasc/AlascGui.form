@@ -119,12 +119,12 @@
               <Component id="jToolBar1" min="-2" pref="30" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane2" pref="184" max="32767" attributes="2"/>
-                  <Component id="jScrollPane1" alignment="0" pref="184" max="32767" attributes="3"/>
+                  <Component id="jScrollPane2" pref="162" max="32767" attributes="2"/>
+                  <Component id="jScrollPane1" alignment="0" pref="162" max="32767" attributes="3"/>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="jScrollPane3" min="-2" pref="65" max="-2" attributes="0"/>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jScrollPane3" min="-2" pref="87" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
