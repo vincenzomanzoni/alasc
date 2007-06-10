@@ -1,10 +1,10 @@
 package com.google.code.alasc;
 
 /**
- * Enumerazione per descrivere i possibili stati in cui si puï¿½ trovare
+ * Enumerazione per descrivere i possibili stati in cui si può trovare
  * il parser alla fine della compilazione.
  * 
- * @author andrea
+ * @author Andrea Rota
  *
  */
 public enum ParserStatus {

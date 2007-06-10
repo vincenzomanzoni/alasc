@@ -21,6 +21,7 @@ public class AllTests {
 		//$JUnit-BEGIN$
 		suite.addTestSuite(ErrorManagerTest.class);
 		suite.addTestSuite(DeclarationTest.class);
+		suite.addTestSuite(SimpleBeautifierTest.class);
 		//$JUnit-END$
 		return suite;
 	}

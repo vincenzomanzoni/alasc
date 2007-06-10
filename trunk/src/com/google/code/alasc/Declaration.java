@@ -1,7 +1,5 @@
 package com.google.code.alasc;
 
-
-
 public class Declaration{
 	private String variableName;
 	private String uniqueName;
