@@ -263,15 +263,12 @@ public class Alasc {
 
 	}
 	
-    public static void main( String[] args ) {
-    	
+    public static void main( String[] args ) {    	
     	initEnv();
         printBanner();
         parseCommandLine(args);
         printSummary();
-        compileLogo();
-        
-        
+        compileLogo();       
         
 		if (parserStatus == ParserStatus.COMPILED) {
 			// In caso di compilazione riuscita, devo:
