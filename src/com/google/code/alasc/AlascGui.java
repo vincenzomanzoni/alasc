@@ -1,5 +1,5 @@
 package com.google.code.alasc;
-
+ 
 import java.awt.*;
 import javax.swing.*;
 import java.io.*;
@@ -170,7 +170,7 @@ public class AlascGui extends javax.swing.JFrame {
 
         konsole.setColumns(20);
         konsole.setEditable(false);
-        konsole.setRows(5);
+        konsole.setRows(9);
         konsole.setOpaque(false);
         jScrollPane3.setViewportView(konsole);
 
