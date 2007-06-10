@@ -288,6 +288,7 @@ public class AlascGui extends javax.swing.JFrame {
         bloccaBottoni();
     }//GEN-LAST:event_jTextArea1KeyTyped
     
+    /*
     private void compileExportMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileExportMenuActionPerformed
         //chiamata di sistema per compilare da riga di comando
         JFileChooser fc = new JFileChooser();
@@ -323,7 +324,7 @@ public class AlascGui extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_compileExportMenuActionPerformed
-    
+    */
     private void buildMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buildMenuActionPerformed
 // TODO add your handling code here:
     }//GEN-LAST:event_buildMenuActionPerformed
