@@ -91,7 +91,7 @@ public class AlascGui extends javax.swing.JFrame {
         openButton = new javax.swing.JButton();
         saveButton = new javax.swing.JButton();
         compileButton = new javax.swing.JButton();
-        compileExportButton = new javax.swing.JButton();
+        //compileExportButton = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         konsole = new javax.swing.JTextArea();
         menuBar = new javax.swing.JMenuBar();
@@ -104,7 +104,7 @@ public class AlascGui extends javax.swing.JFrame {
         exitMenuItem = new javax.swing.JMenuItem();
         buildMenu = new javax.swing.JMenu();
         compileMenu = new javax.swing.JMenuItem();
-        compileExportMenu = new javax.swing.JMenuItem();
+        //compileExportMenu = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ALASC: A Logo to ActionScript Compiler");
@@ -126,7 +126,7 @@ public class AlascGui extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTextArea2);
 
         jToolBar1.setFloatable(false);
-        openButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/openALASC.gif")));
+        openButton.setIcon(new javax.swing.ImageIcon("icons/openALASC.gif"));
         openButton.setToolTipText("Open new file..");
         openButton.setBorderPainted(false);
         openButton.setContentAreaFilled(false);
@@ -138,7 +138,7 @@ public class AlascGui extends javax.swing.JFrame {
 
         jToolBar1.add(openButton);
 
-        saveButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/saveALASC.gif")));
+        saveButton.setIcon(new javax.swing.ImageIcon("icons/saveALASC.gif"));
         saveButton.setToolTipText("Save");
         saveButton.setBorderPainted(false);
         saveButton.setContentAreaFilled(false);
@@ -150,7 +150,7 @@ public class AlascGui extends javax.swing.JFrame {
 
         jToolBar1.add(saveButton);
 
-        compileButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/comALASC.gif")));
+        compileButton.setIcon(new javax.swing.ImageIcon("icons/comALASC.gif"));
         compileButton.setToolTipText("Compile");
         compileButton.setBorderPainted(false);
         compileButton.setContentAreaFilled(false);
@@ -162,11 +162,11 @@ public class AlascGui extends javax.swing.JFrame {
 
         jToolBar1.add(compileButton);
 
-        compileExportButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/celaALASC.gif")));
-        compileExportButton.setToolTipText("Compile and export");
-        compileExportButton.setBorderPainted(false);
-        compileExportButton.setContentAreaFilled(false);
-        jToolBar1.add(compileExportButton);
+        //compileExportButton.setIcon(new javax.swing.ImageIcon("icons/celaALASC.gif"));
+        //compileExportButton.setToolTipText("Compile and export");
+        //compileExportButton.setBorderPainted(false);
+        //compileExportButton.setContentAreaFilled(false);
+        //jToolBar1.add(compileExportButton);
 
         konsole.setColumns(20);
         konsole.setEditable(false);
@@ -234,14 +234,15 @@ public class AlascGui extends javax.swing.JFrame {
         compileMenu.setText("Compile");
         buildMenu.add(compileMenu);
 
-        compileExportMenu.setText("Compile and export...");
-        compileExportMenu.addActionListener(new java.awt.event.ActionListener() {
+        //compileExportMenu.setText("Compile and export...");
+        /*compileExportMenu.addActionListener(new java.awt.event.ActionListener() 
+        {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 compileExportMenuActionPerformed(evt);
             }
-        });
+        });*/
 
-        buildMenu.add(compileExportMenu);
+        //buildMenu.add(compileExportMenu);
 
         menuBar.add(buildMenu);
 
@@ -279,7 +280,7 @@ public class AlascGui extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed
-      //  new aboutAlasc(new javax.swing.JFrame(), true).setVisible(true);
+        new aboutAlasc(new javax.swing.JFrame(), true).setVisible(true);
     }//GEN-LAST:event_infoButtonActionPerformed
     
     private void jTextArea1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextArea1KeyTyped
@@ -380,7 +381,7 @@ public class AlascGui extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_openMenuItemActionPerformed
     
-    private void compileButtonActionPerformed(java.awt.event.ActionEvent evt) {                                             
+    private void compileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileButtonActionPerforme
     	String alascCall;
     	if(System.getProperty("os.name").toLowerCase().indexOf("windows")!=-1){
     		alascCall = "java -cp bin/;lib/jargs.jar com.google.code.alasc.Alasc \"" + logoFile.getAbsoluteFile()+"\"";
@@ -429,7 +430,7 @@ public class AlascGui extends javax.swing.JFrame {
         openFile(ASFile, jTextArea2);
         status = IDEStatus.DOCCOMPILATO;
         bloccaBottoni();
-    }                                             
+    }//GEN-LAST:event_compileButtonActionPerformed
     
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
         openMenuItemActionPerformed(evt);
@@ -445,7 +446,7 @@ public class AlascGui extends javax.swing.JFrame {
     
     private void openFile(File inputFile, JTextComponent target){
         StringBuffer logoCode = new StringBuffer();
-        FileInputStream fis = null; 
+        FileInputStream fis = null;
         try {
             fis = new FileInputStream(inputFile);
         } catch (FileNotFoundException e) {
@@ -500,8 +501,8 @@ public class AlascGui extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu buildMenu;
     private javax.swing.JButton compileButton;
-    private javax.swing.JButton compileExportButton;
-    private javax.swing.JMenuItem compileExportMenu;
+    //private javax.swing.JButton compileExportButton;
+    //private javax.swing.JMenuItem compileExportMenu;
     private javax.swing.JMenuItem compileMenu;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
