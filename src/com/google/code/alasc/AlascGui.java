@@ -5,6 +5,19 @@ import javax.swing.*;
 import java.io.*;
 import javax.swing.text.JTextComponent;
 
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 /**
  *
  * @author  vittorio
@@ -280,7 +293,7 @@ public class AlascGui extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed
-        new aboutAlasc(new javax.swing.JFrame(), true).setVisible(true);
+        new AlascGuiAbout(new javax.swing.JFrame(), true).setVisible(true);
     }//GEN-LAST:event_infoButtonActionPerformed
     
     private void jTextArea1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextArea1KeyTyped
