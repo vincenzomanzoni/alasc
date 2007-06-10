@@ -294,8 +294,9 @@ public class AlascGui extends javax.swing.JFrame {
         File swfFile = null;
         if (returnVal == JFileChooser.APPROVE_OPTION){
             swfFile = fc.getSelectedFile();
+            writeConsole("Sto cercando di compilare!");
             String alascCall = "java Alasc " + logoFile.getAbsoluteFile() + "--swf " + swfFile.getAbsoluteFile();
-        	writeKonsole(alascCall +"\n");
+        	writeConsole(alascCall +"\n");
         	//todo afe
         	
             try {
@@ -307,7 +308,7 @@ public class AlascGui extends javax.swing.JFrame {
                       (new InputStreamReader(proc.getInputStream()));
                   while ((line = input.readLine()) != null) {
                     System.out.println(line);}
-                  writeKonsole(line);
+                  writeConsole(line);
             	//Runtime.getRuntime().exec(alascCall);
             } catch (IOException e) {
                 System.err.println("There is some trouble with ALASC. Check that ALASC path is correct.");
@@ -317,7 +318,7 @@ public class AlascGui extends javax.swing.JFrame {
             //String disegno =   "/Disegno.as";
             String LogoFileLocation = logoFile.getParent() +"/Disegno.as";
             ASFile = new File(LogoFileLocation);
-            writeKonsole("Compiling... -Please wait- \n");
+            writeConsole("Compiling... -Please wait- \n");
         }
         
     }//GEN-LAST:event_compileExportMenuActionPerformed
@@ -346,7 +347,7 @@ public class AlascGui extends javax.swing.JFrame {
         }
         status = IDEStatus.DOCSALVATO;
         bloccaBottoni();
-        writeKonsole("Saving file " + logoFile + " \n");
+        writeConsole("Saving file " + logoFile + " \n");
     }//GEN-LAST:event_saveAsMenuItemActionPerformed
     
     private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
@@ -373,49 +374,67 @@ public class AlascGui extends javax.swing.JFrame {
             openFile(logoFile, jTextArea1);
             status = IDEStatus.DOCSALVATO;
             bloccaBottoni();           
-            writeKonsole("Opening file" + logoFile + "\n");
+            writeConsole("Opening file" + logoFile + "\n");
             
         }
     }//GEN-LAST:event_openMenuItemActionPerformed
     
-    private void compileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileButtonActionPerformed
-        //chiamata di sistema per compilare da riga di comando
-    	String alascCall = "java Alasc " + logoFile.getAbsoluteFile();
-    	writeKonsole(alascCall +"\n");
-    	//todo afe
+    private void compileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileButtonActionPerforme
+    	String alascCall;
+    	if(System.getProperty("os.name").toLowerCase().indexOf("windows")!=-1){
+    		alascCall = "java -cp bin/;lib/jargs.jar com.google.code.alasc.Alasc \"" + logoFile.getAbsoluteFile()+"\"";
+		} else {
+			alascCall = "java -cp bin/:lib/jargs.jar com.google.code.alasc.Alasc \"" + logoFile.getAbsoluteFile()+"\"";
+		}
+    	 
+    	writeConsole(alascCall + "\n");
     	
         try {
-        	/*String line;
-            Runtime rt = Runtime.getRuntime();
-            Process proc = rt.exec(alascCall);
-            BufferedReader input =
-                new BufferedReader
-                  (new InputStreamReader(proc.getInputStream()));
-              while ((line = input.readLine()) != null) {
-                System.out.println(line);}
-              writeKonsole(line);*/
-        	Runtime.getRuntime().exec(alascCall);
+            Process child = Runtime.getRuntime().exec(alascCall);
+        
+            // Get the input stream and read from it
+            InputStream errorStream = child.getErrorStream();
+            InputStream outputStream = child.getInputStream();
+            
+            StringBuffer bufferError = new StringBuffer();
+            int c;
+            while ((c = errorStream.read()) != -1) {
+                bufferError.append((char)c);
+            }
+            errorStream.close();
+            
+            writeConsole("Compilation error: \n");
+        	writeConsole(bufferError.toString());
+        	writeConsole("\n");
+        	
+        	StringBuffer bufferOutput = new StringBuffer();
+            while ((c = outputStream.read()) != -1) {
+                bufferOutput.append((char)c);
+            }
+            errorStream.close();
+            
+            writeConsole("Compilation results: \n");
+        	writeConsole(bufferOutput.toString());
+        	writeConsole("\n");
+               
         } catch (IOException e) {
             System.err.println("There is some trouble with ALASC. Check that ALASC path is correct.");
             System.exit(2);
         }
        
-        //String disegno =   "/Disegno.as";
-        String LogoFileLocation = logoFile.getParent() +"/Disegno.as";
+        String LogoFileLocation = "Disegno.as";
         ASFile = new File(LogoFileLocation);
-        writeKonsole("Opening Compiled file " + LogoFileLocation);
         //apertura del file da visuallizzare come risultato della compilazione
         openFile(ASFile, jTextArea2);
         status = IDEStatus.DOCCOMPILATO;
         bloccaBottoni();
-        writeKonsole("Compiling... -Please wait- \n");
     }//GEN-LAST:event_compileButtonActionPerformed
     
     private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openButtonActionPerformed
         openMenuItemActionPerformed(evt);
     }//GEN-LAST:event_openButtonActionPerformed
     
-    public void writeKonsole(String cLine){
+    public void writeConsole(String cLine){
     String oldLines = konsole.getText();
     StringBuffer konsoleCode = new StringBuffer();
     konsoleCode.append(oldLines);

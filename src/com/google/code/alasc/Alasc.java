@@ -31,9 +31,6 @@ public class Alasc {
 	private static OsName osName;
 	
 	private static void initEnv(){
-		
-		
-		
 		if(System.getProperty("os.name").toLowerCase().indexOf("windows")!=-1){
 			osName = OsName.WINDOWS;
 		} else {
