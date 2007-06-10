@@ -23,8 +23,28 @@ public class Parser {
 	
 	// NOTE: non mettere il costruttore di default, non viene chiamato dall'implementazione di
 	// parser.java. Bloody JavaCC!!!
-		public List<GenericError>getErrors()	{	  return errorManager.getAllErrors();	}	public String getCode(){	  return flashListing.toString();	}	public ArrayList<Declaration> getSymbolsTable(){	  return declarations.getHistory();	}
+	/**
+	* Restituisce la lista degli errori che sono occorsi.
+	* 
+	* @return La lista degli errori.
+	*/	public List<GenericError> getErrors()	{	  return errorManager.getAllErrors();	}
+    /**
+    * Restituisce la traduzione ActionScript del codice Logo.
+    *
+    * @return Il codice ActionScript, risultato della traduzione.
+    */	public String getCode(){	  return flashListing.toString();	}    
+    /**
+    * Restituisce la tabella dei simboli.
+    *
+    * @return La tabella dei simboli, sotto forma di lista ordinata.
+    */	public ArrayList<Declaration> getSymbolsTable(){	  return declarations.getHistory();	}
 	
+	/**
+    * Carica da file un template.
+    *
+    * @param templatePath Il percorso del template.
+    * @return Il template.
+    */
     private String loadTemplateSnippet(String templatePath){
     	
     	File templateFile = new File(templatePath);
@@ -48,6 +68,11 @@ public class Parser {
     	return snippet.toString();
     }
     
+    /**
+    * Esegue il parsing del listato Logo.
+    * 
+    * @return Il risultato del parsing, come enumeratore <tt>ParserStatus</tt>.
+    */
     public ParserStatus parse(){
     	
 		declarations = new DeclarationSet();
@@ -108,6 +133,12 @@ public class Parser {
 		
     }
 
+    /**
+    * Genera un nome casuale per le variabili locali dei cicli for che
+    * implementano il costrutto <tt>REPEAT</tt> di Logo.
+    *
+    * @return Una stringa casuale alfanumerica.
+    */   
 	private String nextForVariable() {
 		// CHE PUUURAA...
 		String token = Integer.toString(Math.abs(random.nextInt()), 36);
@@ -391,6 +422,9 @@ String ctrl_str() throws SemanticException : {String v,l;}
 }
 
 JAVACODE
+/**
+* Consuma token fino alla prossima produzione presumibilmente corretta.
+*/
 void error_skipto() {
 	
   	Token t = getToken(0);
