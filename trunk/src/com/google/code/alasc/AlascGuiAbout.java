@@ -1,9 +1,9 @@
 package com.google.code.alasc;
 
-public class aboutAlasc extends javax.swing.JDialog {
+public class AlascGuiAbout extends javax.swing.JDialog {
     
     /** Creates new form aboutAlasc */
-    public aboutAlasc(java.awt.Frame parent, boolean modal) {
+    public AlascGuiAbout(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
@@ -56,9 +56,6 @@ public class aboutAlasc extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
-    /**
-     * @param args the command line arguments
-  */
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
