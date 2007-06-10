@@ -10,7 +10,11 @@ import javax.swing.text.JTextComponent;
  * @author  vittorio
  */
 public class AlascGui extends javax.swing.JFrame {
-    private File logoFile = null;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private File logoFile = null;
     private File ASFile = null;
     
     public enum IDEStatus {DOCVUOTO, DOCNONSALVATO, DOCSALVATO, DOCCOMPILATO};
@@ -134,7 +138,7 @@ public class AlascGui extends javax.swing.JFrame {
 
         jToolBar1.add(openButton);
 
-        saveButton.setIcon(new javax.swing.ImageIcon("/icons/saveALASC.gif"));
+        saveButton.setIcon(new javax.swing.ImageIcon("icons/saveALASC.gif"));
         saveButton.setToolTipText("Save");
         saveButton.setBorderPainted(false);
         saveButton.setContentAreaFilled(false);
@@ -365,16 +369,27 @@ public class AlascGui extends javax.swing.JFrame {
     
     private void compileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_compileButtonActionPerformed
         //chiamata di sistema per compilare da riga di comando
-        String alascCall = "java Alasc " + logoFile.getAbsoluteFile();
-       /* System.out.println(alascCall);
-        
+    	String alascCall = "java Alasc " + logoFile.getAbsoluteFile();
+    	writeKonsole(alascCall +"\n");
+    	
+
+    	
         try {
-            Runtime.getRuntime().exec(alascCall);
+        	String line;
+            Runtime rt = Runtime.getRuntime();
+            Process proc = rt.exec(alascCall);
+            BufferedReader input =
+                new BufferedReader
+                  (new InputStreamReader(proc.getInputStream()));
+              while ((line = input.readLine()) != null) {
+                System.out.println(line);}
+              writeKonsole(line);
+        	//Runtime.getRuntime().exec(alascCall);
         } catch (IOException e) {
             System.err.println("There is some trouble with ALASC. Check that ALASC path is correct.");
             System.exit(2);
         }
-        */
+       
         //String disegno =   "/Disegno.as";
         ASFile = new File("/home/vittorio/Disegno.as");
         //apertura del file da visuallizzare come risultato della compilazione
@@ -428,10 +443,10 @@ public class AlascGui extends javax.swing.JFrame {
         target.setText(logoCode.toString());
     }
     
-    private void chiediSalvataggio(){
+    /*private void chiediSalvataggio(){
         
         
-    }
+    }*/
     
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
