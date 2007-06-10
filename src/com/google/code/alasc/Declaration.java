@@ -1,4 +1,4 @@
-package com.google.code.alasc;
+ package com.google.code.alasc;
 
 public class Declaration{
 	private String variableName;
