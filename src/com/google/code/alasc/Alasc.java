@@ -15,6 +15,9 @@ import com.google.code.alasc.errors.GenericError;
 
 import jargs.gnu.CmdLineParser;                                                 
 
+/**
+ * Main dell'applicazione.
+ */
 public class Alasc {
 
 	private static String inputFileName = "", swfFileName = "", pathMtasc = "";
@@ -30,6 +33,9 @@ public class Alasc {
 	
 	private static OsName osName;
 	
+	/**
+	 * Determina il sistema operativo su cui sta girando l'applicazione.
+	 */
 	private static void initEnv(){
 		if(System.getProperty("os.name").toLowerCase().indexOf("windows")!=-1){
 			osName = OsName.WINDOWS;
@@ -38,10 +44,17 @@ public class Alasc {
 		}
 	}
 	
+	/**
+	 * Stampa a video come invocare il programma.
+	 */
     private static void printUsage() {
         System.err.println("Usage: Alasc input_logo [-s/--swf] pathMtasc <output_flash> [-t/--tos]\n");
     }
     
+    /**
+     * Esegue il parsing dei parametri ricevuti sulla linea di comando.
+     * @param args I parametri delle linea di comando.
+     */
     private static void parseCommandLine(String[] args) {
     	CmdLineParser parser = new CmdLineParser();
         
@@ -112,12 +125,17 @@ public class Alasc {
         }
     }
     
-    // TODO Inserire qui il codice per il bannerino
+    /**
+     * Stampa il <em>banner</em> dell'applicazione.
+     */
     private static void printBanner() {
         System.out.println("ALASC: A Logo (to) ActionScript Compiler");
         System.out.println("http://code.google.com/p/alasc\n");
     }
     
+    /**
+     * Stampa il sommario di ciò che è successo durante la compilazione. 
+     */
     private static void printSummary() {
     	System.out.println("Alasc options summary");
         System.out.println(" Input LOGO file: " + inputFileName);
@@ -133,6 +151,9 @@ public class Alasc {
         
     }
     
+    /**
+     * Compila il listato in linguaggio Logo.
+     */
     private static void compileLogo() {
          
     	logoParser = null;
@@ -175,7 +196,9 @@ public class Alasc {
 		
     }
     
-    // TODO Sistemare le chiamate di sistema
+    /**
+     * Converte il file ActionScript in SWF, usando MTASC.     
+     */
     private static void exportToSwf() {
     	
     	String mtascCall;
@@ -196,11 +219,17 @@ public class Alasc {
 		}
     }
     
+    /**
+     * Stampa la tabella dei simboli.     
+     */
 	private static void printTableOfSymbol() {
 		System.out.println("\nDeclared variables:");
 		System.out.println(logoParser.getSymbolsTable());
 	}
     
+	/**
+	 * Stampa gli errori occorsi durante la compilazione.	
+	 */
 	private static void printErrors() {
 		System.out.println("\nErrors:");
 		
@@ -224,6 +253,11 @@ public class Alasc {
 		
 	}
 	
+	/**
+	 * Copia le librerie ActionScript necessarie al corretto funzionamento del 
+	 * dal listato tradotto dalla cartella di default a quella in cui è stato
+	 * invocato il comando di compilazione.
+	 */
 	public static void copiaLibrerie(){
 		
 		String 	copyCall;
@@ -263,6 +297,10 @@ public class Alasc {
 
 	}
 	
+	/**
+	 * Il main dell'applicazione.
+	 * @param args I parametri passati al main via linea di comando.
+	 */
     public static void main( String[] args ) {    	
     	initEnv();
         printBanner();
@@ -295,7 +333,6 @@ public class Alasc {
 		System.exit(0);
        
     }
-
 
 }
                                                                                         
