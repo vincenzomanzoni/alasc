@@ -394,8 +394,7 @@ public class AlascGui extends javax.swing.JFrame {
     	
         try {
             Process child = Runtime.getRuntime().exec(alascCall);
-        
-            // Get the input stream and read from it
+               
             InputStream errorStream = child.getErrorStream();
             InputStream outputStream = child.getInputStream();
             
