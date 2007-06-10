@@ -11,16 +11,20 @@ public class DeclarationSet {
 	private Random random = new Random();
 	
 	/**
-	 * Genera un nome unico per una data variabile, aggiungendo una parte casuale
+	 * Genera un nome unico per una data variabile, aggiungendo una parte casuale.
 	 * 
-	 * @param varName
-	 * @return varName seguita da un nonce
+	 * @param varName Il nome della variabile.
+	 * @return varName Il nome della variabile seguita da un nonce.
 	 */
 	private String nextUniqueVariableName(String varName) {
 		String uvn = Integer.toString(Math.abs(random.nextInt()), 36);
 		return varName+uvn;
 	}
 	
+	/**
+	 * Costruisce un'istanza di <tt>DeclarationSet</tt>.
+	 *
+	 */
 	public DeclarationSet(){
 		declarations = new HashSet<Declaration>();
 		history = new ArrayList<Declaration>();
@@ -30,9 +34,10 @@ public class DeclarationSet {
 	 * Inserisce la dichiarazione di una nuova variabile nell'insieme
 	 * delle variabili dichiarate.
 	 * 
-	 * @param variableName nome della variabile (case sensitive)
-	 * @param level profonditï¿½ del blocco in cui avviene la dichiarazione
-	 * @return true se la variabile non era giï¿½ stata dichiarata nel livello corrente
+	 * @param variableName Il nome della variabile (case sensitive).
+	 * @param level La profondità del blocco in cui avviene la dichiarazione.
+	 * @return <tt>true</tt> se la variabile non era già stata dichiarata nel 
+	 * livello corrente, <tt>false</tt> altrimenti.
 	 */
 	public boolean addDeclaration(String variableName, int level, int beginLine, int beginColumn){
 		
@@ -58,14 +63,14 @@ public class DeclarationSet {
 	 * restituisce per un dato nome di variabile e un dato livello di blocco, la
 	 * dichiarazione del simbolo a cui riferirsi.
 	 * 
-	 * In questa implementazione si Ã¨ scelto di risalire lungo i blocchi alla ricerca
+	 * In questa implementazione si è scelto di risalire lungo i blocchi alla ricerca
 	 * della prima dichiarazione. In caso questa non sia trovata viene ritornato null.
 	 * 
-	 * La risolvibilitÃ  di una variabile puÃ² essere controllata con il metodo isReachable.
+	 * La risolvibilità  di una variabile può essere controllata con il metodo <tt>isReachable</tt>.
 	 * 
-	 * @param varName
-	 * @param level
-	 * @return
+	 * @param varName Il nome della variabile.
+	 * @param level La profondità del blocco.
+	 * @return La dichirazione del simbolo.
 	 */
 	public Declaration resolveScope(String varName, int level){
 		
@@ -96,9 +101,10 @@ public class DeclarationSet {
 	}
 	
 	/**
-	 * Elimina tutti dall'insieme delle variabili dichiarate quelle appartenenti al blocco indicato dal parametro level
+	 * Elimina tutti dall'insieme delle variabili dichiarate quelle 
+	 * appartenenti al blocco indicato dal parametro <tt>level</tt>.
 	 * 
-	 * @param level indica la profonditï¿½ del blocco di cui fare pruning
+	 * @param level Indica la profondità del blocco di cui fare pruning.
 	 */
 	public void pruneAllDeclarationsIn(int level){
 		ArrayList<Declaration> daEliminare = new ArrayList<Declaration>();
@@ -115,16 +121,16 @@ public class DeclarationSet {
 	}
 	
 	/**
-	 * Controlla se la variable con nome variableName puï¿½ essere dichiarata
-	 * nel blocco di profonditï¿½ level.
+	 * Controlla se la variable con nome variableName può essere dichiarata
+	 * nel blocco di profondità <tt>level</tt>.
 	 * 
-	 * Il metodo controlla che non ci siano giï¿½ dichiarazioni della variabile
+	 * Il metodo controlla che non ci siano già dichiarazioni della variabile
 	 * nello stesso blocco.
 	 * 
-	 * @param variableName
-	 * @param level
-	 * @return true se non ci sono giï¿½ dichiarazioni della variabile nel blocco,
-	 * altrimenti false.
+	 * @param variableName Il nome della variabile.
+	 * @param level La profondità del blocco.
+	 * @return <tt>true</tt> se non ci sono già dichiarazioni della variabile nel blocco,
+	 * altrimenti <tt>false</tt>.
 	 */
 	public boolean isDeclarable(String variableName, int level){
 		Declaration toCompare = new Declaration(variableName, variableName, level, 0, 0);
@@ -139,16 +145,16 @@ public class DeclarationSet {
 	
 	/**
 	 * Controlla che una certa variabile sia risolvibile dallo scope del blocco
-	 * level.
+	 * <tt>level</tt>.
 	 * 
 	 * Il metodo controlla che esista una almeno una dichiarazione della variabile
 	 * variableName al livello corrente o a quelli precedenti, visibili quindi dallo
 	 * scope di level.
 	 * 
-	 * @param variableName
-	 * @param level
-	 * @return true se nello scope visibile dal blocco a profonditï¿½ level la variabile
-	 * variableName risulta visibile, altrimenti false.
+	 * @param variableName Il nome della variabile.
+	 * @param level La profondità del blocco.
+	 * @return <tt>true se nello scope visibile dal blocco a profondità <tt>level</tt> la variabile
+	 * <tt>variableName</tt> risulta visibile, altrimenti <tt>false</tt>.
 	 */
 	public boolean isReachable(String variableName, int level){
 		for(Declaration s: declarations){
@@ -160,10 +166,10 @@ public class DeclarationSet {
 	}
 	
 	/**
-	 * Setta una variabile varname utilizzata ad un certo livello
+	 * Setta una variabile <tt>varname</tt> utilizzata ad un certo livello
 	 * 
-	 * @param varname
-	 * @param level
+	 * @param varname Il nome della variabile.
+	 * @param level La profondità del blocco.
 	 */
 	public void setAsUsed(String varname, int level) {
 		Declaration declaration = null;
@@ -185,16 +191,16 @@ public class DeclarationSet {
 	}
 	
 	/**
-	 * 
-	 * @return la lista di tutte le dichiarazioni avvenute all'interno del listato
+	 * Restituisce tutte le dichiarazioni avvenute all'interno del listato.
+	 * @return La lista delle dichiarazioni.
 	 */
 	public ArrayList<Declaration> getHistory() {
 		return this.history;
 	}
 
-	// TO-DO Sistemarlo: cosa gli facciamo ritornare?
 	/**
-	 * @return l'insieme di dichiarazioni attualmente attive (not pruned)
+	 * Restituisce tutte le dichiarazioni attualmente attive (not pruned)
+	 * @return La lista della dichiarazioni attive.
 	 */
 	public HashSet<Declaration> getDeclarations() {
 		return declarations;
