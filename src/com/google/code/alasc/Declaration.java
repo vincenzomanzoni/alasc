@@ -1,20 +1,24 @@
 package com.google.code.alasc;
 
+
+
 public class Declaration{
 	private String variableName;
+	private String uniqueName;
 	private int blocco;
 	private int beginLine, beginColumn;
 	private boolean isUsed;
 	
-	public Declaration(String variableName, int blocco, int beginLine, int beginColumn) {
+	public Declaration(String variableName, String uniqueName, int blocco, int beginLine, int beginColumn) {
 		super();
 		this.variableName = variableName;
+		this.uniqueName = uniqueName;
 		this.blocco = blocco;
 		this.beginLine = beginLine;
 		this.beginColumn = beginColumn;
 		this.isUsed = false;
 	}
-
+	
 	/**
 	 * @return the blocco
 	 */
@@ -47,6 +51,13 @@ public class Declaration{
 	
 	public void setAsUsed() {
 		this.isUsed = true;
+	}
+
+	/**
+	 * @return the uniqueName
+	 */
+	public String getUniqueName() {
+		return uniqueName;
 	}
 	
 }

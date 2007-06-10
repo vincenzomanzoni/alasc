@@ -1,3 +1,5 @@
+; Disegna una spirale colorata
+
 MAKE :COLORE
 MAKE :PASSO
 

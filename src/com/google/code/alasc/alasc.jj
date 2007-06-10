@@ -277,9 +277,10 @@ String n_s_value() throws SemanticException : {Token t;}
 		if(!declarations.isReachable(varname, profonditaCorrente)) {
 			throw new SemanticException(t, "Variable " + varname + " isn't declared yet.");
 		}
-		//TO-DO Inserire recupero unique value
+
 		declarations.setAsUsed(varname, profonditaCorrente);
-		return varname;
+		Declaration d = declarations.getDeclaration(varname, profonditaCorrente);
+		return d.getUniqueName();
 	}
 	|
 	t=<NUM>
@@ -322,17 +323,16 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		if (!declarations.isDeclarable(varname, profonditaCorrente)) {
 			throw new SemanticException(v, "Variable " + varname + " is already declared.");
 		} else {
-			//TO-DO Generazione unique value
 			declarations.addDeclaration(varname, profonditaCorrente, v.beginLine, v.beginColumn);
 		}
 		
 		if (n != null) {
-			// TO-DO Recupera unique value
-			return "var " + varname + " : Number = " + n.image + ";";
+			Declaration d = declarations.getDeclaration(varname, profonditaCorrente);
+			return "var " + d.getUniqueName() + " : Number = " + n.image + ";";
 		}
 		else {
-			// TO-DO Recupera unique value
-			return "var " + varname + " : Number;";
+			Declaration d = declarations.getDeclaration(varname, profonditaCorrente);
+			return "var " + d.getUniqueName() + " : Number;";
 		}
 	}
 	|
@@ -347,8 +347,8 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		}
 		declarations.setAsUsed(varname, profonditaCorrente);
 		
-		// TO-DO recupera unique value
-		return varname + " = " + expr + ";";
+		Declaration d = declarations.getDeclaration(varname, profonditaCorrente);
+		return d.getUniqueName() + " = " + expr + ";";
 	}
 }
 
