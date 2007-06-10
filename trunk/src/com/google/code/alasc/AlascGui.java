@@ -295,17 +295,28 @@ public class AlascGui extends javax.swing.JFrame {
         if (returnVal == JFileChooser.APPROVE_OPTION){
             swfFile = fc.getSelectedFile();
             String alascCall = "java Alasc " + logoFile.getAbsoluteFile() + "--swf " + swfFile.getAbsoluteFile();
+        	writeKonsole(alascCall +"\n");
+        	//todo afe
+        	
             try {
-                Runtime.getRuntime().exec(alascCall);
+            	String line;
+                Runtime rt = Runtime.getRuntime();
+                Process proc = rt.exec(alascCall);
+                BufferedReader input =
+                    new BufferedReader
+                      (new InputStreamReader(proc.getInputStream()));
+                  while ((line = input.readLine()) != null) {
+                    System.out.println(line);}
+                  writeKonsole(line);
+            	//Runtime.getRuntime().exec(alascCall);
             } catch (IOException e) {
                 System.err.println("There is some trouble with ALASC. Check that ALASC path is correct.");
                 System.exit(2);
             }
+           
             //String disegno =   "/Disegno.as";
-            ASFile = new File("/home/vittorio/Disegno.as");
-            //TODO <cobtrollare se serve un'attesa'
-            //apertura del file da visuallizzare come risultato della compilazione
-            openFile(ASFile, jTextArea2);
+            String LogoFileLocation = logoFile.getAbsolutePath() +"/Disegno.as";
+            ASFile = new File(LogoFileLocation);
             writeKonsole("Compiling... -Please wait- \n");
         }
         
@@ -371,8 +382,7 @@ public class AlascGui extends javax.swing.JFrame {
         //chiamata di sistema per compilare da riga di comando
     	String alascCall = "java Alasc " + logoFile.getAbsoluteFile();
     	writeKonsole(alascCall +"\n");
-    	
-
+    	//todo afe
     	
         try {
         	String line;
@@ -391,7 +401,9 @@ public class AlascGui extends javax.swing.JFrame {
         }
        
         //String disegno =   "/Disegno.as";
-        ASFile = new File("/home/vittorio/Disegno.as");
+        String LogoFileLocation = logoFile.getAbsolutePath() +"/Disegno.as";
+        ASFile = new File(LogoFileLocation);
+        writeKonsole("Opening Compiled file " + LogoFileLocation);
         //apertura del file da visuallizzare come risultato della compilazione
         openFile(ASFile, jTextArea2);
         status = IDEStatus.DOCCOMPILATO;
