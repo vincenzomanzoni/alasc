@@ -1,0 +1,42 @@
+; geometrie.logo
+; A seconda del valore scelto in geometria, disegna:
+; 1 - cerchio blu
+; 2 - quadrato rosso
+; 3 - triangolo verde
+
+MAKE :GEOMETRIA 3
+
+IF EQUAL? :GEOMETRIA 1 [
+ ; Seleziona il colore blu
+ COLOR 255
+ 
+ ; Disegna un cerchio 
+ REPEAT 360 [
+  FD 1
+  RT 1
+ ]
+]
+
+IF EQUAL? :GEOMETRIA 2 [
+ ; Seleziona il colore rosso
+ COLOR 16711680
+
+ ; Disegna il quadrato
+ REPEAT 4 [
+  FD 100
+  RT 90
+ ]
+]
+
+IF EQUAL? :GEOMETRIA 3 [
+ ; Seleziona il colore verde
+ COLOR 65280
+
+ RT 30
+ 
+ ; Disegna il triangolo
+ REPEAT 3 [
+  RT 120
+  FD 100
+ ]
+]
