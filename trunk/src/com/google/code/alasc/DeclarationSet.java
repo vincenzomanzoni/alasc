@@ -2,11 +2,18 @@ package com.google.code.alasc;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 
 public class DeclarationSet {
 	
 	private HashSet<Declaration> declarations;
 	private ArrayList<Declaration> history;
+	private Random random = new Random();
+	
+	private String nextUniqueVariableName(String varName) {
+		String uvn = Integer.toString(Math.abs(random.nextInt()), 36);
+		return varName+uvn;
+	}
 	
 	public DeclarationSet(){
 		declarations = new HashSet<Declaration>();
@@ -18,24 +25,77 @@ public class DeclarationSet {
 	 * delle variabili dichiarate.
 	 * 
 	 * @param variableName nome della variabile (case sensitive)
-	 * @param level profonditˆ del blocco in cui avviene la dichiarazione
-	 * @return true se la variabile non era giˆ stata dichiarata nel livello corrente
+	 * @param level profonditï¿½ del blocco in cui avviene la dichiarazione
+	 * @return true se la variabile non era giï¿½ stata dichiarata nel livello corrente
 	 */
 	public boolean addDeclaration(String variableName, int level, int beginLine, int beginColumn){
-		Declaration declaration = new Declaration(variableName, level, beginLine, beginColumn);
+		
+		// TO-DO CERCARE SE E' LA PRIMA
+		String uniqueName = variableName;
+		
+		for(Declaration s: history){
+			if(s.getVariableName().equals(variableName)){
+				// Se il nome per la variabile Ã¨ giÃ  stato usato, se ne genera uno unico
+				uniqueName = nextUniqueVariableName(variableName);
+				break;
+			}
+		}
+		
+		Declaration declaration = new Declaration(variableName, uniqueName, level, beginLine, beginColumn);
+		
 		boolean success = history.add(declaration);
 		return success && declarations.add(declaration);
 	}
 	
 	/**
+	 * Rappresenta il cuore del meccanismo di risoluzione dello scope: la funzione
+	 * restituisce per un dato nome di variabile e un dato livello di blocco, la
+	 * dichiarazione del simbolo a cui riferirsi.
+	 * 
+	 * In questa implementazione si Ã¨ scelto di risalire lungo i blocchi alla ricerca
+	 * della prima dichiarazione. In caso questa non sia trovata viene ritornato null.
+	 * 
+	 * La risolvibilitÃ  di una variabile puÃ² essere controllata con il metodo isReachable.
+	 * 
+	 * @param varName
+	 * @param level
+	 * @return
+	 */
+	public Declaration resolveScope(String varName, int level){
+		
+		if (declarations == null){
+			return null;
+		}
+		
+		if (declarations.isEmpty()) {
+				return null;
+		}
+		
+		
+		Declaration candidata = null;
+		
+		if(isReachable(varName, level)) {	
+			// SHORTCIRCUIT LOGIC EVALUATION I LOVE U!
+			for(Declaration s: declarations){
+				if(s.getVariableName().equals(varName) &&
+						s.getBlocco() <= level &&
+						(candidata == null ||
+						candidata.getBlocco()<s.getBlocco())){
+					candidata = s;
+				}
+			}
+		}
+		
+		return candidata;
+	}
+	
+	/**
 	 * Elimina tutti dall'insieme delle variabili dichiarate quelle appartenenti al blocco indicato dal parametro level
 	 * 
-	 * @param level indica la profonditˆ del blocco di cui fare pruning
+	 * @param level indica la profonditï¿½ del blocco di cui fare pruning
 	 */
 	public void pruneAllDeclarationsIn(int level){
 		ArrayList<Declaration> daEliminare = new ArrayList<Declaration>();
-		
-		// TODO Se cerco di eliminare il symbol al volo succede un casino...
 		
 		for(Declaration s: declarations){
 			if(s.getBlocco()==level)
@@ -49,21 +109,19 @@ public class DeclarationSet {
 	}
 	
 	/**
-	 * Controlla se la variable con nome variableName pu˜ essere dichiarata
-	 * nel blocco di profonditˆ level.
+	 * Controlla se la variable con nome variableName puï¿½ essere dichiarata
+	 * nel blocco di profonditï¿½ level.
 	 * 
-	 * Il metodo controlla che non ci siano giˆ dichiarazioni della variabile
+	 * Il metodo controlla che non ci siano giï¿½ dichiarazioni della variabile
 	 * nello stesso blocco.
 	 * 
 	 * @param variableName
 	 * @param level
-	 * @return true se non ci sono giˆ dichiarazioni della variabile nel blocco,
+	 * @return true se non ci sono giï¿½ dichiarazioni della variabile nel blocco,
 	 * altrimenti false.
 	 */
 	public boolean isDeclarable(String variableName, int level){
-		Declaration toCompare = new Declaration(variableName, level, 0, 0);
-		
-		// TODO Scriverlo con il contains, purtroppo non ho sotto la javadoc
+		Declaration toCompare = new Declaration(variableName, variableName, level, 0, 0);
 		
 		for(Declaration s: declarations){
 			if(s.equals(toCompare))
@@ -83,7 +141,7 @@ public class DeclarationSet {
 	 * 
 	 * @param variableName
 	 * @param level
-	 * @return true se nello scope visibile dal blocco a profonditˆ level la variabile
+	 * @return true se nello scope visibile dal blocco a profonditï¿½ level la variabile
 	 * variableName risulta visibile, altrimenti false.
 	 */
 	public boolean isReachable(String variableName, int level){

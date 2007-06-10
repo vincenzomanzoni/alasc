@@ -1,4 +1,5 @@
-; Cerchio blu, in alto a sinistra
+; Disegna i cerchi olimpici
+
 COLOR 255
 
 REPEAT 360 [
