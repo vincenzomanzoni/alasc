@@ -15,7 +15,7 @@ import junit.framework.TestCase;
  * @author Vincenzo Manzoni
  */
 public class ErrorManagerTest extends TestCase {
-	ErrorManager errorManager;
+	private ErrorManager errorManager;
 	
 	/**
 	 * Inizializza l'istanza di <tt>ErrorManager</tt> che verrà usata
