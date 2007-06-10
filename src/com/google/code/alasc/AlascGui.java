@@ -315,7 +315,7 @@ public class AlascGui extends javax.swing.JFrame {
             }
            
             //String disegno =   "/Disegno.as";
-            String LogoFileLocation = logoFile.getAbsolutePath() +"/Disegno.as";
+            String LogoFileLocation = logoFile.getParent() +"/Disegno.as";
             ASFile = new File(LogoFileLocation);
             writeKonsole("Compiling... -Please wait- \n");
         }
@@ -385,7 +385,7 @@ public class AlascGui extends javax.swing.JFrame {
     	//todo afe
     	
         try {
-        	String line;
+        	/*String line;
             Runtime rt = Runtime.getRuntime();
             Process proc = rt.exec(alascCall);
             BufferedReader input =
@@ -393,15 +393,15 @@ public class AlascGui extends javax.swing.JFrame {
                   (new InputStreamReader(proc.getInputStream()));
               while ((line = input.readLine()) != null) {
                 System.out.println(line);}
-              writeKonsole(line);
-        	//Runtime.getRuntime().exec(alascCall);
+              writeKonsole(line);*/
+        	Runtime.getRuntime().exec(alascCall);
         } catch (IOException e) {
             System.err.println("There is some trouble with ALASC. Check that ALASC path is correct.");
             System.exit(2);
         }
        
         //String disegno =   "/Disegno.as";
-        String LogoFileLocation = logoFile.getAbsolutePath() +"/Disegno.as";
+        String LogoFileLocation = logoFile.getParent() +"/Disegno.as";
         ASFile = new File(LogoFileLocation);
         writeKonsole("Opening Compiled file " + LogoFileLocation);
         //apertura del file da visuallizzare come risultato della compilazione
