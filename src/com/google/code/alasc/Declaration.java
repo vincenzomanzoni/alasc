@@ -1,5 +1,8 @@
- package com.google.code.alasc;
+package com.google.code.alasc;
 
+/**
+ * Classe che implementa una dichiarazione di variabile.
+ */ 
 public class Declaration{
 	private String variableName;
 	private String uniqueName;
@@ -7,6 +10,16 @@ public class Declaration{
 	private int beginLine, beginColumn;
 	private boolean isUsed;
 	
+	/**
+	 * Costruisce una istanza della dichiarazione di variabile.
+	 * 
+	 * @param variableName Il nome della variabile.
+	 * @param uniqueName   Nome univoco della variabile. Utilizzata per 
+	 * simulare lo scope a livello di blocco in ActionScript.
+	 * @param blocco       Profondità del blocco in cui vi è la dichiarazione. 
+	 * @param beginLine    Riga dove vi è la dichiarazione.
+	 * @param beginColumn  Colonna dove vi è la dichiarazione. 
+	 */
 	public Declaration(String variableName, String uniqueName, int blocco, int beginLine, int beginColumn) {
 		super();
 		this.variableName = variableName;
@@ -18,14 +31,16 @@ public class Declaration{
 	}
 	
 	/**
-	 * @return the blocco
+	 * Restituisce la profondità del blocco in cui è dichiarata la variabile. 
+	 * @return La profondità del blocco in cui è dichiarata.
 	 */
 	public int getBlocco() {
 		return blocco;
 	}
 
 	/**
-	 * @return the variableName
+	 * Restituisce il nome della variabile.
+	 * @return Il nome della variabile.
 	 */
 	public String getVariableName() {
 		return variableName;
@@ -47,12 +62,16 @@ public class Declaration{
 		" used: " + isUsed + ")";
 	}
 	
+	/**
+	 * Imposta la variabile come usata.
+	 */
 	public void setAsUsed() {
 		this.isUsed = true;
 	}
 
 	/**
-	 * @return the uniqueName
+	 * Restituisce il nome univoco della variabile.
+	 * @return Il nome univoco.
 	 */
 	public String getUniqueName() {
 		return uniqueName;
