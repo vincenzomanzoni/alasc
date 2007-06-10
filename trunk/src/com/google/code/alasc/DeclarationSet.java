@@ -10,6 +10,12 @@ public class DeclarationSet {
 	private ArrayList<Declaration> history;
 	private Random random = new Random();
 	
+	/**
+	 * Genera un nome unico per una data variabile, aggiungendo una parte casuale
+	 * 
+	 * @param varName
+	 * @return varName seguita da un nonce
+	 */
 	private String nextUniqueVariableName(String varName) {
 		String uvn = Integer.toString(Math.abs(random.nextInt()), 36);
 		return varName+uvn;
@@ -153,6 +159,12 @@ public class DeclarationSet {
 		return false;
 	}
 	
+	/**
+	 * Setta una variabile varname utilizzata ad un certo livello
+	 * 
+	 * @param varname
+	 * @param level
+	 */
 	public void setAsUsed(String varname, int level) {
 		Declaration declaration = null;
 		
@@ -172,13 +184,17 @@ public class DeclarationSet {
 		
 	}
 	
+	/**
+	 * 
+	 * @return la lista di tutte le dichiarazioni avvenute all'interno del listato
+	 */
 	public ArrayList<Declaration> getHistory() {
 		return this.history;
 	}
 
 	// TO-DO Sistemarlo: cosa gli facciamo ritornare?
 	/**
-	 * @return the insieme
+	 * @return l'insieme di dichiarazioni attualmente attive (not pruned)
 	 */
 	public HashSet<Declaration> getDeclarations() {
 		return declarations;
