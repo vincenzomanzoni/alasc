@@ -310,7 +310,7 @@ String n_s_value() throws SemanticException : {Token t;}
 		}
 
 		declarations.setAsUsed(varname, profonditaCorrente);
-		Declaration d = declarations.getDeclaration(varname, profonditaCorrente);
+		Declaration d = declarations.resolveScope(varname, profonditaCorrente);
 		return d.getUniqueName();
 	}
 	|
@@ -358,11 +358,11 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		}
 		
 		if (n != null) {
-			Declaration d = declarations.getDeclaration(varname, profonditaCorrente);
+			Declaration d = declarations.resolveScope(varname, profonditaCorrente);
 			return "var " + d.getUniqueName() + " : Number = " + n.image + ";";
 		}
 		else {
-			Declaration d = declarations.getDeclaration(varname, profonditaCorrente);
+			Declaration d = declarations.resolveScope(varname, profonditaCorrente);
 			return "var " + d.getUniqueName() + " : Number;";
 		}
 	}
@@ -378,7 +378,7 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		}
 		declarations.setAsUsed(varname, profonditaCorrente);
 		
-		Declaration d = declarations.getDeclaration(varname, profonditaCorrente);
+		Declaration d = declarations.resolveScope(varname, profonditaCorrente);
 		return d.getUniqueName() + " = " + expr + ";";
 	}
 }
