@@ -1,0 +1,200 @@
+# Sommario #
+
+All'interno del compilatore esisterà un componente che si occuperà di tradurre il codice Logo in codice ActionScript. Si esaminerà la traduzione in ActionScript di esempi di ognuna delle strutture definite nel sottoinsieme scelto.
+
+# Strutture da tradurre #
+Il primo problema da risolvere durante è la traduzione è la diversità fra il modello della grafica usato da Logo e quello usato da ActionScript.
+
+Quello di Logo si basa sul concetto di penna, cioè di un cursore mobile che è dotato di un orientamento, di un colore e di uno stato che indica se la penna è abbassata o alzata. Muovendo una penna con la punta abbassata da un punto A a un punto B, essa lascerà un tratto rettilineo. **In Logo, un tratto viene disegnato attraverso il punto d'origine, la lunghezza e l'orientamento**. Il sistema di riferimento prevede che l'origine degli assi sia al centro dello schermo. Le coordinate x crescono verso nord, quelle y verso est.
+
+Il modello di disegno offerto da ActionScript è diverso: **scelto uno stile del tratto (colore e spessore), si disegna un tratto a partire dal suo punto d'origine e dal suo punto finale**. Il modello di ActionScript pone l'origine nel primo pixel in alto e a sinistra: le coordinate x aumentano verso est, quelle y verso in sud.
+
+Sarà quindi necessario tenere conto di queste differenze durante il processo di traduzione.
+
+Al fine di rendere più agevole la trasformazione dal modello di Logo a quello di ActionScript, si è creata una classe ActionScript che simula lo stato della penna.
+
+```
+class Pen {
+
+	var theta : Number;
+	var x : Number;
+	var y : Number;
+	var isDown: Boolean;
+	var color : Number;
+	
+	function Pen() {
+		// La penna e' al centro dell'immagine 800x600
+		x = 400;
+		y = 300;
+		
+		// Orientamento iniziale verso NORD
+		theta = Math.PI/2;
+		
+		// Colore NERO
+		color = 0;
+		
+		isDown = true;
+	}
+	
+}
+```
+
+Il modello di listato prodotto dalla compilazione del codice Logo è il seguente:
+
+```
+
+class Disegno {
+	
+        // Oggetto penna utilizzato per tenere traccia dello stato del pennino.
+	var penna : Pen;
+	
+	function Disegno() {
+
+		penna = new Pen();
+		
+		// Qui il listato di primitive, risultato della compilazione.
+		
+	}
+	
+        // Qui le primitive per la traduzione
+        function goForward(lunghezza : Number){...}
+        
+        ...
+
+	static function main(mc) {
+		var app : Disegno = new Disegno();
+	}
+}
+
+```
+## Primitive di disegno ##
+
+### Istruzione FD ###
+La traduzione dell'istruzione FD in ActionScript segue il seguente template:
+```
+
+function goForward(lunghezza : Number){
+			
+		_root.lineStyle(1,penna.color, 100);
+			
+		if (penna.isDown) {
+			_root.moveTo(penna.x, penna.y);
+			_root.lineTo(penna.x + lunghezza * Math.cos(penna.theta),
+			penna.y - lunghezza * Math.sin(penna.theta));
+		}
+			
+		penna.x = penna.x + lunghezza * Math.cos(penna.theta);
+		penna.y = penna.y - lunghezza * Math.sin(penna.theta);
+}
+
+```
+Viene innanzitutto impostato il pennello con il colore corrente. Se lo stato del pennello è _abbassato_, viene tracciata una linea dal punto attuale (`penna.x`, `penna.y`) al punto di coordinate finale (`penna.x + lunghezza * cos(penna.tetha)`, `penna.x - lunghezza * sen(penna.tetha)`).
+
+Se il pennello è _sollevato_ il punto attuale viene impostato con le coordinate del punto finale, senza disegnare alcuna linea.
+
+Da notare che la il valore delle ordinate viene decrementato, in quanto l'asse y nell'ActionScript è crescente verso il basso, mentre nel Logo è positivo verso l'alto.
+
+
+### Istruzione BK ###
+La traduzione in ActionScript dell'istruzione BK consiste nell'invocazione del template `goForward` passando un parametro lunghezza invertito di segno.
+
+```
+
+function goBackward(lunghezza : Number){
+		goForward(-lunghezza);
+}
+
+```
+
+### Istruzione LT ###
+L'istruzione LT non produce output, ma altera unicamente l'angolo del pennello, che verrà utilizzato dalla primitiva FD e dalla primitiva BK per orientare la linea.
+Si segue la classica convenzione trigonometrica per cui rotazioni antiorarie (LT) corrispondono ad un incremento dell'angolo. Le funzioni trigonometriche di ActionScript accettano angoli in radianti, per cui l'angolo in gradi della rotazione viene convertito in radianti. La somma avviene in aritmetica modulare, in modo che l'angolo risultante rimanga fra 0 e 360 gradi.
+
+```
+
+function rotateLeft(delta_angolo : Number){	
+		penna.theta = (penna.theta + delta_angolo * Math.PI/180) % (2 * Math.PI);
+}
+
+```
+
+### Istruzione RT ###
+Esattamente come per BK, l'istruzione RT viene tradotta semplicemente come LT ma invertendo l'angolo.
+```
+
+function rotateRight(delta_angolo : Number){	
+		rotateLeft(-delta_angolo);
+}
+
+```
+
+### Istruzione CLEAN ###
+La pulizia dello spazio di lavoro avviene invocando il comando `clear` del frame `_root`
+
+```
+
+function clearScreen() {
+	_root.clear();
+}
+
+```
+
+### Istruzione PENDOWN ###
+L'istruzione PENDOWN non si riflette sul disegno, ma va ad alterare lo stato del modello del pennello, settando lo stato come _abbassato_.
+```
+
+function penUp() {
+	penna.isDown = false;
+}
+
+```
+
+### Istruzione PENUP ###
+L'istruzione PENUP non si riflette sul disegno, ma va ad alterare lo stato del modello del pennello, settando lo stato come _sollevato_.
+```
+
+function penUp() {
+	penna.isDown = false;
+}
+
+```
+
+### Istruzione COLOR ###
+L'istruzione COLOR va a modificare il parametro `color` del modello del pennello. Da notare che il colore viene fatto variare fra i valori 0x000000 e 0xFFFFFF (16777215).
+```
+
+function setColor(color : Number) {
+	penna.color = color % 16777216;
+}
+
+```
+
+## Operazioni numeriche e booleane ##
+
+## Operazioni sulle variabili ##
+### Istruzione di creazione MAKE ###
+L'istruzione Logo MAKE crea una variabile. In ActionScript, l'istruzione `MAKE :foo` viene tradotta in
+```
+var foo : Number;
+```
+
+Esiste una versione dell'istruzione MAKE che imposta una valore iniziale della variabile. In ActionScript, l'istruzione `MAKE :foo 7` viene tradotta in
+```
+var foo : Number = 7;
+```
+
+### Istruzione d'assegnamento LET ###
+L'istruzione Logo che assegna un valore ad una variabile è l'istruzione LET. In ActionScript, l'istruzione `LET :foo 1` viene tradotta in
+```
+foo = 1;
+```
+
+In particolare, l'operando di destra può essere il risultato di una funzione. Ad esempio, l'istruzione Logo `LET :foo SUM :foo 1` viene tradotto in
+```
+foo = foo + 1;
+```
+
+## Strutture di controllo di flusso ##
+
+### Struttura condizionale IF ###
+### Struttura iterativa REPEAT ###

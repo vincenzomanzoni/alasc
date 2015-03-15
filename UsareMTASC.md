@@ -1,0 +1,50 @@
+# Introduzione #
+MTASC http://www.mtasc.org è il primo compilatore ActionScript 2 opensource. Esso compila un sorgente in ActionScript creando un filmato SWF.
+
+MTASC è disponibilile sia per le piattaforme Windows, Linux e Mac Os e si compone di un file eseguibile da linea di comando.
+
+
+# Utilizzo #
+
+MTASC sarà il consumatore del codice ActionScript generato dal compilatore ALASC. L'invocazione di MTASC da linea di comando (comprensiva di parametri) per una tipica sessione di compilazione di un sorgente ActionScript generato da ALASC sarà:
+
+`./mtasc -swf output.swf -main -header 800:600:0 input.as` (in ambiente Unix)
+
+dove il parametro:
+
+  * `-swf output.swf` serve per specificare che l'output debba essere scritto sul file passato come argomento
+  * `-main` serve per indicare che nel file di input è presente l'entry point del programma ActionScript
+  * `-header larghezza:altezza:fps` permette di specificare la dimensione del frame e il numero di fotogrammi al secondo. Nel nostro caso, trattandosi di immagini statiche, abbiamo scelto fps = 0
+  * `input.as` indica il nome del file che contiene il listato ActionScript da compilare in SWF.
+
+# Esempio #
+
+In questo semplice esempio vedremo come disegnare una linea con ActionScript e come compilare il listato con MTASC.
+
+## Listato di esempio ##
+```
+class SimpleExample {
+
+	static var app : SimpleExample;
+
+	function SimpleExample() {
+	  // spessore, colore, alpha
+	  _root.lineStyle(1,0x000000, 100);
+          _root.moveTo(0,0);
+          _root.lineTo(200,100);
+	}
+
+	// entry point
+	static function main(mc) {
+		app = new SimpleExample();
+	}
+}
+```
+
+Questo codice genera una linea obliqua di colore nero (0x000000), di spessore 1px, con alpha 100%. La linea ha coordinate (0, 0), (200, 100).
+
+## Compilazione ##
+Invocando il compilatore MTASC con:
+`./mtasc -swf output.swf -main -header 800:600:0 simpleExample.as` (in ambiente Unix)
+
+verrà generato un file SWF dal nome output.swf. Aprendolo con un visualizzatore di filmati Flash (come ad esempio un browser con il rispettivo plugin Flash), sarà possibile visualizzare l'immagine della linea.

@@ -1,0 +1,133 @@
+# Introduzione #
+
+Con questo documento intendo fare una piccola trattazione sul problema dello scope e di come potremmo risolverlo all'interno di alasc.
+
+
+# Problema #
+
+Attualmente Alasc non gestisce lo scope delle variabili, che sono gestite come se fossero globali. Questo aspetto non permette dichiarazioni come:
+
+```
+MAKE :A
+REPEAT 10 [
+ MAKE :A
+]
+
+```
+
+La precedente dichiarazione solleverebbe un errore durante la compilazione del secondo MAKE :A, in quanto la variabile :A risulta già dichiarata fuori dal blocco.
+Nei linguaggi che gestiscono lo scope la seconda variabile dichiarata **oscurerebbe** la prima e durante l'esecuzione del blocco REPEAT, il programma avrebbe accesso al valore della seconda variabile :A, attraverso il processo di oscuramento.
+
+Quello che a noi interessa non è tanto gestire il meccanismo di oscuramento delle variabili, in quanto è gestito dall'interprete Flash, ma progettare un meccanismo che consenta di individuare l'errato utilizzo delle operazioni sulle variabili nel listato LOGO.
+
+# Soluzione #
+
+Una possibile soluzione potrebbe essere questa:
+  1. si tiene un insieme E inizialmente vuoto;
+  1. si tiene un contatore profonditaBlocco inizialmente uguale a 0;
+  1. ogni qualvolta che durante la compilazione si apre un blocco (cioè si incontra "["), si incrementa il contatore profonditaBlocco.
+  1. ogni volta che il compilatore incontra la dichiarazione della variabile X, se in E non esiste una coppia (X, p) con p >= profonditaBlocco allora s'inserisce nell'insieme E la coppia (X, profonditaBlocco), altrimenti si segnala errore, in quanto all'interno del blocco corrente la variabile X è già stata dichiarata. Per esempio, se la variabile PIPPO viene dichiarata nel blocco principale (il numero 0), nell'insieme si inserirà (PIPPO, 0). Se nello stesso blocco si incontra un'altra dichiarazione di PIPPO, il compilatore si accorge che a profondita 0 PIPPO è già stata dichiarate e quindi segnala errore;
+  1. ogni qualvolta che durante la compilazione si chiude un blocco (cioè si incontra "]"), si eliminano da E le coppie aventi il valore di profondità pari a profonditaBlocco e successivamente si decrementa il valore di profonditaBlocco di un'unità;
+  1. ogni volta che la variabile X è utilizzata, si deve controllare che esista in E almeno una coppia (X, p) tale che p <= profonditaBlocco, altrimenti si segnala errore, in quanto si sta cercando di usare una variabile non dichiarata nello scope visibile dal blocco. Per costruzione si nota che non possono esserci nell'insieme coppie dotate di campo profondità maggiore alla profondità del blocco attuale, in quanto andrebbero in contrasto con il precedente punto. Quindi è evidente che se all'interno di E esiste una coppia (X, p), allora p è sicuramente minore o uguale a profonditaBlocco, e di conseguenza il controllo si riduce nel controllare se in E risulti almeno una coppia con nome della variabile pari ad X. Per lo stesso ragionamento, il controllo ">=" del punto 4 può essere visto come un "==".
+
+## Esempio ##
+```
+MAKE :A
+
+REPEAT 10 [
+ MAKE :B
+ LET :A 10
+ LET :B 15
+
+  REPEAT 10 [
+   MAKE :A
+   MAKE :C
+   LET :A 5
+   LET :C 3
+  ]
+ 
+ LET :A 9
+ LET :C 7
+ MAKE :B 7
+
+]
+```
+
+Inizialmente l'insieme E è vuoto. La compilazione inizia e viene incontrato il primo MAKE. Visto che non ci sono ancora coppie in E, viene inserita la coppia (A, 0) che indica che la variabile A è stata dichiarata nel blocco a profondità 0.
+
+```
+profonditaBlocco = 0
+E = {(A, 0)}
+```
+
+La compilazione continua, viene incontrato il primo REPEAT e viene aperto il primo blocco, al cui interno troviamo un MAKE. Per la variabile B non ci sono ancora coppie inserite in E, di conseguenza viene inserita una coppia (b, 1), che indica che la variabile b è stata dichiarata nel blocco a profondità 1.
+
+```
+profonditaBlocco = 1
+E = {(A, 0), (B, 1)}
+```
+
+Utilizzo di A: esiste almeno una coppia in E che ha come primo componente A, quindi la variabile è già stata dichiarata. Idem per l'utilizzo di B.
+
+La compilazione prosegue, viene incontrato il secondo REPEAT e viene aperto anche il secondo blocco, al cui interno troviamo un altro MAKE sulla variabile A, che comporta l'inserimento di (A, 2), e un MAKE su C, che comporta l'inserimento di (C, 2). L'inserimento di (A, 2) è possibile in quanto una coppia con A esiste, ma ha profondità inferiore a quella corrente
+
+```
+profonditaBlocco = 2
+E = {(A, 0), (B, 1), (A, 2), (C, 2)}
+```
+
+Utilizzo di A: esiste almeno una coppia in E che ha come primo componente A, quindi la variabile è già stata dichiarata. Idem per l'utilizzo di C.
+
+Viene chiuso il blocco a profondità 2: elimino tutte le coppie (X, p) aventi p = 2 e decremento profonditaBlocco.
+
+```
+profonditaBlocco = 1
+E = {(A, 0), (B, 1)}
+```
+
+Utilizzo di A: esiste una coppia in E che ha come primo componente A, quindi esiste una variabile A raggiungibile con lo scope del blocco attuale.
+
+Utilizzo di C: non esiste una coppia in E che ha come primo componente C, quindi viene sollevato errore in quanto si sta cercando di utilizzare una variabile non raggiungibile dallo scope attuale.
+
+Dichiarazione di B: la dichiarazione di B genera un errore, in quanto in E esiste una coppia (B, 1), dove 1 è proprio la profondità del blocco corrente.
+
+# Implementazione #
+Per l'implementazione del precedente meccanismo, ci si affida ad un componente software che modella un insieme di dichiarazioni, che sarà chiamato DeclarationSet e che rappresenta l'insieme E. Una dichiarazione è una coppia formata da nome della variabile dichiarata e profondità della dichiarazione.
+
+Le operazioni ammesse su questo oggetto sono:
+  * inserimento di una nuova dichiarazione
+  * eliminazione dall'insieme (prune) di tutte le dichiarazioni ad un certo livello
+  * test di dichiarabilità di una certa variabile ad un certo livello
+  * test di raggiungibilità di una certa variabile da un certo livello
+
+Ecco un'implementazione molto spartana in pseudocodice:
+
+```
+class DeclarationSet{
+	private Set declarations = EMPTY;
+
+	public void addDeclaration(string var, integer lev){
+		declarations = declarations UNION {(var, lev)}
+	}
+
+	public void pruneAllDeclarationsIn(integer lev){
+		for each e in declarations
+			if (e.livello == lev)
+				declarations = declarations \ e;
+	}
+	
+	public boolean isDeclarable(string var, integer lev) {
+		if (exists e: e in declarations AND e.livello == lev AND e.varname == var)
+			return FALSE;
+		
+		return TRUE;
+	}
+	
+	public boolean isReachable(string var, integer lev){
+		if(exists e: e in declarations AND e.varname == var)
+			return TRUE;
+		
+		return FALSE;
+	}
+}
+```
