@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivysettings>
+    <settings defaultResolver="central"/>
+    <resolvers>
+        <ibiblio name="central" m2compatible="true"/>
+        <ibiblio name="sonatype-oss-public" m2compatible="true" root="https://oss.sonatype.org/content/groups/public/"/>
+    </resolvers>
+    <modules>
+        <module organisation="com.sanityinc" name="jargs" resolver="sonatype-oss-public"/>
+    </modules>
+</ivysettings>

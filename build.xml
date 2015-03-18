@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="alasc" default="dist" basedir="."
+	xmlns:ivy="antlib:org.apache.ivy.ant">
+	<description>
+		ALASC is A Logo to Action Script Compiler written in Java.
+	</description>
+
+	<property name="src.java.dir" location="src/main/java" />
+	<property name="src.javacc.dir" location="src/main/javacc" />
+	<property name="src.resources.dir" location="src/main/resources" />
+
+	<property name="build.dir" location="build" />
+	<property name="build.deps.dir" location="${build.dir}/deps" />
+	<property name="build.javacc.dir" value="${build.dir}/javacc" />
+	<property name="build.classes.dir" value="${build.dir}/classes" />
+
+	<property name="target.dir" location="target" />
+
+	<property name="ivy.install.version" value="2.4.0" />
+	<property name="ivy.home.dir" value="tools/ivy" />
+	<property name="ivy.jar.dir" value="${ivy.home.dir}/lib" />
+	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+	<property name="ivy.default.ivy.user.dir" location="${ivy.home.dir}" />
+
+	<property name="javacc.home.dir" location="tools/javacc" />
+	<property name="build.javacc.dir" value="${build.dir}/javacc" />
+
+
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+	</target>
+
+	<target name="resolve-tools" depends="init-ivy">
+		<ivy:retrieve organisation="net.java.dev.javacc" module="javacc"
+			revision="5.0" inline="true" type="jar" pattern="tools/javacc/[artifact].[ext]" />
+	</target>
+
+	<target name="resolve-deps" depends="init-ivy">
+		<ivy:retrieve type="jar"
+			pattern="${build.deps.dir}/[artifact]-[revision].[ext]" />
+	</target>
+
+	<target name="compile" depends="init,compile.javacc,compile.java" />
+
+	<target name="compile.javacc">
+
+		<mkdir dir="${build.javacc.dir}/it/unibg/alasc" />
+		<mkdir dir="${build.classes.dir}" />
+
+		<javacc target="${src.javacc.dir}/it/unibg/alasc/alasc.jj"
+			outputdirectory="${build.javacc.dir}/it/unibg/alasc" javacchome="${javacc.home.dir}" />
+
+	</target>
+
+	<target name="compile.java">
+
+		<path id="deps.classpath">
+			<fileset dir="${build.deps.dir}" includes="*.jar" />
+		</path>
+
+		<javac destdir="${build.classes.dir}">
+			<src path="${build.javacc.dir}" />
+			<src path="${src.java.dir}" />
+			<classpath refid="deps.classpath" />
+		</javac>
+
+		<copy todir="${build.classes.dir}">
+			<fileset dir="${src.resources.dir}" />
+		</copy>
+
+	</target>
+
+	<target name="target" depends="compile">
+		<mkdir dir="${target.dir}" />
+		<jar destfile="${target.dir}/alasc.jar" basedir="${build.classes.dir}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${target.dir}" />
+	</target>
+
+	<target name="download-ivy" unless="offline">
+
+		<mkdir dir="${ivy.jar.dir}" />
+
+		<get
+			src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+			dest="${ivy.jar.file}" usetimestamp="true" />
+	</target>
+
+	<target name="init-ivy" depends="download-ivy">
+
+		<path id="ivy.lib.path">
+			<fileset dir="${ivy.jar.dir}" includes="*.jar" />
+		</path>
+
+		<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant"
+			classpathref="ivy.lib.path" />
+
+		<ivy:settings file="ivysettings.xml" />
+
+	</target>
+
+
+</project>

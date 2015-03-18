@@ -1,0 +1,484 @@
+options
+{
+STATIC = false;
+IGNORE_CASE = true;
+}
+
+PARSER_BEGIN(Parser)
+package it.unibg.alasc;
+
+import java.io.*;
+import java.util.*;
+import java.net.URL;
+import it.unibg.alasc.errors.*;
+
+public class Parser {
+	
+	private StringBuffer flashListing;
+	private DeclarationSet declarations;
+	private ErrorManager errorManager;
+	private int profonditaCorrente;
+	
+	private Random random;
+	
+	// NOTE: non mettere il costruttore di default, non viene chiamato dall'implementazione di
+	// parser.java. Bloody JavaCC!!!
+	/**
+	* Restituisce la lista degli errori che sono occorsi.
+	* 
+	* @return La lista degli errori.
+	*/	public List<GenericError> getErrors()	{	  return errorManager.getAllErrors();	}
+    /**
+    * Restituisce la traduzione ActionScript del codice Logo.
+    *
+    * @return Il codice ActionScript, risultato della traduzione.
+    */	public String getCode(){	  return flashListing.toString();	}    
+    /**
+    * Restituisce la tabella dei simboli.
+    *
+    * @return La tabella dei simboli, sotto forma di lista ordinata.
+    */	public ArrayList<Declaration> getSymbolsTable(){	  return declarations.getHistory();	}
+	
+	/**
+    * Carica da file un template.
+    *
+    * @param templatePath Il percorso del template.
+    * @return Il template.
+    */
+    private String loadTemplateSnippet(String templateName){
+    	
+    	InputStream is = this.getClass().getClassLoader().getResourceAsStream(templateName);
+    	Scanner scanner = null;
+		if (is != null) {
+			scanner = new Scanner(is);
+		} else {
+			return "";
+		}
+		
+		StringBuffer snippet = new StringBuffer();
+		String eol = System.getProperty("line.separator");
+		String line;
+        while (scanner.hasNextLine()) {
+        	line = scanner.nextLine();
+        	snippet.append(line);
+    		snippet.append(eol);
+        }
+        scanner.close();    		
+    	
+    	return snippet.toString();
+    }
+    
+    /**
+    * Esegue il parsing del listato Logo.
+    * 
+    * @return Il risultato del parsing, come enumeratore <tt>ParserStatus</tt>.
+    */
+    public ParserStatus parse(){
+    	
+		declarations = new DeclarationSet();
+		errorManager = new ErrorManager();
+		flashListing = new StringBuffer();
+		profonditaCorrente = 0;
+  	    random = new Random();
+    	
+    	// Inserisco l'intestazione del template caricandola dal classpath
+    	String head = loadTemplateSnippet("head.inc");
+    	if (!head.equals("")) {
+			flashListing.append(head);
+		} else {
+			return ParserStatus.TEMPLATEERRORS;
+    	}
+		
+		// Genero ed inserisco la personalizzazione del template
+		
+		String myCode = null;
+		try {
+			myCode = start();
+		} catch(ParseException pe) {
+			System.out.println(pe.toString());
+			// Non dovrebbe verificarsi mai.
+		}
+		
+		// Se avviene un errore, restituisco null
+		if(myCode != null) {			
+			Beautifier b = new SimpleBeautifier(2);
+			myCode = b.beautify(myCode);
+		
+			flashListing.append(myCode);
+		}
+		
+		// Inserisco la chiusura del template
+		String tail = loadTemplateSnippet("tail.inc");
+		if (!tail.equals("")) {
+			flashListing.append(tail);
+		} else {
+			return ParserStatus.TEMPLATEERRORS;
+    	}
+		
+		if(errorManager.hasLexicalErrors()){
+			return ParserStatus.LEXICALERRORS;
+		} else if (errorManager.hasSyntaxErrors()){
+			return ParserStatus.SYNTAXERRORS;
+		} else if (errorManager.hasSemanticErrors()){
+			return ParserStatus.SEMANTICERRORS;
+		} else {
+			return ParserStatus.COMPILED;
+		}
+		
+    }
+
+    /**
+    * Genera un nome casuale per le variabili locali dei cicli for che
+    * implementano il costrutto <tt>REPEAT</tt> di Logo.
+    *
+    * @return Una stringa casuale alfanumerica.
+    */   
+	private String nextForVariable() {
+		// CHE PUUURAA...
+		String token = Integer.toString(Math.abs(random.nextInt()), 36);
+		return token;
+	}
+
+}
+PARSER_END(Parser)
+
+SKIP : {" " 
+	| "\t" 
+	| "\n" 
+	| "\r" 
+	| <NUMERAL_COMMENT: ";" (~["\n","\r"])* ("\n" | "\r" | "\r\n")>}
+
+TOKEN : /* Variabili e numeri */
+{
+	<VARNAME: ":"("_"|["A"-"Z"])("_"|["A"-"Z"]|["0"-"9"])*>
+|   <NUM: (["0"-"9"])+>
+}
+
+TOKEN : /* Istruzioni di disegno*/
+{
+	<FD:      ("FD") (<SPACER>)+>
+|	<BK:      ("BK") (<SPACER>)+>
+|	<LT:      ("LT") (<SPACER>)+>
+|	<RT:      ("RT") (<SPACER>)+>
+|	<CLEAN:   ("CLEAN") (<SPACER>)+>
+|	<PENDOWN: ("PENDOWN") (<SPACER>)+>
+|	<PENUP:   ("PENUP") (<SPACER>)+>
+|	<COLOR:   ("COLOR") (<SPACER>)+>
+}
+
+TOKEN : /* Operatori matematici */
+{
+	<SUM:        ("SUM") (<SPACER>)+>
+|   <DIFFERENCE: ("DIFFERENCE") (<SPACER>)+>
+|   <PRODUCT:    ("PRODUCT") (<SPACER>)+>
+|   <QUOTIENT:   ("QUOTIENT") (<SPACER>)+>
+}
+
+TOKEN : /* Gestione delle variabili */
+{
+	<MAKE: ("MAKE") (<SPACER>)+>
+|   <LET:  ("LET") (<SPACER>)+>
+}
+
+TOKEN: /* Operatori booleani */
+{
+	<LESS:     ("LESS?") (<SPACER>)+>
+|   <GREATER:  ("GREATER?") (<SPACER>)+>
+|   <EQUAL:    ("EQUAL?") (<SPACER>)+>
+|   <NOTEQUAL: ("NOTEQUAL?") (<SPACER>)+>
+}
+
+TOKEN : /* Controllo di flusso */
+{
+	<IF:     ("IF") (<SPACER>)+>
+|   <REPEAT: ("REPEAT") (<SPACER>)+>
+|   <LBRACKET: "[">
+|   <RBRACKET: "]">
+|	<#SPACER: ["\n","\t","\r", " "]>
+}
+
+String start(): {String list;}
+{ 
+	try{
+		list = list() <EOF>
+	{
+		return list;
+	}
+	} catch(TokenMgrError e) {
+		Token t = getToken(0);
+		errorManager.addError(new LexicalError(t.beginLine,
+											  t.beginColumn,
+											  e.getMessage()));
+		return "";
+	}
+}
+
+String list(): {String list="", currIstr;}
+{ 
+	(currIstr = istr() {list += currIstr;} )*
+	{
+		return list;
+	}
+}
+
+String istr(): {String op = null;Token t = null;}
+{ 	
+	try {
+	(op = dr_op() | op = var_op() | op = ctrl_str())
+	{
+			return op;
+	} 
+	} catch(ParseException e) {	
+		error_skipto();
+		errorManager.addError(new SyntaxError(e.currentToken.beginLine,
+											  e.currentToken.beginColumn,
+											  e.getMessage()));
+		return "";
+	} catch(SemanticException se) {
+			errorManager.addError(new SemanticError(se.currentToken.beginLine,
+											  se.currentToken.beginColumn,
+											  se.getMessage()));
+			return "";
+	}
+}
+
+String dr_op() throws SemanticException : {String expr;}
+{
+	(<FD> expr=n_value()
+	{
+		return "goForward(" + expr + ");";
+	}
+	|
+	<BK> expr=n_value()
+	{
+		return "goBackward(" + expr + ");";
+	}
+	|
+	<LT> expr=n_value()
+	{
+		return "rotateLeft(" + expr + ");";
+	}
+	|
+	<RT> expr=n_value()
+	{
+		return "rotateRight(" + expr + ");";
+	}
+	|
+	<COLOR> expr=n_value()
+	{
+		return "setColor(" + expr + ");";
+	}
+	|
+	<CLEAN>
+	{
+		return "clearScreen();";
+	}
+	|
+	<PENDOWN>
+	{
+		return "penDown();";
+	}
+	|
+	<PENUP>
+	{
+		return "penUp();";
+	})
+}
+
+String n_value() throws SemanticException : {String expr;}
+{
+	(expr=n_oper() | expr=n_s_value())
+	{
+		return expr;
+	}
+}
+
+String n_s_value() throws SemanticException : {Token t;}
+{
+	t=<VARNAME>
+	{
+		String varname = t.image.substring(1);
+		
+		if(!declarations.isReachable(varname, profonditaCorrente)) {
+			throw new SemanticException(t, "Variable " + varname + " isn't declared yet.");
+		}
+
+		declarations.setAsUsed(varname, profonditaCorrente);
+		Declaration d = declarations.resolveScope(varname, profonditaCorrente);
+		return d.getUniqueName();
+	}
+	|
+	t=<NUM>
+	{
+		return t.image;
+	}
+}
+
+String n_oper() throws SemanticException : {String expr1,expr2;}
+{
+	<SUM> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " + " + expr2;
+	}
+	|
+	<DIFFERENCE> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " - " + expr2;
+	}
+	|
+	<PRODUCT> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " * " + expr2;
+	}
+	|
+	<QUOTIENT> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " / " + expr2;
+	}
+}
+
+String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
+{
+	<MAKE> v=<VARNAME> (n=<NUM>)?
+	{
+		// Toglie i ":" iniziali dal nome della variabile
+		varname = v.image.substring(1);
+		
+		// Controllo tabella dei simboli
+		if (!declarations.isDeclarable(varname, profonditaCorrente)) {
+			throw new SemanticException(v, "Variable " + varname + " is already declared.");
+		} else {
+			declarations.addDeclaration(varname, profonditaCorrente, v.beginLine, v.beginColumn);
+		}
+		
+		if (n != null) {
+			Declaration d = declarations.resolveScope(varname, profonditaCorrente);
+			return "var " + d.getUniqueName() + " : Number = " + n.image + ";";
+		}
+		else {
+			Declaration d = declarations.resolveScope(varname, profonditaCorrente);
+			return "var " + d.getUniqueName() + " : Number;";
+		}
+	}
+	|
+	<LET> v=<VARNAME> expr=n_value()
+	{	
+		// Toglie i ":" iniziali dal nome della variabile
+		varname = v.image.substring(1);
+		
+		// Controllo che l'istruzione sia nello scope della variabile.
+		if(!declarations.isReachable(varname, profonditaCorrente)) {
+			throw new SemanticException(v, "Variable " + varname + " isn't declared yet.");
+		}
+		declarations.setAsUsed(varname, profonditaCorrente);
+		
+		Declaration d = declarations.resolveScope(varname, profonditaCorrente);
+		return d.getUniqueName() + " = " + expr + ";";
+	}
+}
+
+String b_oper() throws SemanticException : {String expr1,expr2;}
+{
+	<LESS> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " < " + expr2;
+	}
+	|
+	<GREATER> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " > " + expr2;
+	}
+	|
+	<EQUAL> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " == " + expr2;
+	}
+	|
+	<NOTEQUAL> expr1=n_s_value() expr2=n_s_value()
+	{
+		return expr1 + " != " + expr2;
+	}
+}
+	
+String ctrl_str() throws SemanticException : {String v,l;}
+{
+	<IF> v = b_oper() <LBRACKET> {profonditaCorrente++;} l = list() <RBRACKET> {declarations.pruneAllDeclarationsIn(profonditaCorrente); profonditaCorrente--;}
+	{
+		return "if ( " + v + " ) {" + l + "}";
+	}
+	|
+	<REPEAT> v = n_value() <LBRACKET> {profonditaCorrente++;} l = list() <RBRACKET> {declarations.pruneAllDeclarationsIn(profonditaCorrente); profonditaCorrente--;}
+	{
+		String forVariable = nextForVariable();
+		return "for (var $" + forVariable + " : Number = 0; $" + forVariable + 
+			" < (" + v + ") ; $" + forVariable + "++) {" + l + "}";
+	}
+}
+
+JAVACODE
+/**
+* Consuma token fino alla prossima produzione presumibilmente corretta.
+*/
+void error_skipto() {
+	
+  	Token t = getToken(0);
+  
+  	// Se t e' un var_op o un dr_op, consumo fino alla prossima istr
+  	// Se t e' un ctrl_str, consumo fino alla parentesi chiusa
+  
+  	switch(t.kind) {
+		case MAKE:
+	  	case LET:
+	  	
+	  	case FD:
+		case BK:
+		case LT:
+		case RT:
+		case CLEAN:
+		case PENDOWN:
+		case PENUP:
+		case COLOR:
+			int i = 1;
+	  		while(getToken(i).kind != MAKE &&
+	  			getToken(i).kind != LET && 
+	  			getToken(i).kind != FD &&
+	  			getToken(i).kind != BK &&
+	  			getToken(i).kind != LT &&
+	  			getToken(i).kind != RT &&
+	  			getToken(i).kind != CLEAN &&
+	  			getToken(i).kind != PENDOWN &&
+	  			getToken(i).kind != PENUP &&
+	  			getToken(i).kind != COLOR &&
+	  			getToken(i).kind != IF &&
+	  			getToken(i).kind != REPEAT &&  		
+	  			getToken(i).kind != EOF) {
+	  			i++;
+		  	}
+  
+	  		for(int j=0; j < i-1; j++) {
+	  			getNextToken();
+	  		}
+	  		break;
+	  		
+	  	case IF:
+	  	case REPEAT:
+	  		i = 0;	
+	  		int numLBracket = 0;
+	  		do {	  			
+	  			i++;
+	  			if(getToken(i).kind == LBRACKET) {
+	  				numLBracket++;
+	  			} else if (getToken(i).kind == RBRACKET) {
+	  				numLBracket--;
+	  			}	  				  				  				  			
+	  		} while((getToken(i).kind != RBRACKET || numLBracket > 0) && getToken(i).kind != EOF);
+	  		
+	  		if (getToken(i).kind != EOF) {
+		  		for(int j = 0; j < i; j++) {
+		  			getNextToken();
+		  		}
+	  		}
+	  		
+	  		break;
+  	}
+}

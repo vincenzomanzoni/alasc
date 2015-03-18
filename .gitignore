@@ -1,0 +1,7 @@
+bin/
+build/
+target/
+tools/
+Disegno.as
+Pen.as
+.DS_Store
