@@ -6,7 +6,6 @@
     <info organisation="it.unibg.alasc" module="alasc" />
     <dependencies>
         <dependency org="com.sanityinc" name="jargs" rev="2.0-SNAPSHOT"/>
-        <dependency org="org.swinglabs" name="swing-layout" rev="1.0.3"/>
     </dependencies>
 </ivy-module>
 

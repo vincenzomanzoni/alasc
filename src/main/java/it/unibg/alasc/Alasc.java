@@ -2,8 +2,6 @@ package it.unibg.alasc;
 
 import it.unibg.alasc.errors.GenericError;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -11,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.nio.channels.FileChannel;
 import java.util.List;
 
 import com.sanityinc.jargs.CmdLineParser;
@@ -22,7 +19,7 @@ import com.sanityinc.jargs.CmdLineParser;
 public class Alasc {
 
 	private static String inputFileName = "", swfFileName = "", pathMtasc = "";
-	private static final String outputFileName = "Disegno.as";
+	private static final String outputFileName = "Main.as";
 	private static boolean tosEnabled, swfEnabled;
 	
 	private static Parser logoParser;
@@ -253,55 +250,7 @@ public class Alasc {
 		}
 		
 	}
-	
-	/**
-	 * Copia le librerie ActionScript necessarie al corretto funzionamento del 
-	 * dal listato tradotto dalla cartella di default a quella in cui � stato
-	 * invocato il comando di compilazione.
-	 */
-	public static void copiaLibrerie(){
-		
-		InputStream is = null;
-		OutputStream os = null;
-		
-		try {
 
-			is = Alasc.class.getClassLoader().getResourceAsStream("Pen.as");
-	        byte[] buffer = new byte[is.available()];
-	        is.read(buffer);
-	        
-	        os = new FileOutputStream("Pen.as");
-	        os.write(buffer);
-	        
-	    } catch (IOException e) {
-	    	System.err.println("A problem occured while Pen.as was copying.");
-	    	System.exit(2);
-	    } finally {
-	    	
-	    	// Close streams gracefully
-	    	
-	    	if(is != null) {
-	    		try {
-					is.close();
-				} catch (IOException e) {
-					System.err.println("A problem occured while Pen.as was copying.");
-					e.printStackTrace();
-			    	System.exit(2);
-				}
-	    	}
-	    	
-	    	if(os != null) {
-	    		try {
-					os.close();
-				} catch (IOException e) {
-					System.err.println("A problem occured while Pen.as was copying.");
-					e.printStackTrace();
-			    	System.exit(2);
-				}
-	    	}
-	    }
-
-	}
 	
 	/**
 	 * Il main dell'applicazione.
@@ -319,8 +268,6 @@ public class Alasc {
 			// 1. copiare il file Pen.as nella posione del compilato
 			// 2. se richiesto, avviare la compilazione dell'AS in flash
 			
-			// Copiatura del file ^application path^/templates/Pen.as
-			copiaLibrerie();
 			
 			System.out.println("\nCompile process has finished succesfully.");
 			
