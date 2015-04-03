@@ -1,4 +1,4 @@
-package com.google.code.alasc.test;
+package it.unibg.alasc.test;
 
 import it.unibg.alasc.*;
 

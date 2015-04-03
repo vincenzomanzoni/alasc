@@ -1,6 +1,6 @@
-package com.google.code.alasc.unittests;
+package it.unibg.alasc.test;
 
-import it.unibg.alasc.SimpleBeautifier;
+import it.unibg.alasc.utils.SimpleBeautifier;
 import junit.framework.TestCase;
 
 /**

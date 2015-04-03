@@ -1,28 +1,23 @@
-package com.google.code.alasc.unittests;
+package it.unibg.alasc.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Suite di test d'unità.
+ * Suite test
  * 
  * @author Vincenzo Manzoni
  *
  */
 public class AllTests {
 
-	/**
-	 * Crea e restituisce una suite di test.
-	 * @return La suite di test.
-	 */
 	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for com.google.code.alasc.unittest");
-		//$JUnit-BEGIN$
+		TestSuite suite = new TestSuite("Test suite for Alasc");
+		
 		suite.addTestSuite(ErrorManagerTest.class);
 		suite.addTestSuite(DeclarationTest.class);
 		suite.addTestSuite(SimpleBeautifierTest.class);
-		//$JUnit-END$
+		
 		return suite;
 	}
 

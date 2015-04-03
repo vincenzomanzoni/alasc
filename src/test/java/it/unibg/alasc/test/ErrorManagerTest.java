@@ -1,4 +1,4 @@
-package com.google.code.alasc.unittests;
+package it.unibg.alasc.test;
 
 import it.unibg.alasc.errors.ErrorManager;
 import it.unibg.alasc.errors.LexicalError;
@@ -10,7 +10,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 /**
- * Test di unit� della classe <tt>ErrorManager</tt>.
+ * Unit test for <tt>ErrorManager</tt>.
  * 
  * @author Vincenzo Manzoni
  */
@@ -32,7 +32,7 @@ public class ErrorManagerTest extends TestCase {
 	public void testGetLexicalErrorList() {		
 		LexicalError lexicalError =new LexicalError(1, 1, "Lexical error!") ;
 		errorManager.addError(lexicalError);
-		List list = errorManager.getLexicalErrorList();
+		List<LexicalError> list = errorManager.getLexicalErrorList();
 		// Verifico che la lista di errori lessicali sia lunga 1
 		assertTrue(list.size() == 1);
 		// Verifico che mi sia restituito l'oggetto che ho inserito
@@ -46,7 +46,7 @@ public class ErrorManagerTest extends TestCase {
 	public void testGetSemanticErrorList() {
 		SemanticError semanticError = new SemanticError(1, 1, "Semantic error!") ;
 		errorManager.addError(semanticError);
-		List list = errorManager.getSemanticErrorList();
+		List<SemanticError> list = errorManager.getSemanticErrorList();
 		// Verifico che la lista di errori semantici sia lunga 1
 		assertTrue(list.size() == 1);
 		// Verifico che mi sia restituito l'oggetto che ho inserito
@@ -60,7 +60,7 @@ public class ErrorManagerTest extends TestCase {
 	public void testGetSyntaxErrorList() {
 		SyntaxError syntaxError = new SyntaxError(1, 1, "Syntax error!") ;
 		errorManager.addError(syntaxError);
-		List list = errorManager.getSyntaxErrorList();
+		List<SyntaxError> list = errorManager.getSyntaxErrorList();
 		// Verifico che la lista di errori sintattici sia lunga 1
 		assertTrue(list.size() == 1);
 		// Verifico che mi sia restituito l'oggetto che ho inserito

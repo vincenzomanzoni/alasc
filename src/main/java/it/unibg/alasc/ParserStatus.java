@@ -1,8 +1,8 @@
 package it.unibg.alasc;
 
 /**
- * Enumerazione per descrivere i possibili stati in cui si pu� trovare
- * il parser alla fine della compilazione.
+ * 
+ * Exit status for parsing process
  * 
  * @author Andrea Rota
  *

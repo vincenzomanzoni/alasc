@@ -1,4 +1,5 @@
-package it.unibg.alasc;
+package it.unibg.alasc.utils;
+
 
 /**
  * La classe implementa un semplice beautifier del codice.

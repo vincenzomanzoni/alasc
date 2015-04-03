@@ -1,4 +1,4 @@
-package com.google.code.alasc.unittests;
+package it.unibg.alasc.test;
 
 import it.unibg.alasc.Declaration;
 import junit.framework.TestCase;

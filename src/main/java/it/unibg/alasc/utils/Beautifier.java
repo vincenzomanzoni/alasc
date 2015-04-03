@@ -1,4 +1,4 @@
-package it.unibg.alasc;
+package it.unibg.alasc.utils;
 
 /**
  * Generica classe Beautifier.

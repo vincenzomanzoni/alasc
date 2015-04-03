@@ -9,7 +9,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
 	<classpathentry kind="lib" path="build/deps"/>
-	<classpathentry kind="lib" path="build/deps/jargs-2.0-SNAPSHOT.jar"/>
-	<classpathentry kind="lib" path="build/deps/swing-layout-1.0.3.jar"/>
+	<classpathentry kind="lib" path="build/deps/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="build/deps/log4j-1.2.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
