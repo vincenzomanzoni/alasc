@@ -1,7 +1,6 @@
-options
-{
-STATIC = false;
-IGNORE_CASE = true;
+options {
+	STATIC = false;
+	IGNORE_CASE = true;
 }
 
 PARSER_BEGIN(Parser)
@@ -15,15 +14,15 @@ import it.unibg.alasc.utils.*;
 
 public class Parser {
 	
-	private StringBuffer flashListing;
+	private String generatedCode;
 	private DeclarationSet declarations;
 	private ErrorManager errorManager;
-	private int profonditaCorrente;
+	private int blockLevel;
 	
 	private Random random;
 	
-	// NOTE: non mettere il costruttore di default, non viene chiamato dall'implementazione di
-	// parser.java. Bloody JavaCC!!!
+	// Do not write a default constructor. JavaCC doesn't call it.
+	
 	/**
 	* Restituisce la lista degli errori che sono occorsi.
 	* 
@@ -33,88 +32,30 @@ public class Parser {
     * Restituisce la traduzione ActionScript del codice Logo.
     *
     * @return Il codice ActionScript, risultato della traduzione.
-    */	public String getCode(){	  return flashListing.toString();	}    
+    */	public String getCode(){	  return generatedCode;	}    
     /**
     * Restituisce la tabella dei simboli.
     *
     * @return La tabella dei simboli, sotto forma di lista ordinata.
     */	public ArrayList<Declaration> getSymbolsTable(){	  return declarations.getHistory();	}
 	
-	/**
-    * Carica da file un template.
-    *
-    * @param templatePath Il percorso del template.
-    * @return Il template.
-    */
-    private String loadTemplateSnippet(String templateName){
-    	
-    	InputStream is = this.getClass().getClassLoader().getResourceAsStream(templateName);
-    	Scanner scanner = null;
-		if (is != null) {
-			scanner = new Scanner(is);
-		} else {
-			return "";
-		}
-		
-		StringBuffer snippet = new StringBuffer();
-		String eol = System.getProperty("line.separator");
-		String line;
-        while (scanner.hasNextLine()) {
-        	line = scanner.nextLine();
-        	snippet.append(line);
-    		snippet.append(eol);
-        }
-        scanner.close();    		
-    	
-    	return snippet.toString();
-    }
-    
     /**
     * Esegue il parsing del listato Logo.
     * 
     * @return Il risultato del parsing, come enumeratore <tt>ParserStatus</tt>.
     */
-    public ParserStatus parse(){
+    public ParserStatus parse() {
     	
 		declarations = new DeclarationSet();
 		errorManager = new ErrorManager();
-		flashListing = new StringBuffer();
-		profonditaCorrente = 0;
+		blockLevel = 0;
   	    random = new Random();
     	
-    	// Inserisco l'intestazione del template caricandola dal classpath
-    	String head = loadTemplateSnippet("head.inc");
-    	if (!head.equals("")) {
-			flashListing.append(head);
-		} else {
-			return ParserStatus.TEMPLATEERRORS;
-    	}
-		
-		// Genero ed inserisco la personalizzazione del template
-		
-		String myCode = null;
 		try {
-			myCode = start();
+			this.generatedCode = start();
 		} catch(ParseException pe) {
 			System.out.println(pe.toString());
-			// Non dovrebbe verificarsi mai.
 		}
-		
-		// Se avviene un errore, restituisco null
-		if(myCode != null) {			
-			Beautifier b = new SimpleBeautifier(2);
-			myCode = b.beautify(myCode);
-		
-			flashListing.append(myCode);
-		}
-		
-		// Inserisco la chiusura del template
-		String tail = loadTemplateSnippet("tail.inc");
-		if (!tail.equals("")) {
-			flashListing.append(tail);
-		} else {
-			return ParserStatus.TEMPLATEERRORS;
-    	}
 		
 		if(errorManager.hasLexicalErrors()){
 			return ParserStatus.LEXICALERRORS;
@@ -299,12 +240,12 @@ String n_s_value() throws SemanticException : {Token t;}
 	{
 		String varname = t.image.substring(1);
 		
-		if(!declarations.isReachable(varname, profonditaCorrente)) {
+		if(!declarations.isReachable(varname, blockLevel)) {
 			throw new SemanticException(t, "Variable " + varname + " isn't declared yet.");
 		}
 
-		declarations.setAsUsed(varname, profonditaCorrente);
-		Declaration d = declarations.resolveScope(varname, profonditaCorrente);
+		declarations.setAsUsed(varname, blockLevel);
+		Declaration d = declarations.resolveScope(varname, blockLevel);
 		return d.getUniqueName();
 	}
 	|
@@ -345,18 +286,18 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		varname = v.image.substring(1);
 		
 		// Controllo tabella dei simboli
-		if (!declarations.isDeclarable(varname, profonditaCorrente)) {
+		if (!declarations.isDeclarable(varname, blockLevel)) {
 			throw new SemanticException(v, "Variable " + varname + " is already declared.");
 		} else {
-			declarations.addDeclaration(varname, profonditaCorrente, v.beginLine, v.beginColumn);
+			declarations.addDeclaration(varname, blockLevel, v.beginLine, v.beginColumn);
 		}
 		
 		if (n != null) {
-			Declaration d = declarations.resolveScope(varname, profonditaCorrente);
+			Declaration d = declarations.resolveScope(varname, blockLevel);
 			return "var " + d.getUniqueName() + " : Number = " + n.image + ";";
 		}
 		else {
-			Declaration d = declarations.resolveScope(varname, profonditaCorrente);
+			Declaration d = declarations.resolveScope(varname, blockLevel);
 			return "var " + d.getUniqueName() + " : Number;";
 		}
 	}
@@ -367,12 +308,12 @@ String var_op() throws SemanticException : {Token v,n=null;String expr,varname;}
 		varname = v.image.substring(1);
 		
 		// Controllo che l'istruzione sia nello scope della variabile.
-		if(!declarations.isReachable(varname, profonditaCorrente)) {
+		if(!declarations.isReachable(varname, blockLevel)) {
 			throw new SemanticException(v, "Variable " + varname + " isn't declared yet.");
 		}
-		declarations.setAsUsed(varname, profonditaCorrente);
+		declarations.setAsUsed(varname, blockLevel);
 		
-		Declaration d = declarations.resolveScope(varname, profonditaCorrente);
+		Declaration d = declarations.resolveScope(varname, blockLevel);
 		return d.getUniqueName() + " = " + expr + ";";
 	}
 }
@@ -402,12 +343,12 @@ String b_oper() throws SemanticException : {String expr1,expr2;}
 	
 String ctrl_str() throws SemanticException : {String v,l;}
 {
-	<IF> v = b_oper() <LBRACKET> {profonditaCorrente++;} l = list() <RBRACKET> {declarations.pruneAllDeclarationsIn(profonditaCorrente); profonditaCorrente--;}
+	<IF> v = b_oper() <LBRACKET> {blockLevel++;} l = list() <RBRACKET> {declarations.pruneAllDeclarationsIn(blockLevel); blockLevel--;}
 	{
 		return "if ( " + v + " ) {" + l + "}";
 	}
 	|
-	<REPEAT> v = n_value() <LBRACKET> {profonditaCorrente++;} l = list() <RBRACKET> {declarations.pruneAllDeclarationsIn(profonditaCorrente); profonditaCorrente--;}
+	<REPEAT> v = n_value() <LBRACKET> {blockLevel++;} l = list() <RBRACKET> {declarations.pruneAllDeclarationsIn(blockLevel); blockLevel--;}
 	{
 		String forVariable = nextForVariable();
 		return "for (var $" + forVariable + " : Number = 0; $" + forVariable + 

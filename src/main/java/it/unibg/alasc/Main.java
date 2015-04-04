@@ -1,13 +1,17 @@
 package it.unibg.alasc;
 
 import it.unibg.alasc.errors.GenericError;
+import it.unibg.alasc.utils.Beautifier;
+import it.unibg.alasc.utils.SimpleBeautifier;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Scanner;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -17,6 +21,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.stringtemplate.v4.ST;
 
 
 public class Main {
@@ -74,13 +79,16 @@ public class Main {
 
 			logger.debug("Compiling source file " + srcFilepath);
 			ParserStatus parserExitCode = logoParser.parse();
-			logoParser.getCode();
 
 			switch (parserExitCode) {
 
 			case COMPILED:
 
-				writeActionScript(new File("Main.as"), logoParser.getCode());
+				String generatedCode = logoParser.getCode();
+				Beautifier beautifier = new SimpleBeautifier(0);
+				String beautifiedCode = beautifier.beautify(generatedCode);
+				
+				writeActionScript(new File("Main.as"), beautifiedCode);
 
 				if (cmd.hasOption("t")) {
 					printTOS(logoParser.getSymbolsTable());
@@ -107,12 +115,43 @@ public class Main {
 	private static void writeActionScript(File compiled, String code) {
 
 		FileWriter fileWriter = null;
-
+		
+		logger.debug("Reading Action Script template");
+		
+		InputStream templateFile = Thread.currentThread()
+				.getContextClassLoader()
+				.getResourceAsStream("actionscript-template.st");
+		
+		Scanner scanner = null;
+		String template = null;
+		
+		if (templateFile != null) {
+			try {
+				scanner = new Scanner(templateFile);
+				scanner.useDelimiter("\\Z");
+				template = scanner.next();
+			} catch (Throwable t) {
+				logger.fatal("Unable to read the Action Script template", t);
+				System.exit(1);
+			} finally {
+				if (scanner != null) {
+					scanner.close();
+				}
+			}
+		}
+		
+		String sourceName = compiled.getName();
+		String sourceNameWithNoExt = sourceName.substring(0, sourceName.lastIndexOf('.'));
+		
+		ST st = new ST(template);
+		st.add("sourceName", sourceNameWithNoExt);
+		st.add("generatedCode", code);
+		
 		logger.debug("Writing output Action Script file " + compiled.getName());
 		
 		try {
 			fileWriter = new FileWriter(compiled);
-			fileWriter.write(code);
+			fileWriter.write(st.render());
 		} catch (IOException e) {
 			logger.fatal("Unable to write the output Action Script file " + compiled.getName(), e);
 			System.exit(1);

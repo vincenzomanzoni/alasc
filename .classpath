@@ -11,5 +11,7 @@
 	<classpathentry kind="lib" path="build/deps"/>
 	<classpathentry kind="lib" path="build/deps/commons-cli-1.2.jar"/>
 	<classpathentry kind="lib" path="build/deps/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="build/deps/antlr-runtime-3.3.jar"/>
+	<classpathentry kind="lib" path="build/deps/stringtemplate-4.0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

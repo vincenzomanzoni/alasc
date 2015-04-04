@@ -4,7 +4,7 @@ package
 	import flash.display.Shape;
 	import flash.events.Event;
 
-	public class Main extends Sprite 
+	public class <sourceName> extends Sprite 
 	{
 		private var shape : Shape;
 		private var penX : Number;
@@ -87,3 +87,7 @@ package
 
 		private function draw():void
 		{
+			<generatedCode>
+		}
+	}
+}
