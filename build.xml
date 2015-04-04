@@ -43,7 +43,7 @@
 
 	<target name="compile" depends="init,compile.javacc,compile.java" />
 
-	<target name="compile.javacc">
+	<target name="compile.javacc" depends="resolve-tools">
 
 		<mkdir dir="${build.javacc.dir}/it/unibg/alasc" />
 		<mkdir dir="${build.classes.dir}" />
@@ -53,7 +53,7 @@
 
 	</target>
 
-	<target name="compile.java">
+	<target name="compile.java" depends="resolve-deps">
 
 		<path id="deps.classpath">
 			<fileset dir="${build.deps.dir}" includes="*.jar" />
@@ -100,6 +100,8 @@
 			classpathref="ivy.lib.path" />
 
 	</target>
+	
+	<target name="dist" depends="target"></target>
 
 
 </project>

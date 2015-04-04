@@ -4,25 +4,20 @@ import it.unibg.alasc.utils.SimpleBeautifier;
 import junit.framework.TestCase;
 
 /**
- * Test di unit� della classe <tt>SimpleBeautifier</tt>.
+ * Unit test for <tt>SimpleBeautifier</tt> class
  * 
  * @author Vincenzo Manzoni
  */
 public class SimpleBeautifierTest extends TestCase {
-	private SimpleBeautifier simpleBeautifier;
 	
-	/**
-	 * Inizializza l'istanza di <tt>SimpleBeautifier</tt> che verr� utilizzata
-	 * dai test.
-	 */
+	private final static int TABS = 2;
+	private final SimpleBeautifier simpleBeautifier;
+
 	public SimpleBeautifierTest() {		
-		simpleBeautifier = new SimpleBeautifier(2); // 2 tab iniziali
+		simpleBeautifier = new SimpleBeautifier(TABS);
 	}
 	
-	/**
-	 * Verifica che il beautifier abbellisca correttamente un codice 
-	 * ActionScript molto semplice.
-	 */
+	// Test: verify code beautify of a simple snippet
 	public void testBeautifySimpleCode() {
 		String code = "goForward(100);rotateRight(90);";
 		String beautifiedCode = simpleBeautifier.beautify(code);
@@ -32,11 +27,7 @@ public class SimpleBeautifierTest extends TestCase {
 		assertTrue(beautifiedCode.equals(expected));
 	}
 	
-	/**
-	 * Verifica che il beautifier abbellisca correttamente un codice 
-	 * ActionScript in cui � presente un blocco (in particolare, un
-	 * blocco for).
-	 */
+	// Test: verify code beautify of a snippet with a code block
 	public void testBeautifyBlockCode() {
 		String code = "for (var $i : Number = 0; $i < (360) ; $i++) {" +
 			"goForward(1);rotateRight(1);}";

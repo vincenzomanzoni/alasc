@@ -26,6 +26,7 @@ public class Main {
 	public static void main(String[] args) {
 
 		Options options = new Options();
+		options.addOption("h", "help", false, "print this message");
 		options.addOption("t", "tos", false, "generate the table of symbols");
 		options.addOption("v", "verbose", false, "enable verbose mode");
 	
