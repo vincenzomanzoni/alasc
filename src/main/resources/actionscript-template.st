@@ -13,7 +13,7 @@ package
 		private var color : Number;
 		private var isPenDown : Boolean;
 		
-		public function Main():void 
+		public function <sourceName>():void 
 		{
 			if (this.stage) {
 				this.init(); 

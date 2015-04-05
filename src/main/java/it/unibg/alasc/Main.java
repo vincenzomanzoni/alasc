@@ -70,8 +70,10 @@ public class Main {
 			
 			logger.debug("Reading source file " + srcFilepath);
 			
+			File source = new File(srcFilepath);
+			
 			try {
-				logoParser = new Parser(new FileInputStream(srcFilepath));
+				logoParser = new Parser(new FileInputStream(source));
 			} catch (FileNotFoundException e) {
 				logger.fatal("Unable to read the source file " + srcFilepath, e);
 				System.exit(1);
@@ -87,8 +89,8 @@ public class Main {
 				String generatedCode = logoParser.getCode();
 				Beautifier beautifier = new SimpleBeautifier(0);
 				String beautifiedCode = beautifier.beautify(generatedCode);
-				
-				writeActionScript(new File("Main.as"), beautifiedCode);
+								
+				writeActionScript(getOutputFileFor(source), beautifiedCode);
 
 				if (cmd.hasOption("t")) {
 					printTOS(logoParser.getSymbolsTable());
@@ -112,7 +114,7 @@ public class Main {
 
 	}
 
-	private static void writeActionScript(File compiled, String code) {
+	private static void writeActionScript(File output, String code) {
 
 		FileWriter fileWriter = null;
 		
@@ -140,31 +142,38 @@ public class Main {
 			}
 		}
 		
-		String sourceName = compiled.getName();
-		String sourceNameWithNoExt = sourceName.substring(0, sourceName.lastIndexOf('.'));
 		
 		ST st = new ST(template);
-		st.add("sourceName", sourceNameWithNoExt);
+		st.add("sourceName", getActionScriptClassname(output));
 		st.add("generatedCode", code);
 		
-		logger.debug("Writing output Action Script file " + compiled.getName());
+		logger.debug("Writing output Action Script file " + output.getName());
 		
 		try {
-			fileWriter = new FileWriter(compiled);
+			fileWriter = new FileWriter(output);
 			fileWriter.write(st.render());
 		} catch (IOException e) {
-			logger.fatal("Unable to write the output Action Script file " + compiled.getName(), e);
+			logger.fatal("Unable to write the output Action Script file " + output.getName(), e);
 			System.exit(1);
 		} finally {
 			if (fileWriter != null) {
 				try {
 					fileWriter.close();
 				} catch (IOException e) {
-					logger.fatal("Unable to write the output action script file " + compiled.getName(), e);
+					logger.fatal("Unable to write the output action script file " + output.getName(), e);
 					System.exit(1);
 				}
 			}
 		}
+	}
+
+	private static File getOutputFileFor(File source) {
+		return new File(getActionScriptClassname(source).concat(".as"));
+	}
+	
+	private static String getActionScriptClassname(File file) {
+		String sourceName = file.getName();
+		return sourceName.substring(0, sourceName.lastIndexOf('.'));
 	}
 
 	private static void printTOS(List<Declaration> tos) {

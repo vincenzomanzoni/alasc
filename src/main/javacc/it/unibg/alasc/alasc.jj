@@ -6,11 +6,8 @@ options {
 PARSER_BEGIN(Parser)
 package it.unibg.alasc;
 
-import java.io.*;
 import java.util.*;
-import java.net.URL;
 import it.unibg.alasc.errors.*;
-import it.unibg.alasc.utils.*;
 
 public class Parser {
 	
