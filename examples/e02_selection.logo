@@ -1,0 +1,42 @@
+; Example of if construct
+; Depending of the SHAPE_TYPE variable value, this program draws:
+; 1 - blue circle
+; 2 - red square
+; 3 - green triangle 
+
+MAKE :SHAPE_TYPE 3
+
+IF EQUAL? :SHAPE_TYPE 1 [
+ 
+ COLOR 255
+ 
+ ; Circle
+ REPEAT 360 [
+  FD 1
+  RT 1
+ ]
+]
+
+IF EQUAL? :SHAPE_TYPE 2 [
+
+ COLOR 16711680
+
+ ; Square
+ REPEAT 4 [
+  FD 100
+  RT 90
+ ]
+]
+
+IF EQUAL? :SHAPE_TYPE 3 [
+
+ COLOR 65280
+
+ ; Triangle
+ RT 30
+ 
+ REPEAT 3 [
+  RT 120
+  FD 100
+ ]
+]

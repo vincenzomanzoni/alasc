@@ -1,0 +1,42 @@
+; Variables scoping example
+;
+; This listing will draw some lines of different colors, showing how the local 
+; variable scoping works.
+
+; Create a variable FOO with the color blue code
+MAKE :FOO 255
+
+; Create a code block where FOO will be declared again
+IF LESS? 1 2 [
+ ; This FOO instance contains the red color code
+ ; It will override the previous declared FOO, since it is local to this code block
+ MAKE :FOO 16711680
+ 
+ ; Declare a new variable BAR with green color code
+ MAKE :BAR 65280
+ 
+ ; Create a new inner code block
+ IF LESS? 1 2 [
+  ; In this block, the variable FOO must have a red value
+  COLOR :FOO
+  
+  ; Draw a red line
+  FD 25
+  
+  ; Override the BAR value with black
+  MAKE :BAR 0
+  
+  ; Now the BAR value must have black color code value
+  COLOR :BAR
+  
+  ; Draw a black line
+  FD 25
+ ] 
+]
+
+; Now we are at most external code block
+; FOO value must be blu color code
+COLOR :FOO
+
+; Draw a blue line
+FD 25
