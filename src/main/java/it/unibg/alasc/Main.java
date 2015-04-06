@@ -196,7 +196,7 @@ public class Main {
 		System.out.println("ALASC, A Logo to Action Script Compiler");
 		
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("alasc [logofile] ... [logofile]", options);
+		formatter.printHelp("alasc [options] <logofile> ... <logofile>", options);
 	}
 
 }
