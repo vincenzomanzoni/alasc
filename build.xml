@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="alasc" default="dist" basedir="."
+<project name="alasc" default="target" basedir="."
 	xmlns:ivy="antlib:org.apache.ivy.ant">
 	<description>
 		ALASC is A Logo to Action Script Compiler written in Java.
@@ -16,6 +16,7 @@
 	<property name="build.classes.dir" value="${build.dir}/classes" />
 
 	<property name="target.dir" location="target" />
+	<property name="main.class" value="it.unibg.alasc.Main"/>
 
 	<property name="ivy.install.version" value="2.4.0" />
 	<property name="ivy.home.dir" value="tools/ivy" />
@@ -59,7 +60,7 @@
 			<fileset dir="${build.deps.dir}" includes="*.jar" />
 		</path>
 
-		<javac destdir="${build.classes.dir}">
+		<javac includeantruntime="false" destdir="${build.classes.dir}">
 			<src path="${build.javacc.dir}" />
 			<src path="${src.java.dir}" />
 			<classpath refid="deps.classpath" />
@@ -73,7 +74,13 @@
 
 	<target name="target" depends="compile">
 		<mkdir dir="${target.dir}" />
-		<jar destfile="${target.dir}/alasc.jar" basedir="${build.classes.dir}" />
+		<jar destfile="${target.dir}/alasc.jar" basedir="${build.classes.dir}" filesetmanifest="skip">
+			<zipgroupfileset dir="${build.deps.dir}" includes="*.jar" excludes=""/>
+			<manifest>
+				<attribute name="Main-Class" value="${main.class}"/>
+			</manifest>
+		</jar>
+		
 	</target>
 
 	<target name="clean">
@@ -100,8 +107,5 @@
 			classpathref="ivy.lib.path" />
 
 	</target>
-	
-	<target name="dist" depends="target"></target>
-
 
 </project>
