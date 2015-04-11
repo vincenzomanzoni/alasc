@@ -1,0 +1,16 @@
+; Repeat logo construct example
+; Draw a square with dashed edges
+
+REPEAT 4 [
+ 
+ ; Draw an edge with dash of 5 units
+ REPEAT 10 [
+  FD 5
+  PENUP
+  FD 5
+  PENDOWN
+ ]
+
+ RT 90
+]
+

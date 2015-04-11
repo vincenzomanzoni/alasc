@@ -1,3 +1,0 @@
-; Disegna un quadrato
-
-REPEAT 4 [FD 10 RT 90]
